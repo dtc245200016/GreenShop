@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GreenShop Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --admin-sidebar-width: 260px;
+            --admin-navbar-height: 64px;
+            --admin-sidebar-bg: #17212b;
+            --admin-accent: #35a56f;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f4f7f6;
+            color: #25313b;
+        }
+
+        .admin-topbar {
+            height: var(--admin-navbar-height);
+            background: #fff;
+            z-index: 1030;
+        }
+
+        .admin-brand {
+            width: var(--admin-sidebar-width);
+            color: #25313b;
+        }
+
+        .admin-brand:hover {
+            color: var(--admin-accent);
+        }
+
+        .admin-logout-button {
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+            transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .admin-logout-button:hover,
+        .admin-logout-button:focus-visible {
+            box-shadow: 0 0 0 .2rem rgba(220, 53, 69, .2);
+        }
+
+        .admin-sidebar {
+            position: fixed;
+            top: var(--admin-navbar-height);
+            bottom: 0;
+            left: 0;
+            z-index: 1020;
+            width: var(--admin-sidebar-width);
+            overflow-y: auto;
+            padding: 1.5rem 1rem;
+            background: var(--admin-sidebar-bg);
+            transition: transform .2s ease-in-out;
+        }
+
+        .admin-sidebar-label {
+            padding: 0 .75rem;
+            color: #9aa8b5;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .admin-sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            margin: .25rem 0;
+            padding: .75rem;
+            border-radius: .5rem;
+            color: #d6dee5;
+        }
+
+        .admin-sidebar .nav-link > i {
+            width: 1.25rem;
+            text-align: center;
+        }
+
+        .admin-sidebar .nav-link.active,
+        .admin-sidebar .nav-link:not(.disabled):hover {
+            background: rgba(53, 165, 111, .18);
+            color: #78d5a4;
+        }
+
+        .admin-sidebar .nav-link.disabled {
+            color: #87939e;
+            cursor: not-allowed;
+            opacity: .75;
+        }
+
+        .admin-main {
+            min-height: 100vh;
+            margin-left: var(--admin-sidebar-width);
+            padding: calc(var(--admin-navbar-height) + 1.5rem) 1.5rem 1.5rem;
+        }
+
+        .admin-overlay {
+            display: none;
+        }
+
+        @@media (max-width: 767.98px) {
+            .admin-brand {
+                width: auto;
+            }
+
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+
+            body.admin-sidebar-open .admin-sidebar {
+                transform: translateX(0);
+            }
+
+            body.admin-sidebar-open .admin-overlay {
+                position: fixed;
+                inset: var(--admin-navbar-height) 0 0;
+                z-index: 1010;
+                display: block;
+                background: rgba(0, 0, 0, .4);
+            }
+
+            .admin-main {
+                margin-left: 0;
+                padding: calc(var(--admin-navbar-height) + 1rem) 1rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar fixed-top admin-topbar shadow-sm px-3">
+        <div class="container-fluid px-0">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-outline-secondary d-md-none me-2"
+                        type="button"
+                        id="adminSidebarToggle"
+                        aria-label="Mở menu quản trị"
+                        aria-expanded="false"
+                        aria-controls="adminSidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a class="navbar-brand admin-brand fw-bold mb-0" asp-area="Admin" asp-controller="Admin" asp-action="Index">
+                    <i class="fa-solid fa-seedling text-success me-2"></i>GreenShop Admin
+                </a>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <span class="d-none d-sm-inline text-secondary">
+                    Xin chào, <strong>@(User.Identity?.Name ?? "Quản trị viên")</strong>!
+                </span>
+                <a class="btn btn-outline-success btn-sm"
+                   href="@Url.Action("Index", "Home", new { area = "" })">
+                    <i class="fa-solid fa-globe me-1"></i><span class="d-none d-lg-inline">Xem website</span>
+                </a>
+                <form id="logoutForm"
+                      action="@Url.Action("Logout", "Account", new { area = "" })"
+                      method="post"
+                      class="d-inline m-0 p-0">
+                    @Html.AntiForgeryToken()
+                    <button type="submit"
+                            class="btn btn-outline-danger btn-sm admin-logout-button"
+                            aria-label="Đăng xuất">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i><span class="d-none d-lg-inline">Đăng xuất</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Menu quản trị">
+        <div class="admin-sidebar-label mb-2">Quản lý hệ thống</div>
+        <nav class="nav flex-column">
+            <a class="nav-link active" asp-area="Admin" asp-controller="Admin" asp-action="Index" aria-current="page">
+                <i class="fa-solid fa-gauge-high"></i><span>Tổng quan</span>
+            </a>
+            <a class="nav-link disabled" href="#" aria-disabled="true" title="Chức năng chưa được triển khai">
+                <i class="fa-solid fa-box-open"></i><span class="flex-grow-1">Quản lý Sản phẩm</span>
+                <span class="badge text-bg-secondary">Sắp có</span>
+            </a>
+            <a class="nav-link disabled" href="#" aria-disabled="true" title="Chức năng chưa được triển khai">
+                <i class="fa-solid fa-tags"></i><span class="flex-grow-1">Quản lý Danh mục</span>
+                <span class="badge text-bg-secondary">Sắp có</span>
+            </a>
+            <a class="nav-link disabled" href="#" aria-disabled="true" title="Chức năng chưa được triển khai">
+                <i class="fa-solid fa-receipt"></i><span class="flex-grow-1">Quản lý Đơn hàng</span>
+                <span class="badge text-bg-secondary">Sắp có</span>
+            </a>
+            <a class="nav-link disabled" href="#" aria-disabled="true" title="Chức năng chưa được triển khai">
+                <i class="fa-solid fa-users-gear"></i><span class="flex-grow-1">Người dùng &amp; Phân quyền</span>
+                <span class="badge text-bg-secondary">Sắp có</span>
+            </a>
+        </nav>
+    </aside>
+
+    <button class="admin-overlay border-0" id="adminSidebarOverlay" type="button" aria-label="Đóng menu quản trị"></button>
+
+    <main class="admin-main" role="main">
+        @RenderBody()
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const sidebarToggle = document.getElementById("adminSidebarToggle");
+        const sidebarOverlay = document.getElementById("adminSidebarOverlay");
+
+        function setSidebarOpen(isOpen) {
+            document.body.classList.toggle("admin-sidebar-open", isOpen);
+            sidebarToggle?.setAttribute("aria-expanded", String(isOpen));
+        }
+
+        sidebarToggle?.addEventListener("click", () => {
+            setSidebarOpen(!document.body.classList.contains("admin-sidebar-open"));
+        });
+        sidebarOverlay?.addEventListener("click", () => setSidebarOpen(false));
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

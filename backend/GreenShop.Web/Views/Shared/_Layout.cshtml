@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - GreenShop</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f8fafc; 
+            color: #334155; 
+        }
+        
+        .navbar-brand { 
+            font-weight: 800; 
+            font-size: 1.75rem; 
+            color: #059669 !important; 
+        }
+
+        /* Nav link mở rộng kích thước & khoảng cách */
+        .header-nav-link {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #334155;
+            padding: 10px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .header-nav-link:hover, .header-nav-link.active {
+            color: #059669;
+            background-color: #ecfdf5;
+        }
+
+        /* Search Box to rộng rãi hơn */
+        .search-box-inline {
+            max-width: 360px;
+            width: 100%;
+        }
+        .search-box-inline .form-control {
+            border-radius: 50px 0 0 50px;
+            border-color: #10b981;
+            padding: 9px 18px;
+            font-size: 0.92rem;
+        }
+        .search-box-inline .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.15);
+            border-color: #059669;
+        }
+        .search-box-inline .btn-search {
+            border-radius: 0 50px 50px 0;
+            background-color: #059669;
+            color: white;
+            padding: 9px 20px;
+            font-size: 0.95rem;
+        }
+        .search-box-inline .btn-search:hover {
+            background-color: #047857;
+            color: white;
+        }
+
+        /* Nút Giỏ hàng nổi bật */
+        .cart-icon-btn {
+            position: relative;
+            background-color: #ecfdf5;
+            color: #059669;
+            border-radius: 50px;
+            padding: 9px 18px;
+            font-weight: 600;
+            font-size: 0.92rem;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .cart-icon-btn:hover {
+            background-color: #d1fae5;
+            color: #047857;
+        }
+        .cart-badge {
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 50px;
+            padding: 2px 7px;
+            margin-left: 6px;
+            font-weight: bold;
+        }
+
+        .auth-btn {
+            padding: 8px 20px !important;
+            font-size: 0.9rem !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header 1 Dòng - Chiều cao rộng rãi (py-3 & px-5) -->
+    <header class="bg-white py-3 sticky-top shadow-sm border-bottom">
+        <div class="container-fluid px-lg-5 px-3">
+            <div class="d-flex align-items-center justify-content-between gap-3">
+                
+                <!-- 1. Logo GreenShop lớn hơn -->
+                <a class="navbar-brand d-flex align-items-center me-2" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-leaf text-success me-2 fs-3"></i>GreenShop
+                </a>
+
+                <!-- 2. Cụm các Menu chính (Chữ to, Nút rộng) -->
+                <nav class="d-none d-lg-flex align-items-center gap-1">
+                    <a asp-controller="Home" asp-action="Index" class="header-nav-link active">
+                        <i class="fa-solid fa-house me-1.5"></i>Trang chủ
+                    </a>
+                    <a href="#" class="header-nav-link">
+                        <i class="fa-solid fa-plant-wilt me-1.5"></i>Sản phẩm
+                    </a>
+                    <a href="#" class="header-nav-link">
+                        <i class="fa-solid fa-coins me-1.5"></i>Phong thủy
+                    </a>
+                    <a href="#" class="header-nav-link">
+                        <i class="fa-solid fa-book-open-reader me-1.5"></i>Cẩm nang
+                    </a>
+                    <a href="#" class="header-nav-link text-danger">
+                        <i class="fa-solid fa-fire me-1.5"></i>Khuyến mãi
+                    </a>
+                </nav>
+
+                <!-- 3. Thanh Tìm Kiếm Rộng Rãi -->
+                <div class="search-box-inline d-none d-md-block ms-auto">
+                    <form asp-controller="Home" asp-action="Index" method="get" class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm cây cảnh..." />
+                        <button class="btn btn-search" type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 4. Cụm Góc Phải: Hỗ trợ + Giỏ hàng + Auth -->
+                <div class="d-flex align-items-center gap-3">
+                    
+                    <!-- Hỗ trợ -->
+                    <a href="#" class="header-nav-link d-none d-xl-inline-block text-secondary">
+                        <i class="fa-solid fa-headset me-1.5 text-success fs-6"></i>Hỗ trợ
+                    </a>
+
+                    <!-- Icon Giỏ Hàng -->
+                    <a href="#" class="cart-icon-btn d-flex align-items-center">
+                        <i class="fa-solid fa-cart-shopping me-1.5 fs-6"></i>
+                        <span>Giỏ hàng</span>
+                        <span class="cart-badge" id="cartCount">0</span>
+                    </a>
+
+                    <!-- Trạng Thái Đăng Nhập -->
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <div class="dropdown">
+                            <button class="btn btn-outline-success rounded-pill dropdown-toggle fw-semibold auth-btn" type="button" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-circle-user me-1.5 fs-6"></i> @User.Identity.Name
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a class="dropdown-item small text-danger fw-bold" href="@Url.Action("Index", "Admin", new { area = "Admin" })">
+                                            <i class="fa-solid fa-user-shield me-2"></i>Trang Quản Trị
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                }
+                                <li>
+                                    <a class="dropdown-item small text-secondary" href="#">
+                                        <i class="fa-solid fa-box me-2"></i>Đơn hàng của tôi
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                        <button type="submit" class="dropdown-item small text-danger">
+                                            <i class="fa-solid fa-right-from-bracket me-2"></i>Đăng xuất
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex gap-2">
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success rounded-pill fw-bold auth-btn">
+                                Đăng nhập
+                            </a>
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-success rounded-pill fw-bold auth-btn">
+                                Đăng ký
+                            </a>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Nội dung chính -->
+    <main class="container-fluid px-lg-5 px-3 my-4">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-top py-4 mt-5">
+        <div class="container-fluid text-center text-muted small">
+            &copy; 2026 - GreenShop. Triển khai Hệ thống Phần mềm - Đặng Quốc Trung.
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

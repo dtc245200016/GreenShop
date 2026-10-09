@@ -1,0 +1,87 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: greenshop_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-StrongPass123!}
+      MYSQL_DATABASE: greenshop
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_net
+    healthcheck:
+      test: ["CMD-SHELL", 'mysqladmin ping -h 127.0.0.1 -uroot -p"$${MYSQL_ROOT_PASSWORD}" --silent']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: greenshop_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-StrongPass123!}
+    ports:
+      - "8080:80"
+    networks:
+      - app_net
+
+  web_app:
+    build:
+      context: ./backend
+      dockerfile: GreenShop.Web/Dockerfile
+      target: build
+    container_name: greenshop_web
+    restart: always
+    working_dir: /src/GreenShop.Web
+    command: ["dotnet", "watch", "run", "--no-launch-profile"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=db;Database=greenshop;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD:-StrongPass123!};
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/src
+      - /src/GreenShop.Web/bin
+      - /src/GreenShop.Web/obj
+    ports:
+      - "5000:8080"
+    networks:
+      - app_net
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q ':1F90 .* 0A' /proc/net/tcp /proc/net/tcp6"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_server
+    restart: always
+    depends_on:
+      web_app:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    networks:
+      - app_net
+
+volumes:
+  mysql_data:
+
+networks:
+  app_net:
+    driver: bridge

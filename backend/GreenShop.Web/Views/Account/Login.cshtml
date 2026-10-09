@@ -1,0 +1,93 @@
+@model GreenShop.Web.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Đăng Nhập - GreenShop";
+    Layout = "_AuthLayout";
+}
+
+<style>
+    .auth-banner {
+        background: linear-gradient(135deg, rgba(5, 150, 105, 0.85), rgba(4, 120, 87, 0.95)), url('https://images.unsplash.com/photo-1463936575829-25148e1db1b8?q=80&w=1000&auto=format&fit=crop') center/cover;
+    }
+</style>
+
+<div class="auth-container">
+    <div class="row g-0">
+        <!-- Banner Bên Trái -->
+        <div class="col-md-5 auth-banner d-none d-md-flex">
+            <h2 class="fw-bold mb-3">Chào mừng trở lại!</h2>
+            <p class="fs-6 opacity-90 mb-4">Đăng nhập để nhận ưu đãi thành viên và theo dõi đơn hàng cây cảnh của bạn.</p>
+            <div class="mt-auto">
+                <small class="opacity-75">🌿 GreenShop - Sống Xanh Mỗi Ngày</small>
+            </div>
+        </div>
+
+        <!-- Form Đăng Nhập Bên Phải -->
+        <div class="col-md-7 auth-form-wrapper">
+            <h3 class="fw-bold text-success mb-1">Đăng Nhập</h3>
+
+            @if (TempData["SuccessMessage"] is string successMessage)
+            {
+                <div class="alert alert-success" role="status">@successMessage</div>
+            }
+
+            <form asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Địa chỉ Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-regular fa-envelope text-muted"></i></span>
+                        <input asp-for="Email" class="form-control form-control-icon" placeholder="nguyenvana@gmail.com" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Mật khẩu</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-lock text-muted"></i></span>
+                        <input asp-for="Password" type="password" id="loginPassword" class="form-control form-control-icon" placeholder="Nhập mật khẩu của bạn" />
+                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('loginPassword', this)">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label class="form-check-label small text-secondary" asp-for="RememberMe">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <a href="#" class="small text-success text-decoration-none fw-bold">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-2.5 rounded-pill fw-bold shadow-sm">
+                    Đăng Nhập <i class="fa-solid fa-right-to-bracket ms-2"></i>
+                </button>
+            </form>
+            <p class="text-muted small text-center mt-3 mb-0">
+                Bạn chưa có tài khoản?
+                <a asp-controller="Account" asp-action="Register" class="text-success fw-bold text-decoration-none">Đăng ký ngay</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+}

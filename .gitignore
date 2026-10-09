@@ -1,0 +1,21 @@
+# .NET build outputs
+**/bin/
+**/obj/
+**/out/
+.vs/
+.vscode/
+
+# Temporary and operating system files
+*.swp
+*.swo
+._*
+*.tmp
+*.log
+.DS_Store
+
+# Environment and secret files
+.env
+!.env.example
+*.pem
+*.key
+
