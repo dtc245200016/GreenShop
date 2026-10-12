@@ -1,215 +1,25 @@
-@model IEnumerable<GreenShop.Web.Models.Product>
-@{ ViewData["Title"] = "Trang Chủ - GreenShop"; }
-
-<style>
-    /* Tinh chỉnh Sidebar Danh mục chuyên nghiệp */
-    .category-sidebar {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-    }
-    .category-sidebar-header {
-        background-color: #059669;
-        color: white;
-        padding: 14px 20px;
-        font-weight: 700;
-        font-size: 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .category-link {
-        padding: 12px 20px;
-        color: #334155;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid #f1f5f9;
-        font-size: 13.5px;
-        font-weight: 500;
-        transition: all 0.2s ease;
-    }
-    .category-link:last-child {
-        border-bottom: none;
-    }
-    .category-link:hover {
-        background-color: #ecfdf5;
-        color: #047857;
-        padding-left: 24px;
-    }
-    .category-link i {
-        color: #10b981;
-        width: 20px;
-        text-align: center;
-    }
-    .category-subtext {
-        font-size: 11px;
-        color: #94a3b8;
-        display: block;
-        margin-top: 2px;
-    }
-
-    /* Banner quảng cáo */
-    .hero-banner {
-        background: linear-gradient(135deg, #059669, #047857);
-        border-radius: 16px;
-        color: white;
-        padding: 45px;
-        position: relative;
-        overflow: hidden;
-        min-height: 320px;
-        display: flex;
-        align-items: center;
-        box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.2);
-    }
-    
-    /* Product Card */
-    .product-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.08);
-        border-color: #34d399;
-    }
-    .product-img-wrapper {
-        height: 190px;
-        overflow: hidden;
-        background: #f8fafc;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .product-img {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-    .product-card:hover .product-img {
-        transform: scale(1.05);
-    }
-    .badge-discount {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        background: #ef4444;
-        color: white;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 3px 10px;
-        border-radius: 20px;
-        z-index: 2;
-    }
-</style>
-
-<div class="row g-4">
-    <!-- Sidebar Danh mục sản phẩm (7 danh mục chuẩn) -->
-    <div class="col-lg-3 d-none d-lg-block">
-        <div class="category-sidebar">
-            <div class="category-sidebar-header">
-                <i class="fa-solid fa-bars-staggered"></i> Danh mục sản phẩm
-            </div>
-            <div class="d-flex flex-column">
-                <a href="#" class="category-link">
-                    <div>
-                        <span><i class="fa-solid fa-house-chimney me-2"></i> Cây cảnh trong nhà</span>
-                        <span class="category-subtext">Trầu bà, kim tiền, lưỡi hổ...</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-muted" style="font-size: 10px;"></i>
-                </a>
-                <a href="#" class="category-link">
-                    <div>
-                        <span><i class="fa-solid fa-sun me-2"></i> Cây cảnh ngoài trời</span>
-                        <span class="category-subtext">Nguyệt quế, hoa giấy, cây bụi...</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-muted" style="font-size: 10px;"></i>
-                </a>
-                <a href="#" class="category-link">
-                    <div>
-                        <span><i class="fa-solid fa-seedling me-2"></i> Hoa cảnh</span>
-                        <span class="category-subtext">Hoa hồng, hoa lan, cẩm tú cầu...</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-muted" style="font-size: 10px;"></i>
-                </a>
-                <a href="#" class="category-link">
-                    <div>
-                        <span><i class="fa-solid fa-tree me-2"></i> Cây bonsai</span>
-                        <span class="category-subtext">Bonsai sanh, tùng, linh sam...</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-muted" style="font-size: 10px;"></i>
-                </a>
-                <a href="#" class="category-link">
-                    <div>
-                        <span><i class="fa-solid fa-spa me-2"></i> Sen đá & Xương rồng</span>
-                        <span class="category-subtext">Sen đá mini, xương rồng sưu tầm...</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-muted" style="font-size: 10px;"></i>
-                </a>
-                <a href="#" class="category-link">
-                    <div>
-                        <span><i class="fa-solid fa-hand-holding-dollar me-2"></i> Cây phong thủy</span>
-                        <span class="category-subtext">Kim ngân, phát tài, ngọc ngân...</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-muted" style="font-size: 10px;"></i>
-                </a>
-                <a href="#" class="category-link">
-                    <div>
-                        <span><i class="fa-solid fa-apple-whole me-2"></i> Cây giống & Cây ăn quả</span>
-                        <span class="category-subtext">Cây giống hoa, cây ăn quả các loại...</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-muted" style="font-size: 10px;"></i>
-                </a>
-            </div>
-        </div>
+@model StoreCatalogViewModel
+@{ ViewData["Title"] = "Mang thiên nhiên gần hơn"; }
+<section class="shop-hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+        <span class="shop-eyebrow"><span class="hero-dot" aria-hidden="true"></span> GREENSHOP · MỘT CHÚT XANH MỖI NGÀY</span>
+        <h1 id="hero-title">Một góc xanh.<br />Một nhịp sống <em>mới.</em></h1>
+        <p>Để thiên nhiên trở thành một phần trong không gian của bạn. Tìm điều xanh yêu thích, bắt đầu từ những lựa chọn nhỏ.</p>
+        <div class="hero-actions"><a class="shop-btn primary" asp-controller="SanPham" asp-action="CuaHang">Khám phá cửa hàng <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>@if (Model.Categories.Count > 0) { <a class="shop-text-link" href="#discover-categories">Xem danh mục <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a> }</div>
+        <div class="hero-note"><span class="hero-note-line" aria-hidden="true"></span><span><strong>@Model.TotalCount sản phẩm</strong><br />Những lựa chọn đang có tại GreenShop</span></div>
     </div>
-
-    <!-- Banner chính bên phải -->
-    <div class="col-lg-9">
-        <div class="hero-banner">
-            <div style="max-width: 65%;" class="position-relative z-2">
-                <span class="badge bg-white text-success px-3 py-2 rounded-pill fw-bold mb-3 shadow-sm">🌿 Không Gian Xanh Mỗi Ngày</span>
-                <h1 class="display-6 fw-bold mb-3">Mang thiên nhiên vào tổ ấm của bạn</h1>
-                <p class="lead fs-6 mb-4 text-light">Chuyên cung cấp cây cảnh văn phòng, phong thủy và tiểu cảnh chất lượng cao với giá ưu đãi tốt nhất.</p>
-                <a href="#" class="btn btn-light text-success fw-bold px-4 py-2.5 rounded-pill shadow-sm">Khám phá ngay <i class="fa-solid fa-arrow-right ms-2"></i></a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Lưới sản phẩm nổi bật -->
-<div class="mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-        <h3 class="h5 fw-bold text-dark m-0"><i class="fa-solid fa-fire text-danger me-2"></i> Sản phẩm nổi bật</h3>
-        <a href="#" class="text-success text-decoration-none small fw-bold">Xem tất cả <i class="fa-solid fa-chevron-right ms-1"></i></a>
-    </div>
-
-    <div class="row row-cols-2 row-cols-md-4 g-4">
-        @foreach (var p in Model)
+    <div class="hero-media">
+        <span class="hero-visual-label">A LITTLE GREEN, EVERY DAY</span>
+        @if (Model.Products.FirstOrDefault() is { } featured)
         {
-            <div class="col">
-                <div class="product-card h-100 p-3 d-flex flex-column">
-                    <span class="badge-discount">-15%</span>
-                    <div class="product-img-wrapper rounded mb-3">
-                        <img src="@p.ImageUrl" class="product-img" alt="@p.Name">
-                    </div>
-                    <h5 class="fs-6 fw-semibold text-secondary mb-2" style="height: 40px; overflow: hidden;">@p.Name</h5>
-                    <div class="mt-auto">
-                        <div class="text-success fw-bold fs-5">@p.Price.ToString("N0") đ</div>
-                        <button class="btn btn-outline-success btn-sm w-100 mt-3 rounded-pill fw-bold">
-                            <i class="fa-solid fa-cart-plus me-1"></i> Thêm vào giỏ
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <a asp-controller="SanPham" asp-action="ChiTietSanPham" asp-route-id="@featured.Id" class="hero-featured"><img src="@StoreDisplay.Image(featured.ImageUrl)" data-product-image alt="@featured.Name" width="640" height="760" fetchpriority="high" /><div class="hero-caption"><span><small>KHÁM PHÁ HÔM NAY</small><strong>@featured.Name</strong></span><span class="hero-feature-price">@StoreDisplay.Money(featured.Price)<i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span></div></a>
+            <div class="hero-purchase"><div><strong>@(featured.StockQuantity > 0 ? "Thích góc xanh này?" : "Sản phẩm tạm hết hàng")</strong><span>@(featured.StockQuantity > 0 ? "Chọn mua và kiểm tra thông tin giao hàng." : "Khám phá thêm những lựa chọn đang có.")</span></div><form asp-controller="ThanhToan" asp-action="MuaNgay" asp-route-id="@featured.Id" method="post" data-submit-once><input type="hidden" name="Quantity" value="1" /><button class="shop-btn primary" type="submit" disabled="@(featured.StockQuantity <= 0)">Mua ngay <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></form></div>
         }
+        else { <div class="hero-placeholder"><span class="botanical-art" aria-hidden="true"></span><span>Chờ một điều xanh mới</span></div> }
+        <span class="hero-orbit" aria-hidden="true"></span><span class="hero-stamp" aria-hidden="true"><i class="fa-solid fa-leaf"></i><span>GROW<br />YOUR SPACE</span></span>
     </div>
-</div>
+</section>
+<div class="botanical-divider" aria-hidden="true"><span>THIÊN NHIÊN GẦN HƠN</span><i class="fa-solid fa-seedling"></i><span>KHÔNG GIAN CỦA RIÊNG BẠN</span></div>
+@await Component.InvokeAsync("StoreNavigation", new { placement = "Discovery" })
+<section class="catalog-section" aria-labelledby="home-products"><div class="shop-section-heading"><div><span class="shop-eyebrow">NHỮNG LỰA CHỌN MỚI</span><h2 id="home-products">Một chút xanh dành cho bạn</h2></div><a class="shop-text-link" asp-controller="SanPham" asp-action="CuaHang">Xem tất cả <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></div><partial name="_ProductGrid" model="Model" /></section>
+<section class="home-closing"><span class="shop-eyebrow">BẮT ĐẦU TỪ MỘT GÓC NHỎ</span><h2>Thêm màu xanh.<br /><em>Thêm cảm hứng.</em></h2><a class="shop-btn secondary" asp-controller="SanPham" asp-action="CuaHang">Tìm sản phẩm của bạn <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a><span class="closing-botanical" aria-hidden="true"></span></section>

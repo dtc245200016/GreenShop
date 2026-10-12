@@ -1,3 +1,11 @@
+@{
+    var isProducts = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "SanPham", StringComparison.OrdinalIgnoreCase);
+    var isCategories = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "DanhMuc", StringComparison.OrdinalIgnoreCase);
+    var isOrders = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "DonHang", StringComparison.OrdinalIgnoreCase);
+    var isUsers = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "NguoiDung", StringComparison.OrdinalIgnoreCase);
+    var isDashboard = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "Admin", StringComparison.OrdinalIgnoreCase);
+    var isSettings = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "CaiDatCuaHang", StringComparison.OrdinalIgnoreCase);
+}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -6,6 +14,14 @@
     <title>@ViewData["Title"] - GreenShop Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @if (isOrders || isUsers) { <link rel="stylesheet" href="~/css/admin-orders.css" asp-append-version="true" /> }
+    @if (isUsers) { <link rel="stylesheet" href="~/css/admin-users.css" asp-append-version="true" /> }
+    @if (isDashboard) { <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" /> }
+    <link rel="preload" href="~/fonts/be-vietnam-pro/be-vietnam-pro-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="~/fonts/be-vietnam-pro/be-vietnam-pro-400-vietnamese.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="~/css/admin-fonts.css" asp-append-version="true" />
+    @if(isSettings || isOrders) { <link rel="stylesheet" href="~/css/payment-shipping.css" asp-append-version="true" /> }
+    @if (isOrders || isProducts || isDashboard) { <link rel="stylesheet" href="~/css/admin-excel.css" asp-append-version="true" /> }
     <style>
         :root {
             --admin-sidebar-width: 260px;
@@ -107,8 +123,12 @@
         }
 
         @@media (max-width: 767.98px) {
+            .admin-topbar .container-fluid { flex-wrap: nowrap; gap: .5rem; }
+            .admin-topbar .gap-3 { gap: .5rem !important; }
             .admin-brand {
                 width: auto;
+                font-size: 1rem;
+                margin-right: 0;
             }
 
             .admin-sidebar {
@@ -133,8 +153,9 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="~/css/admin-theme.css" asp-append-version="true" />
 </head>
-<body>
+<body class="admin-shell @(isProducts ? "admin-products" : "")">
     <nav class="navbar fixed-top admin-topbar shadow-sm px-3">
         <div class="container-fluid px-0">
             <div class="d-flex align-items-center">
@@ -146,21 +167,26 @@
                         aria-controls="adminSidebar">
                     <i class="fa-solid fa-bars"></i>
                 </button>
-                <a class="navbar-brand admin-brand fw-bold mb-0" asp-area="Admin" asp-controller="Admin" asp-action="Index">
-                    <i class="fa-solid fa-seedling text-success me-2"></i>GreenShop Admin
+                <a class="navbar-brand admin-brand fw-bold mb-0" asp-area="Admin" asp-controller="Admin" asp-action="TongQuan">
+                    <span class="admin-brand-mark"><i class="fa-solid fa-seedling" aria-hidden="true"></i></span><span class="admin-brand-copy">GreenShop<small>Không gian quản trị</small></span>
                 </a>
             </div>
 
             <div class="d-flex align-items-center gap-3">
-                <span class="d-none d-sm-inline text-secondary">
-                    Xin chào, <strong>@(User.Identity?.Name ?? "Quản trị viên")</strong>!
+                <span class="admin-current-user d-none d-lg-flex">
+                    <span class="admin-user-icon"><i class="fa-regular fa-user" aria-hidden="true"></i></span><span><small>Xin chào,</small><strong>@(User.Identity?.Name ?? "Quản trị viên")</strong></span>
                 </span>
+                <div class="dropdown admin-settings-menu">
+                    <button class="btn btn-outline-success btn-sm dropdown-toggle" id="adminSettingsMenu" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Cài đặt cửa hàng"><i class="fa-solid fa-gear" aria-hidden="true"></i></button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminSettingsMenu"><li><a class="dropdown-item @(isSettings ? "active" : "")" asp-area="Admin" asp-controller="CaiDatCuaHang" asp-action="QuanLyThanhToanVanChuyen"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Cài đặt thanh toán &amp; vận chuyển</a></li></ul>
+                </div>
                 <a class="btn btn-outline-success btn-sm"
+                   aria-label="Xem website"
                    href="@Url.Action("Index", "Home", new { area = "" })">
                     <i class="fa-solid fa-globe me-1"></i><span class="d-none d-lg-inline">Xem website</span>
                 </a>
                 <form id="logoutForm"
-                      action="@Url.Action("Logout", "Account", new { area = "" })"
+                      action="@Url.RouteUrl(GreenShop.Web.Services.PortalAuthentication.AdminLogoutRoute)"
                       method="post"
                       class="d-inline m-0 p-0">
                     @Html.AntiForgeryToken()
@@ -175,34 +201,33 @@
     </nav>
 
     <aside class="admin-sidebar" id="adminSidebar" aria-label="Menu quản trị">
-        <div class="admin-sidebar-label mb-2">Quản lý hệ thống</div>
+        <div class="admin-sidebar-label mb-2">Quản lý cửa hàng</div>
         <nav class="nav flex-column">
-            <a class="nav-link active" asp-area="Admin" asp-controller="Admin" asp-action="Index" aria-current="page">
+            <a class="nav-link @(isDashboard ? "active" : "")" asp-area="Admin" asp-controller="Admin" asp-action="TongQuan" aria-current="@(isDashboard ? "page" : null)">
                 <i class="fa-solid fa-gauge-high"></i><span>Tổng quan</span>
             </a>
-            <a class="nav-link disabled" href="#" aria-disabled="true" title="Chức năng chưa được triển khai">
+            <a class="nav-link @(isProducts ? "active" : "")" asp-area="Admin" asp-controller="SanPham" asp-action="QuanLySanPham" aria-current="@(isProducts ? "page" : null)">
                 <i class="fa-solid fa-box-open"></i><span class="flex-grow-1">Quản lý Sản phẩm</span>
-                <span class="badge text-bg-secondary">Sắp có</span>
             </a>
-            <a class="nav-link disabled" href="#" aria-disabled="true" title="Chức năng chưa được triển khai">
+            <a class="nav-link @(isCategories ? "active" : "")" asp-area="Admin" asp-controller="DanhMuc" asp-action="QuanLyDanhMuc" aria-current="@(isCategories ? "page" : null)">
                 <i class="fa-solid fa-tags"></i><span class="flex-grow-1">Quản lý Danh mục</span>
-                <span class="badge text-bg-secondary">Sắp có</span>
             </a>
-            <a class="nav-link disabled" href="#" aria-disabled="true" title="Chức năng chưa được triển khai">
-                <i class="fa-solid fa-receipt"></i><span class="flex-grow-1">Quản lý Đơn hàng</span>
-                <span class="badge text-bg-secondary">Sắp có</span>
+            <a class="nav-link @(isOrders ? "active" : "")" asp-area="Admin" asp-controller="DonHang" asp-action="QuanLyDonHang" aria-current="@(isOrders ? "page" : null)">
+                <i class="fa-solid fa-receipt" aria-hidden="true"></i><span class="flex-grow-1">Quản lý Đơn hàng</span>
             </a>
-            <a class="nav-link disabled" href="#" aria-disabled="true" title="Chức năng chưa được triển khai">
-                <i class="fa-solid fa-users-gear"></i><span class="flex-grow-1">Người dùng &amp; Phân quyền</span>
-                <span class="badge text-bg-secondary">Sắp có</span>
+            <a class="nav-link @(isUsers ? "active" : "")" asp-area="Admin" asp-controller="NguoiDung" asp-action="QuanLyNguoiDung" aria-current="@(isUsers ? "page" : null)">
+                <i class="fa-solid fa-users-gear" aria-hidden="true"></i><span class="flex-grow-1">Người dùng &amp; Phân quyền</span>
             </a>
         </nav>
+        <div class="admin-sidebar-note"><span class="admin-sidebar-leaf"><i class="fa-solid fa-leaf" aria-hidden="true"></i></span><strong>Mỗi ngày, thêm xanh.</strong><p>Chăm chút cửa hàng của bạn<br />từ những điều nhỏ nhất.</p></div>
     </aside>
 
     <button class="admin-overlay border-0" id="adminSidebarOverlay" type="button" aria-label="Đóng menu quản trị"></button>
 
     <main class="admin-main" role="main">
+        <div class="admin-page-content">
         @RenderBody()
+        </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -221,5 +246,8 @@
         sidebarOverlay?.addEventListener("click", () => setSidebarOpen(false));
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/admin-theme.js" asp-append-version="true" defer></script>
+    @if(isSettings) { <script src="~/js/payment-shipping.js" asp-append-version="true" defer></script> }
+    @if (isOrders || isProducts || isDashboard) { <script src="~/js/admin-excel.js" asp-append-version="true" defer></script> }
 </body>
 </html>

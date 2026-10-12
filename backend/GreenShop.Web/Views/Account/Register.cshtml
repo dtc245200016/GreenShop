@@ -4,18 +4,14 @@
     Layout = "_AuthLayout";
 }
 
-<style>
-    .auth-banner {
-        background: linear-gradient(135deg, rgba(5, 150, 105, 0.85), rgba(4, 120, 87, 0.95)), url('https://images.unsplash.com/photo-1470058869958-2a77ade41c02?q=80&w=1000&auto=format&fit=crop') center/cover;
-    }
-</style>
+
 
 <div class="auth-container">
     <div class="row g-0">
         <!-- Banner Bên Trái -->
         <div class="col-md-5 auth-banner d-none d-md-flex">
             <h2 class="fw-bold mb-3">Tham gia cùng GreenShop</h2>
-            <p class="fs-6 opacity-90 mb-4">Tạo tài khoản để trải nghiệm dịch vụ chăm sóc và cung cấp cây cảnh hàng đầu.</p>
+            <p class="fs-6 opacity-90 mb-4">Tạo tài khoản để chọn sản phẩm yêu thích, lưu giỏ hàng và đặt hàng tại GreenShop.</p>
             <div class="mt-auto">
                 <small class="opacity-75">🌱 Kiến tạo không gian sống xanh</small>
             </div>
@@ -24,34 +20,35 @@
         <!-- Form Đăng Ký Bên Phải -->
         <div class="col-md-7 auth-form-wrapper">
             <h3 class="fw-bold text-success mb-1">Tạo Tài Khoản</h3>
-            <p class="text-muted mb-4 small">Đã có tài khoản? <a asp-action="Login" class="text-success fw-bold text-decoration-none">Đăng nhập ngay</a></p>
+            <p class="text-muted mb-4 small">Đã có tài khoản? <a asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="text-success fw-bold text-decoration-none">Đăng nhập ngay</a></p>
 
-            <form asp-action="Register" method="post">
+            <form asp-action="Register" method="post" data-submit-once>
+                <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Họ và Tên</label>
+                    <label asp-for="FullName" class="form-label small fw-bold text-secondary">Họ và Tên</label>
                     <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" />
                     <span asp-validation-for="FullName" class="text-danger small"></span>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-secondary">Email</label>
+                        <label asp-for="Email" class="form-label small fw-bold text-secondary">Email</label>
                         <input asp-for="Email" class="form-control" placeholder="name@domain.com" />
                         <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-secondary">Số điện thoại</label>
+                        <label asp-for="Phone" class="form-label small fw-bold text-secondary">Số điện thoại</label>
                         <input asp-for="Phone" class="form-control" placeholder="0912345678" />
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Mật khẩu</label>
+                    <label for="regPassword" class="form-label small fw-bold text-secondary">Mật khẩu</label>
                     <div class="input-group">
                         <input asp-for="Password" type="password" id="regPassword" class="form-control" placeholder="Nhập mật khẩu của bạn" />
-                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('regPassword', this)">
+                        <button type="button" class="btn btn-outline-secondary" aria-label="Hiện hoặc ẩn mật khẩu" aria-pressed="false" onclick="togglePassword('regPassword', this)">
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
@@ -59,10 +56,10 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label small fw-bold text-secondary">Xác nhận Mật khẩu</label>
+                    <label for="regConfirmPassword" class="form-label small fw-bold text-secondary">Xác nhận Mật khẩu</label>
                     <div class="input-group">
                         <input asp-for="ConfirmPassword" type="password" id="regConfirmPassword" class="form-control" placeholder="Nhập lại mật khẩu của bạn" />
-                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('regConfirmPassword', this)">
+                        <button type="button" class="btn btn-outline-secondary" aria-label="Hiện hoặc ẩn mật khẩu" aria-pressed="false" onclick="togglePassword('regConfirmPassword', this)">
                             <i class="fa-regular fa-eye"></i>
                         </button>
                     </div>
@@ -82,6 +79,7 @@
         function togglePassword(inputId, btn) {
             const input = document.getElementById(inputId);
             const icon = btn.querySelector('i');
+            btn.setAttribute("aria-pressed", String(input.type === "password"));
             if (input.type === "password") {
                 input.type = "text";
                 icon.classList.remove('fa-eye');

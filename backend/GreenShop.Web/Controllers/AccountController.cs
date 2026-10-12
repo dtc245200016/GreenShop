@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BCryptNet = BCrypt.Net.BCrypt;
+using GreenShop.Web.Services;
 
 namespace GreenShop.Web.Controllers
 {
@@ -22,10 +23,13 @@ namespace GreenShop.Web.Controllers
         #region 1. ĐĂNG KÝ (REGISTER)
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(string? returnUrl = null)
         {
+            returnUrl = ShoppingIdentity.SafeReturnUrl(returnUrl);
+            ViewData["ReturnUrl"] = returnUrl;
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
+                if (returnUrl != null) return LocalRedirect(returnUrl);
                 return RedirectToUserRolePage();
             }
             return View();
@@ -33,8 +37,10 @@ namespace GreenShop.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model, string? returnUrl = null)
         {
+            returnUrl = ShoppingIdentity.SafeReturnUrl(returnUrl);
+            ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid) return View(model);
 
             if (await _context.Users.AnyAsync(u => u.Email.ToLower() == model.Email.ToLower()))
@@ -60,18 +66,23 @@ namespace GreenShop.Web.Controllers
 
             TempData["RegisteredEmail"] = newUser.Email;
             TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
-            return RedirectToAction("Login");
+            return RedirectToRoute(PortalAuthentication.CustomerLoginRoute, new { returnUrl });
         }
 
         #endregion
 
         #region 2. ĐĂNG NHẬP (LOGIN)
 
-        [HttpGet]
+        [HttpGet("/Account/Login", Name=PortalAuthentication.CustomerLoginRoute)]
+        [HttpGet("/Admin/Account/Login", Name=PortalAuthentication.AdminLoginRoute, Order=1)]
         public IActionResult Login(string? returnUrl = null)
         {
+            var adminPortal=PortalAuthentication.IsAdmin(Request);
+            ViewData["AdminPortal"]=adminPortal;
+            returnUrl = PortalAuthentication.SafeReturnUrl(returnUrl,adminPortal);
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
+                if (returnUrl != null) return LocalRedirect(returnUrl);
                 return RedirectToUserRolePage();
             }
 
@@ -84,10 +95,14 @@ namespace GreenShop.Web.Controllers
             });
         }
 
-        [HttpPost]
+        [HttpPost("/Account/Login")]
+        [HttpPost("/Admin/Account/Login", Order=1)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
+            var adminPortal=PortalAuthentication.IsAdmin(Request);
+            ViewData["AdminPortal"]=adminPortal;
+            returnUrl = PortalAuthentication.SafeReturnUrl(returnUrl,adminPortal);
             ViewData["ReturnUrl"] = returnUrl;
 
             if (!ModelState.IsValid) return View(model);
@@ -97,6 +112,18 @@ namespace GreenShop.Web.Controllers
             if (user == null || !BCryptNet.Verify(model.Password, user.PasswordHash))
             {
                 ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không chính xác.");
+                return View(model);
+            }
+
+            if (!user.IsActive)
+            {
+                ModelState.AddModelError(string.Empty, "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên để được hỗ trợ.");
+                return View(model);
+            }
+
+            if(adminPortal && user.Role!=UserRole.Admin)
+            {
+                ModelState.AddModelError(string.Empty,"Tài khoản này không có quyền quản trị. Vui lòng đăng nhập ở trang khách hàng.");
                 return View(model);
             }
 
@@ -121,7 +148,8 @@ namespace GreenShop.Web.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, assignedRole)
+                new Claim(ClaimTypes.Role, assignedRole),
+                new Claim(UserSession.VersionClaim, user.SessionVersion.ToString(System.Globalization.CultureInfo.InvariantCulture))
             };
 
             var claimsIdentity = new ClaimsIdentity(
@@ -136,18 +164,15 @@ namespace GreenShop.Web.Controllers
             };
 
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
+                isAdmin ? PortalAuthentication.AdminScheme : PortalAuthentication.CustomerScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
+
+            if (returnUrl != null && (!isAdmin || adminPortal)) return LocalRedirect(returnUrl);
 
             if (isAdmin)
             {
                 return RedirectToAction("Index", "Admin", new { area = "Admin" });
-            }
-
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
             }
 
             return RedirectToAction("Index", "Home");
@@ -157,16 +182,18 @@ namespace GreenShop.Web.Controllers
 
         #region 3. ĐĂNG XUẤT & ACCESS DENIED
 
-        [HttpPost]
+        [HttpPost("/Account/Logout", Name=PortalAuthentication.CustomerLogoutRoute)]
+        [HttpPost("/Admin/Account/Logout", Name=PortalAuthentication.AdminLogoutRoute, Order=1)]
         [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+            await HttpContext.SignOutAsync(PortalAuthentication.Scheme(Request));
+            return RedirectToRoute(PortalAuthentication.IsAdmin(Request) ? PortalAuthentication.AdminLoginRoute : PortalAuthentication.CustomerLoginRoute);
         }
 
-        [HttpGet]
+        [HttpGet("/Account/AccessDenied")]
+        [HttpGet("/Admin/Account/AccessDenied", Order=1)]
         public IActionResult AccessDenied()
         {
             return View();

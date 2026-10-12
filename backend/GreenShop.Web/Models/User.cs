@@ -27,6 +27,10 @@ namespace GreenShop.Web.Models
 
         public UserRole Role { get; set; } = UserRole.Customer;
 
+        public bool IsActive { get; set; } = true;
+        public long Version { get; set; }
+        public long SessionVersion { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 

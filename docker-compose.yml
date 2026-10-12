@@ -1,9 +1,11 @@
+
 services:
   db:
     image: mysql:8.0
     container_name: greenshop_db
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-StrongPass123!}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
       MYSQL_DATABASE: greenshop
     ports:
       - "3306:3306"
@@ -21,10 +23,11 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: greenshop_phpmyadmin
+    restart: always
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-StrongPass123!}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
     ports:
       - "8080:80"
     networks:
@@ -34,24 +37,19 @@ services:
     build:
       context: ./backend
       dockerfile: GreenShop.Web/Dockerfile
-      target: build
+      target: final
     container_name: greenshop_web
     restart: always
-    working_dir: /src/GreenShop.Web
-    command: ["dotnet", "watch", "run", "--no-launch-profile"]
     depends_on:
       db:
         condition: service_healthy
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=db;Database=greenshop;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD:-StrongPass123!};
-    env_file:
-      - .env
+      - ConnectionStrings__DefaultConnection=Server=db;Database=greenshop;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env};
     volumes:
-      - ./backend:/src
-      - /src/GreenShop.Web/bin
-      - /src/GreenShop.Web/obj
+      - data_protection_keys:/app/keys
+      - product_images:/app/wwwroot/uploads/products
     ports:
       - "5000:8080"
     networks:
@@ -81,6 +79,8 @@ services:
 
 volumes:
   mysql_data:
+  data_protection_keys:
+  product_images:
 
 networks:
   app_net:

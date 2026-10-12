@@ -1,0 +1,73 @@
+@model StoreNavigationViewModel
+<header class="shop-header" data-shop-header>
+    <div class="shop-header-inner">
+        <a class="shop-brand" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-leaf" aria-hidden="true"></i><span>GreenShop<small>SỐNG XANH MỖI NGÀY</small></span></a>
+        <nav class="shop-main-nav" aria-label="Điều hướng chính">
+            <a asp-area="" asp-controller="Home" asp-action="Index" aria-current="@(Model.Controller == "Home" ? "page" : null)">Trang chủ</a>
+            <a asp-area="" asp-controller="SanPham" asp-action="CuaHang" aria-current="@(Model.Controller == "SanPham" ? "page" : null)">Cửa hàng</a>
+            <details class="shop-menu category-menu" data-shop-menu>
+                <summary>Danh mục <i class="fa-solid fa-angle-down" aria-hidden="true"></i></summary>
+                <div class="shop-menu-panel"><span class="menu-heading">KHÁM PHÁ THEO DANH MỤC</span>
+                    <a asp-area="" asp-controller="SanPham" asp-action="CuaHang">Tất cả sản phẩm <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <a asp-area="" asp-controller="SanPham" asp-action="CuaHang" asp-route-categoryId="@category.Id" aria-current="@(Model.CategoryId == category.Id ? "page" : null)"><span>@category.Name</span><small>@category.ProductCount</small></a>
+                    }
+                    @if (Model.Categories.Count == 0) { <p>Danh mục mới sẽ xuất hiện tại đây.</p> }
+                </div>
+            </details>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-area="" asp-controller="ThanhToan" asp-action="DonHangCuaToi" aria-current="@(Model.Controller == "ThanhToan" && ViewContext.RouteData.Values["action"]?.ToString() == "DonHangCuaToi" ? "page" : null)">Đơn hàng của tôi</a>
+            }
+        </nav>
+        <div class="shop-account-nav">
+            <button type="button" class="shop-icon-button" data-open-dialog="shop-search-dialog" aria-label="Mở tìm kiếm" aria-controls="shop-search-dialog" aria-haspopup="dialog"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
+            <a class="shop-cart-link shop-icon-button" asp-area="" asp-controller="GioHang" asp-action="QuanLyGioHang" aria-label="Xem giỏ hàng"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i><span class="cart-count">@await Component.InvokeAsync("CartCount")</span></a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <details class="shop-menu account-menu" data-shop-menu>
+                    <summary class="shop-user" aria-label="Mở menu tài khoản"><i class="fa-regular fa-circle-user" aria-hidden="true"></i><span>@User.Identity.Name</span><i class="fa-solid fa-angle-down" aria-hidden="true"></i></summary>
+                    <div class="shop-menu-panel"><span class="menu-heading">TÀI KHOẢN CỦA BẠN</span><strong class="menu-user-name">@User.Identity.Name</strong>
+                        <a asp-area="" asp-controller="ThanhToan" asp-action="DonHangCuaToi">Đơn hàng của tôi <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        @if (User.IsInRole("Admin")) { <a asp-area="Admin" asp-controller="Admin" asp-action="Index">Trang quản trị</a> }
+                        <form asp-route="CustomerLogout" method="post" data-submit-once><button type="submit">Đăng xuất <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i></button></form>
+                    </div>
+                </details>
+            }
+            else
+            {
+                <details class="shop-menu account-menu" data-shop-menu>
+                    <summary class="shop-user" aria-label="Mở menu tài khoản"><i class="fa-regular fa-circle-user" aria-hidden="true"></i><span>Đăng nhập</span><i class="fa-solid fa-angle-down" aria-hidden="true"></i></summary>
+                    <div class="shop-menu-panel"><span class="menu-heading">TÀI KHOẢN GREENSHOP</span>
+                        <a asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        <a asp-area="" asp-controller="Account" asp-action="Register">Đăng ký <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                    </div>
+                </details>
+            }
+            <button type="button" class="shop-icon-button mobile-menu-toggle" data-open-dialog="shop-navigation-dialog" aria-label="Mở menu điều hướng" aria-controls="shop-navigation-dialog" aria-haspopup="dialog" aria-expanded="false"><i class="fa-solid fa-bars-staggered" aria-hidden="true"></i></button>
+        </div>
+    </div>
+</header>
+<dialog id="shop-search-dialog" class="shop-dialog search-dialog" aria-labelledby="shop-search-title">
+    <div class="dialog-heading"><h2 id="shop-search-title">Tìm điều xanh của bạn</h2><button type="button" class="shop-icon-button" data-close-dialog aria-label="Đóng tìm kiếm"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+    <form asp-area="" asp-controller="SanPham" asp-action="CuaHang" method="get" class="header-search-form"><label for="header-search">Tên sản phẩm</label><div class="shop-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="header-search" name="search" value="@Model.Search" maxlength="150" placeholder="Bạn đang tìm sản phẩm nào?" autofocus /><button class="shop-btn primary" type="submit">Tìm kiếm <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div></form>
+    <p>Tìm theo tên hoặc <a asp-area="" asp-controller="SanPham" asp-action="CuaHang">khám phá tất cả sản phẩm</a>.</p>
+</dialog>
+<dialog id="shop-navigation-dialog" class="shop-dialog navigation-drawer" aria-labelledby="mobile-menu-title">
+    <div class="dialog-heading"><h2 id="mobile-menu-title">GreenShop</h2><button type="button" class="shop-icon-button" data-close-dialog aria-label="Đóng menu điều hướng" autofocus><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+    <nav class="drawer-main-links" aria-label="Điều hướng mobile"><a asp-area="" asp-controller="Home" asp-action="Index" aria-current="@(Model.Controller == "Home" ? "page" : null)">Trang chủ <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a><a asp-area="" asp-controller="SanPham" asp-action="CuaHang" aria-current="@(Model.Controller == "SanPham" ? "page" : null)">Cửa hàng <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></nav>
+    <span class="menu-heading">DANH MỤC SẢN PHẨM</span><nav class="drawer-category-links" aria-label="Danh mục mobile">
+        <a asp-area="" asp-controller="SanPham" asp-action="CuaHang">Tất cả sản phẩm</a>
+        @foreach (var category in Model.Categories) { <a asp-area="" asp-controller="SanPham" asp-action="CuaHang" asp-route-categoryId="@category.Id" aria-current="@(Model.CategoryId == category.Id ? "page" : null)"><span>@category.Name</span><small>@category.ProductCount sản phẩm</small></a> }
+    </nav>
+    <div class="drawer-account"><span class="menu-heading">KHÔNG GIAN CỦA BẠN</span><a asp-area="" asp-controller="GioHang" asp-action="QuanLyGioHang">Giỏ hàng <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <p class="menu-user-name">@User.Identity.Name</p><a asp-area="" asp-controller="ThanhToan" asp-action="DonHangCuaToi">Đơn hàng của tôi</a>
+            @if (User.IsInRole("Admin")) { <a asp-area="Admin" asp-controller="Admin" asp-action="Index">Trang quản trị</a> }
+            <form asp-route="CustomerLogout" method="post" data-submit-once><button class="shop-btn secondary" type="submit">Đăng xuất</button></form>
+        }
+        else { <div class="drawer-auth-links"><a class="shop-btn primary" asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập</a><a class="shop-btn secondary" asp-area="" asp-controller="Account" asp-action="Register">Đăng ký</a></div> }
+    </div>
+</dialog>
