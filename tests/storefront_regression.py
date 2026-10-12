@@ -21,8 +21,8 @@ import uuid
 from html.parser import HTMLParser
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-REPORTS = ROOT / "docs" / "storefront-evidence"
-REPORTS.mkdir(parents=True, exist_ok=True)
+REPORTS = pathlib.Path("/tmp/greenshop-storefront-regression")
+REPORTS.mkdir(mode=0o700, parents=True, exist_ok=True)
 BASE = "https://localhost"
 RUN = "GS_STOREFRONT_" + uuid.uuid4().hex
 checks = []

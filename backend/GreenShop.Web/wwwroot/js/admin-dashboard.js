@@ -1,9 +1,29 @@
 (() => {
     "use strict";
+    const reduced=matchMedia("(prefers-reduced-motion: reduce)");
+    const motions=new Map();
+    const animate=(element,frames,options)=>{
+        motions.get(element)?.cancel();if(reduced.matches||!element.animate)return;
+        const motion=element.animate(frames,options);motions.set(element,motion);
+        motion.addEventListener("finish",()=>{if(motions.get(element)===motion)motions.delete(element);});
+    };
+    const reveal=(element,items,axis)=>{
+        const enter=()=>{
+            element.dataset.chartRevealed="true";
+            items.forEach((item,i)=>animate(item,[{transform:`scale${axis}(.02)`,opacity:.35},{transform:`scale${axis}(1)`,opacity:1}],
+                {duration:720,delay:i*Math.min(35,260/Math.max(1,items.length)),easing:"cubic-bezier(.16,1,.3,1)",fill:"backwards"}));
+        };
+        if(reduced.matches||!("IntersectionObserver" in window)){enter();return;}
+        const observer=new IntersectionObserver(entries=>{
+            if(entries.some(e=>e.isIntersecting)){observer.disconnect();enter();}
+        },{threshold:.15});observer.observe(element);
+    };
     document.querySelectorAll("[data-chart]").forEach(chart => {
         const tooltip = chart.querySelector("[role=tooltip]");
+        const selection=chart.closest(".dash-panel").querySelector("[data-chart-selection]");
+        const bars=[...chart.querySelectorAll(".dash-bar")];let selected;
         const hide = () => { tooltip.hidden = true; };
-        chart.querySelectorAll(".dash-bar").forEach(bar => {
+        bars.forEach(bar => {
             const show = () => {
                 tooltip.textContent = `${bar.dataset.label} · ${bar.dataset.value}`;
                 tooltip.hidden = false;
@@ -13,9 +33,27 @@
             };
             bar.addEventListener("mouseenter",show);bar.addEventListener("focus",show);
             bar.addEventListener("mouseleave",hide);bar.addEventListener("blur",hide);
-            bar.addEventListener("keydown",event => { if (event.key === "Escape") hide(); });
+            const choose=()=>{
+                selected?.classList.remove("is-selected");selected?.setAttribute("aria-pressed","false");selected=bar;
+                bar.classList.add("is-selected");bar.setAttribute("aria-pressed","true");
+                selection.textContent=`${bar.dataset.label} · ${bar.dataset.value}`;
+                animate(bar,[{transform:"scaleY(.90)"},{transform:"scaleY(1.04)",offset:.58},{transform:"scaleY(1)"}],
+                    {duration:420,easing:"cubic-bezier(.2,.7,.3,1)"});show();
+            };
+            bar.addEventListener("click",choose);
+            bar.addEventListener("keydown",event => {
+                if(event.key==="Enter"||event.key===" "){event.preventDefault();choose();}
+                if(event.key==="Escape"){
+                    hide();selected?.classList.remove("is-selected");selected?.setAttribute("aria-pressed","false");selected=null;
+                    selection.textContent="Chọn một cột để xem giá trị của ngày hoặc tháng đó.";
+                }
+            });
         });
+        reveal(chart,bars,"Y");
     });
+    document.querySelectorAll(".dash-statuses").forEach(panel=>reveal(panel,[...panel.querySelectorAll(".dash-status-track>span")],"X"));
+    reduced.addEventListener("change",()=>{if(reduced.matches){motions.forEach(m=>m.cancel());motions.clear();}});
+    window.addEventListener("pagehide",()=>{motions.forEach(m=>m.cancel());motions.clear();});
     const fallback = img => { if (img.dataset.fallback) return; img.dataset.fallback = "true"; img.src = "/images/product-placeholder.svg"; };
     document.querySelectorAll("img[data-dashboard-image]").forEach(img => { img.addEventListener("error",()=>fallback(img)); if (img.complete && !img.naturalWidth) fallback(img); });
     const form = document.querySelector(".dash-filter");

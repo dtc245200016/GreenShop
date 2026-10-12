@@ -1,0 +1,5 @@
+NAME                   IMAGE                                COMMAND                  SERVICE      CREATED          STATUS                    PORTS
+greenshop_db           mysql:8.0                            "docker-entrypoint.s…"   db           10 minutes ago   Up 10 minutes (healthy)   127.0.0.1:3306->3306/tcp, 33060/tcp
+greenshop_phpmyadmin   phpmyadmin/phpmyadmin                "/docker-entrypoint.…"   phpmyadmin   10 minutes ago   Up 10 minutes (healthy)   127.0.0.1:8080->80/tcp
+greenshop_web          dtc245200016_btl_tkqt_htpm-web_app   "dotnet GreenShop.We…"   web_app      6 minutes ago    Up 6 minutes (healthy)    127.0.0.1:5000->8080/tcp
+nginx_server           nginx:alpine                         "/docker-entrypoint.…"   nginx        10 minutes ago   Up 10 minutes (healthy)   0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp

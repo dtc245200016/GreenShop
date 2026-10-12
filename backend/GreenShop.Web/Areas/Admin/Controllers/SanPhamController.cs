@@ -102,7 +102,7 @@ public class SanPhamController : Controller
         var model = new ProductFormViewModel
         {
             Name = product.Name, Price = product.Price, Description = product.Description,
-            StockQuantity = product.StockQuantity, ExistingImageUrl = product.ImageUrl, ProductId = product.Id,
+            StockQuantity = product.StockQuantity, ExpectedStockQuantity=product.StockQuantity, ExistingImageUrl = product.ImageUrl, ProductId = product.Id,
             CategoryId = product.CategoryId
         };
         await LoadCategoriesAsync(model, product.CategoryId, cancellationToken);
@@ -112,23 +112,46 @@ public class SanPhamController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> SuaSanPham([FromRoute] int id, ProductFormViewModel model, CancellationToken cancellationToken)
     {
-        var product = await _db.Products.FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+        var product = await _db.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         if (product == null) return NotFound();
         model.ExistingImageUrl = product.ImageUrl;
         model.ProductId = product.Id;
         await ValidateCategoryAsync(model, product.CategoryId, cancellationToken);
         await ValidateImageAsync(model, required: false, cancellationToken);
+        if(!model.ExpectedStockQuantity.HasValue)
+            ModelState.AddModelError(string.Empty,"Vui lòng tải lại trang sửa sản phẩm để đối chiếu tồn kho trước khi lưu.");
         if (!ModelState.IsValid) return View(model);
 
         var oldImageUrl = product.ImageUrl;
+        var expectedStock=model.ExpectedStockQuantity.GetValueOrDefault();
         string? newImageUrl = null;
         try
         {
             if (model.Image != null)
                 newImageUrl = await _images.SaveAsync(model.Image, cancellationToken);
-            ApplyForm(product, model);
-            if (newImageUrl != null) product.ImageUrl = newImageUrl;
-            await _db.SaveChangesAsync(cancellationToken);
+            var changed=await _db.Database.CreateExecutionStrategy().ExecuteAsync(async()=>
+            {
+                await using var transaction=await _db.Database.BeginTransactionAsync(System.Data.IsolationLevel.ReadCommitted,cancellationToken);
+                var actor=await ShoppingIdentity.LockUserAsync(_db,ShoppingIdentity.UserId(User),cancellationToken);
+                if(actor==null||!actor.IsActive||actor.Role!=UserRole.Admin||actor.SessionVersion!=UserSession.Version(User))return -1;
+                var count=await _db.Products.Where(p=>p.Id==id&&p.StockQuantity==expectedStock)
+                    .ExecuteUpdateAsync(s=>s.SetProperty(p=>p.Name,model.Name.Trim()).SetProperty(p=>p.Price,model.Price!.Value)
+                        .SetProperty(p=>p.Description,model.Description==null?"":model.Description.Trim()).SetProperty(p=>p.StockQuantity,model.StockQuantity!.Value)
+                        .SetProperty(p=>p.CategoryId,model.CategoryId).SetProperty(p=>p.ImageUrl,newImageUrl??oldImageUrl),cancellationToken);
+                if(count==1)await transaction.CommitAsync(cancellationToken);
+                return count;
+            });
+            if(changed!=1)
+            {
+                if(newImageUrl!=null)_images.Delete(newImageUrl);
+                if(changed==-1)return Forbid();
+                var current=await _db.Products.AsNoTracking().FirstOrDefaultAsync(p=>p.Id==id,cancellationToken);
+                if(current==null)return NotFound();
+                model.ExistingImageUrl=current.ImageUrl;model.ExpectedStockQuantity=current.StockQuantity;model.StockQuantity=current.StockQuantity;
+                ModelState.Remove(nameof(model.ExpectedStockQuantity));ModelState.Remove(nameof(model.StockQuantity));
+                ModelState.AddModelError(string.Empty,"Tồn kho đã thay đổi do đặt hàng hoặc cập nhật khác. Số lượng mới đã được tải; vui lòng kiểm tra và xác nhận lại.");
+                Response.StatusCode=409;return View(model);
+            }
         }
         catch (Exception exception) when (exception is DbUpdateException or IOException or UnauthorizedAccessException)
         {
@@ -236,6 +259,7 @@ public class SanPhamController : Controller
         try
         {
             if (!await _db.Products.AsNoTracking().AnyAsync(p => p.ImageUrl == imageUrl)
+                && !await _db.OrderItems.AsNoTracking().AnyAsync(i=>i.ImageUrl==imageUrl)
                 && !_images.Delete(imageUrl))
                 TempData["WarningMessage"] = "Dữ liệu đã được lưu, nhưng một ảnh cũ chưa được dọn. Vui lòng liên hệ quản trị hệ thống.";
         }

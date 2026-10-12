@@ -6,7 +6,7 @@ import pathlib
 import sys
 import storefront_regression as gs
 
-OUT = gs.ROOT / "artifacts" / "customer-ui"
+OUT = pathlib.Path("/tmp/greenshop-ui-redesign")
 OUT.mkdir(parents=True, exist_ok=True)
 sys.path.insert(0, "/tmp/greenshop-category-python-packages")
 os.environ.setdefault("PLAYWRIGHT_BROWSERS_PATH", "/tmp/greenshop-category-browsers")

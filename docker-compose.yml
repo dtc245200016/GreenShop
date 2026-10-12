@@ -7,14 +7,16 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
       MYSQL_DATABASE: greenshop
+      MYSQL_USER: greenshop_app
+      MYSQL_PASSWORD: ${MYSQL_APP_PASSWORD:?Set MYSQL_APP_PASSWORD in .env}
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
       - app_net
     healthcheck:
-      test: ["CMD-SHELL", 'mysqladmin ping -h 127.0.0.1 -uroot -p"$${MYSQL_ROOT_PASSWORD}" --silent']
+      test: ["CMD-SHELL", 'MYSQL_PWD="$${MYSQL_ROOT_PASSWORD}" mysql --protocol=TCP -h 127.0.0.1 -uroot --database="$${MYSQL_DATABASE}" --execute="SELECT 1" --silent >/dev/null']
       interval: 5s
       timeout: 3s
       retries: 12
@@ -24,14 +26,22 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: greenshop_phpmyadmin
     restart: always
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     networks:
       - app_net
+    healthcheck:
+      test: ["CMD", "php", "-r", '$$s=@fsockopen("127.0.0.1",80,$$errno,$$error,2); if(!$$s)exit(1); fwrite($$s,"GET / HTTP/1.0\r\nHost: localhost\r\nConnection: close\r\n\r\n"); stream_set_timeout($$s,2); $$line=fgets($$s); fclose($$s); exit(strpos($$line ?: ""," 200 ") === false ? 1 : 0);']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
 
   web_app:
     build:
@@ -46,18 +56,18 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=db;Database=greenshop;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env};
+      - ConnectionStrings__DefaultConnection=Server=db;Database=greenshop;Uid=greenshop_app;Pwd=${MYSQL_APP_PASSWORD:?Set MYSQL_APP_PASSWORD in .env};
     volumes:
       - data_protection_keys:/app/keys
       - product_images:/app/wwwroot/uploads/products
     ports:
-      - "5000:8080"
+      - "127.0.0.1:5000:8080"
     networks:
       - app_net
     healthcheck:
-      test: ["CMD-SHELL", "grep -q ':1F90 .* 0A' /proc/net/tcp /proc/net/tcp6"]
-      interval: 5s
-      timeout: 3s
+      test: ["CMD", "dotnet", "GreenShop.Web.dll", "--healthcheck"]
+      interval: 10s
+      timeout: 5s
       retries: 12
       start_period: 30s
 
@@ -76,6 +86,12 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl:ro
     networks:
       - app_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null --no-check-certificate https://127.0.0.1/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
 
 volumes:
   mysql_data:

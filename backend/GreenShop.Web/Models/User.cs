@@ -37,16 +37,20 @@ namespace GreenShop.Web.Models
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "Họ và tên không được để trống")]
+        [StringLength(100,ErrorMessage="Họ tên tối đa 100 ký tự.")]
         public string FullName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Email không được để trống")]
         [EmailAddress(ErrorMessage = "Định dạng Email không đúng")]
+        [StringLength(255)]
         public string Email { get; set; } = string.Empty;
 
+        [StringLength(21,ErrorMessage="Số điện thoại tối đa 21 ký tự.")]
         public string Phone { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Mật khẩu không được để trống")]
         [MinLength(6, ErrorMessage = "Mật khẩu tối thiểu 6 ký tự")]
+        [StringLength(256)]
         public string Password { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Xác nhận mật khẩu không được để trống")]
@@ -58,9 +62,11 @@ namespace GreenShop.Web.Models
     {
         [Required(ErrorMessage = "Vui lòng nhập Email")]
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
+        [StringLength(255)]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]
+        [StringLength(1024)]
         public string Password { get; set; } = string.Empty;
 
         public bool RememberMe { get; set; }

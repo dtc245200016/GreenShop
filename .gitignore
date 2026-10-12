@@ -19,3 +19,12 @@
 *.pem
 *.key
 
+# Local deployment secrets, data and test caches
+.env.*
+!.env.example
+nginx/ssl/*
+**/wwwroot/uploads/products/**
+backups/
+**/__pycache__/
+*.py[cod]
+

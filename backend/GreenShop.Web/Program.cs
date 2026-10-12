@@ -7,6 +7,10 @@ using Microsoft.Extensions.Options;
 using GreenShop.Web.Data;
 using System.Net;
 using System.Net.Sockets;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
+
+if(await GreenShop.Web.Services.DeploymentCommands.TryRunAsync(args))return;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +30,30 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Bật Razor Runtime Compilation để tự nhận thay đổi file .cshtml
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+builder.Services.AddRateLimiter(options=>
+{
+    options.GlobalLimiter=PartitionedRateLimiter.Create<HttpContext,string>(context=>
+        context.GetEndpoint()?.Metadata.GetMetadata<EnableRateLimitingAttribute>()==null
+            ? RateLimitPartition.GetNoLimiter("pages")
+            : RateLimitPartition.GetConcurrencyLimiter("accounts",_=>new ConcurrencyLimiterOptions{PermitLimit=8,QueueLimit=0}));
+    options.AddPolicy("account",context=>
+    {
+        var registration=string.Equals(context.Request.RouteValues["action"]?.ToString(),"Register",StringComparison.OrdinalIgnoreCase);
+        var key=registration?"Security:RegistrationAttemptsPerMinute":"Security:LoginAttemptsPerMinute";
+        var limit=int.TryParse(builder.Configuration[key],out var configured)&&configured>=1&&configured<=2000?configured:registration?8:20;
+        return RateLimitPartition.GetFixedWindowLimiter($"{(registration?"register":"login")}:{context.Connection.RemoteIpAddress}",
+            _=>new FixedWindowRateLimiterOptions{PermitLimit=limit,Window=TimeSpan.FromMinutes(1),QueueLimit=0,AutoReplenishment=true});
+    });
+    options.OnRejected=async(context,ct)=>
+    {
+        var response=context.HttpContext.Response;response.StatusCode=StatusCodes.Status429TooManyRequests;
+        response.Headers["Retry-After"]=context.Lease.TryGetMetadata(MetadataName.RetryAfter,out var retry)
+            ? Math.Max(1,(int)Math.Ceiling(retry.TotalSeconds)).ToString(System.Globalization.CultureInfo.InvariantCulture):"5";
+        response.Headers["Cache-Control"]="no-store";response.ContentType="text/plain; charset=utf-8";
+        await response.WriteAsync("Bạn thao tác đăng nhập hoặc đăng ký quá nhanh. Vui lòng đợi một chút rồi thử lại.",ct);
+    };
+});
 
 // Lưu key ring bền vững trong volume riêng khi chạy Production.
 if (builder.Environment.IsProduction())
@@ -52,6 +80,7 @@ builder.Services.AddAuthentication(GreenShop.Web.Services.PortalAuthentication.P
     .AddCookie(GreenShop.Web.Services.PortalAuthentication.AdminScheme, options =>
     {
         options.Cookie.Name = GreenShop.Web.Services.PortalAuthentication.AdminCookie;
+        options.Cookie.SecurePolicy = builder.Environment.IsProduction()?CookieSecurePolicy.Always:CookieSecurePolicy.SameAsRequest;
         options.LoginPath = "/Admin/Account/Login";
         options.AccessDeniedPath = "/Admin/Account/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
@@ -60,6 +89,7 @@ builder.Services.AddAuthentication(GreenShop.Web.Services.PortalAuthentication.P
     .AddCookie(GreenShop.Web.Services.PortalAuthentication.CustomerScheme, options =>
     {
         options.Cookie.Name = GreenShop.Web.Services.PortalAuthentication.CustomerCookie;
+        options.Cookie.SecurePolicy = builder.Environment.IsProduction()?CookieSecurePolicy.Always:CookieSecurePolicy.SameAsRequest;
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
@@ -80,9 +110,10 @@ app.Use(async (context, next) =>
 
     var options = new ForwardedHeadersOptions
     {
-        ForwardedHeaders = ForwardedHeaders.XForwardedProto,
+        ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor,
         ForwardLimit = 1
     };
+    options.KnownNetworks.Clear();options.KnownProxies.Clear();
 
     try
     {
@@ -130,6 +161,7 @@ app.Use(async (context, next) =>
     await next(context);
 });
 app.UseAuthorization();
+app.UseRateLimiter();
 
 // Tự động áp dụng các EF Core Migrations chưa được thực thi
 using (var scope = app.Services.CreateScope())
@@ -145,5 +177,23 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Readiness checks real database access; reports no credentials, rows or exception details.
+app.MapGet("/health/ready",async (AppDbContext db,HttpContext context)=>
+{
+    context.Response.Headers["Cache-Control"]="no-store";
+    using var timeout=CancellationTokenSource.CreateLinkedTokenSource(context.RequestAborted);
+    timeout.CancelAfter(TimeSpan.FromSeconds(2));
+    try
+    {
+        await db.Database.ExecuteSqlRawAsync("SELECT 1",timeout.Token);
+        return Results.Text("ready");
+    }
+    catch(Exception exception) when(exception is System.Data.Common.DbException or OperationCanceledException or TimeoutException or InvalidOperationException)
+    {
+        // Content type prevents status-page re-execution from rewriting 503 into 404.
+        return Results.Text("unavailable",statusCode:StatusCodes.Status503ServiceUnavailable);
+    }
+});
 
 app.Run();

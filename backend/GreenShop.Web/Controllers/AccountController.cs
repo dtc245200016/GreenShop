@@ -8,9 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BCryptNet = BCrypt.Net.BCrypt;
 using GreenShop.Web.Services;
+using Microsoft.AspNetCore.RateLimiting;
+using MySqlConnector;
 
 namespace GreenShop.Web.Controllers
 {
+    [RequestSizeLimit(32*1024)]
+    [RequestFormLimits(ValueLengthLimit=2048,ValueCountLimit=16)]
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
@@ -36,12 +40,16 @@ namespace GreenShop.Web.Controllers
         }
 
         [HttpPost]
+        [EnableRateLimiting("account")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string? returnUrl = null)
         {
             returnUrl = ShoppingIdentity.SafeReturnUrl(returnUrl);
             ViewData["ReturnUrl"] = returnUrl;
+            if(System.Text.Encoding.UTF8.GetByteCount(model.Password??"")>72)
+                ModelState.AddModelError(nameof(model.Password),"Mật khẩu quá dài. Vui lòng chọn mật khẩu ngắn hơn để các ký tự đều được bảo vệ.");
             if (!ModelState.IsValid) return View(model);
+            model.Email=model.Email.Trim().ToLowerInvariant();
 
             if (await _context.Users.AnyAsync(u => u.Email.ToLower() == model.Email.ToLower()))
             {
@@ -62,7 +70,12 @@ namespace GreenShop.Web.Controllers
             };
 
             _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
+            try{await _context.SaveChangesAsync();}
+            catch(DbUpdateException ex) when(ex.InnerException is MySqlException {Number:1062})
+            {
+                ModelState.AddModelError("Email","Email này đã được đăng ký sử dụng.");
+                return View(model);
+            }
 
             TempData["RegisteredEmail"] = newUser.Email;
             TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
@@ -97,6 +110,7 @@ namespace GreenShop.Web.Controllers
 
         [HttpPost("/Account/Login")]
         [HttpPost("/Admin/Account/Login", Order=1)]
+        [EnableRateLimiting("account")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {

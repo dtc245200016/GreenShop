@@ -26,6 +26,9 @@ public class ProductFormViewModel : IValidatableObject
     [Display(Name = "Số lượng tồn kho")]
     public int? StockQuantity { get; set; }
 
+    [Range(0,int.MaxValue)]
+    public int? ExpectedStockQuantity { get; set; }
+
     [Display(Name = "Ảnh sản phẩm")]
     public IFormFile? Image { get; set; }
 

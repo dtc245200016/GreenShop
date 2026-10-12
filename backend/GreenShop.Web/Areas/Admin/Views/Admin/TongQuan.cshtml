@@ -49,19 +49,20 @@
             <p class="dash-caption">Tổng thanh toán đã lưu của đơn đã giao, gồm phí ship nếu có, nhóm theo ngày đặt hàng tại Việt Nam.</p>
             <div class="dash-chart" data-chart>
                 <div class="dash-chart-scale"><span>@OrderWorkflow.Money(maximum==1 && Model.DeliveredValue==0 ? 0 : maximum)</span><span>0 đ</span></div>
-                <svg viewBox="0 0 900 240" class="dash-svg" role="img" aria-labelledby="valueChartTitle valueChartDesc">
+                <svg viewBox="0 0 900 240" class="dash-svg" role="group" aria-labelledby="valueChartTitle valueChartDesc">
                     <title id="valueChartTitle">Giá trị đơn đã giao theo thời gian</title><desc id="valueChartDesc">Dữ liệu từng mốc ở bảng bên dưới. Giá trị dựa trên ngày đặt hàng, không thể hiện doanh thu thực thu.</desc>
                     <line x1="0" y1="204" x2="900" y2="204" class="dash-gridline" />
                     <line x1="0" y1="104" x2="900" y2="104" class="dash-gridline" />
                     <line x1="0" y1="4" x2="900" y2="4" class="dash-gridline" />
                     @for (var i=0;i<Model.Points.Count;i++) {
                         var point=Model.Points[i];var slot=900m/Model.Points.Count;var height=point.Value/maximum*190;var x=i*slot+slot*.18m;
-                        <rect x="@Svg(x)" y="@Svg(204-height)" width="@Svg(slot*.64m)" height="@Svg(Math.Max(height,2))" rx="3" class="dash-bar" tabindex="0" role="img" aria-label="@point.Label: @OrderWorkflow.Money(point.Value)" data-label="@point.Label" data-value="@OrderWorkflow.Money(point.Value)"><title>@point.Label: @OrderWorkflow.Money(point.Value)</title></rect>
+                        <rect x="@Svg(x)" y="@Svg(204-Math.Max(height,2))" width="@Svg(slot*.64m)" height="@Svg(Math.Max(height,2))" rx="3" class="dash-bar" tabindex="0" role="button" aria-pressed="false" aria-label="@point.Label: @OrderWorkflow.Money(point.Value)" data-label="@point.Label" data-value="@OrderWorkflow.Money(point.Value)"><title>@point.Label: @OrderWorkflow.Money(point.Value)</title></rect>
                         @if (i%Math.Max(1,(int)Math.Ceiling(Model.Points.Count/6d))==0 || i==Model.Points.Count-1) { <g><text x="@Svg(i*slot+slot/2)" y="232" text-anchor="middle" class="dash-axis">@point.Label</text></g> }
                     }
                 </svg>
                 <div class="dash-chart-tooltip" role="tooltip" hidden></div>
             </div>
+            <p class="dash-chart-selection" data-chart-selection role="status" aria-live="polite">Chọn một cột để xem giá trị của ngày hoặc tháng đó.</p>
             @if (Model.DeliveredValue==0) { <p class="dash-chart-empty">Chưa có giá trị bán hàng từ đơn đã giao trong kỳ.</p> }
             <details class="dash-data"><summary>Xem bảng dữ liệu biểu đồ</summary><div class="dash-table-wrap"><table><caption class="dash-sr-only">Giá trị đơn đã giao trong kỳ, VNĐ</caption><thead><tr><th scope="col">@(p.Range=="year" ? "Tháng" : "Ngày")</th><th scope="col">Giá trị đơn đã giao</th></tr></thead><tbody>@foreach (var point in Model.Points) { <tr data-point="@point.Key" data-amount="@point.Value.ToString(CultureInfo.InvariantCulture)"><td>@point.Label</td><td>@OrderWorkflow.Money(point.Value)</td></tr> }</tbody></table></div></details>
         </section>
