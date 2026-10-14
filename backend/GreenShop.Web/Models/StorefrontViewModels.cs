@@ -27,6 +27,8 @@ public class StoreProductViewModel
     public int? CategoryId { get; set; }
     public string CategoryName { get; set; } = "Chưa phân loại";
     public long SoldCount { get; set; }
+    public int ReviewCount { get; set; }
+    public double? AverageStars { get; set; }
 }
 
 public class StoreCategoryViewModel
@@ -38,6 +40,7 @@ public class StoreCategoryViewModel
 
 public class StoreCatalogViewModel
 {
+    public IReadOnlyList<StoreProductViewModel> HeroProducts { get; set; } = Array.Empty<StoreProductViewModel>();
     public IReadOnlyList<StoreProductViewModel> Products { get; set; } = Array.Empty<StoreProductViewModel>();
     public IReadOnlyList<StoreCategoryViewModel> Categories { get; set; } = Array.Empty<StoreCategoryViewModel>();
     public int? CategoryId { get; set; }

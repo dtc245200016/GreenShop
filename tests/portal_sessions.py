@@ -282,5 +282,91 @@ def remaining():
         gs.compose=MAIN_COMPOSE
         check()
 
+def navigation():
+    """Admin preview reuses its ticket; all mutations and purchases remain QA-only."""
+    om.configure_qa();accounts=json.loads((OUT/'accounts.json').read_text());checks=[]
+    def passed(label):checks.append(label);print('PASS: '+label,flush=True)
+    category=om.qa_sql("SELECT Id FROM Categories WHERE Name='QA Navigation'")
+    if not category:category=om.qa_sql("INSERT INTO Categories (Name,Description,IsActive) VALUES ('QA Navigation','',1); SELECT LAST_INSERT_ID()")
+    om.qa_sql(f'UPDATE Products SET CategoryId={category} WHERE Id=1')
+    before=table_hashes(om.qa_sql)
+    with playwright() as pw:
+        from playwright.sync_api import expect
+        b=pw.chromium.launch();ctx=b.new_context(ignore_https_errors=True,viewport={'width':1440,'height':1000});p=ctx.new_page();errors=[];bad=[]
+        p.on('pageerror',lambda e:errors.append(str(e)))
+        p.on('response',lambda r:bad.append((r.status,r.url)) if r.url.startswith(om.QA_BASE) and r.request.resource_type in ('script','stylesheet','font') and r.status>=400 else None)
+        login_page(p,accounts[0],ADMIN_LOGIN);expect(p).to_have_url(om.QA_BASE+'/Admin/Admin/TongQuan')
+        auth=lambda:{c['name']:c['value'] for c in ctx.cookies() if c['name'] in (ADMIN_COOKIE,CUSTOMER_COOKIE)}
+        original=auth();assert set(original)=={ADMIN_COOKIE}
+        p.get_by_role('link',name='Xem website',exact=True).click();expect(p.locator('.account-menu .menu-user-name')).to_have_text('QA Order User 1')
+        assert auth()==original and p.locator('a[href*="/Account/Login"],a[href*="/Account/Register"]').count()==0
+        expect(p.get_by_role('link',name='Quay lại quản trị',exact=True)).to_be_visible()
+        p.get_by_role('link',name='Quay lại quản trị',exact=True).click();expect(p).to_have_url(om.QA_BASE+'/Admin/Admin/TongQuan')
+        passed('Admin Dashboard -> Xem website -> Quay lại quản trị uses the same Admin/account/cookie; no Customer cookie, role change or second login')
+        for path in ('/?portal=admin','/SanPham/CuaHang?portal=admin',f'/SanPham/CuaHang?categoryId={category}&portal=admin','/SanPham/ChiTietSanPham/1?portal=admin'):
+            assert p.goto(om.QA_BASE+path).status==200
+            expect(p.locator('.account-menu .menu-user-name')).to_have_text('QA Order User 1')
+            assert p.locator('form[action*="GioHang"],form[action*="ThanhToan"],a[href*="GioHang"],a[href*="ThanhToan"]').count()==0
+            expect(p.get_by_role('link',name='Quay lại quản trị',exact=True)).to_be_visible()
+        p.get_by_role('button',name='Mở tìm kiếm',exact=True).click();p.locator('#header-search').fill('QA');p.locator('#shop-search-dialog button[type=submit]').click()
+        assert 'portal=admin' in p.url;expect(p.locator('.account-menu .menu-user-name')).to_have_text('QA Order User 1')
+        detail=p.locator('.product-link').first;assert 'portal=admin' in detail.get_attribute('href');detail.click();expect(p.locator('.shop-admin-note')).to_be_visible()
+        passed('Server-rendered Admin name/return link on home/catalog/category/detail/search; preview follows GET forms and links; purchasing controls absent')
+        for width in (320,360,768,1024,1440):
+            p.set_viewport_size({'width':width,'height':1000});p.goto(om.QA_BASE+'/?portal=admin')
+            assert p.evaluate('document.documentElement.scrollWidth<=innerWidth'),width
+            if width<768:p.get_by_role('button',name='Mở menu điều hướng',exact=True).click()
+            link=p.get_by_role('link',name='Quay lại quản trị',exact=True);expect(link).to_be_visible();link.focus();assert link.evaluate('(e)=>document.activeElement===e')
+            p.screenshot(path=str(OUT/f'navigation-admin-{width}.png'),full_page=True)
+            link.press('Enter');expect(p).to_have_url(om.QA_BASE+'/Admin/Admin/TongQuan');assert auth()==original
+        p.emulate_media(reduced_motion='reduce');p.goto(om.QA_BASE+'/?portal=admin');link=p.locator('.shop-account-nav .shop-admin-return')
+        assert link.evaluate('(e)=>getComputedStyle(e).transitionDuration')=='0s'
+        assert not errors and not bad,(errors,bad)
+        passed('Admin desktop/mobile 320-1440 px, keyboard/focus/reduced motion, no overflow, missing CSS/JS/font or browser errors')
+        p.set_viewport_size({'width':1440,'height':1000});p.emulate_media(reduced_motion='no-preference')
+        # Same context, genuine independent accounts, explicit Admin preview remains Admin.
+        customer=ctx.new_page();login_page(customer,accounts[2]);customer.goto(om.QA_BASE+'/')
+        expect(customer.locator('.account-menu .menu-user-name')).to_have_text('QA Order User 3');assert customer.locator('.shop-admin-return').count()==0
+        p.goto(om.QA_BASE+'/Admin/Admin/TongQuan');p.get_by_role('link',name='Xem website',exact=True).click()
+        expect(p.locator('.account-menu .menu-user-name')).to_have_text('QA Order User 1');p.locator('.product-link').first.click()
+        expect(p.locator('.account-menu .menu-user-name')).to_have_text('QA Order User 1')
+        customer.reload();expect(customer.locator('.account-menu .menu-user-name')).to_have_text('QA Order User 3')
+        assert auth()[ADMIN_COOKIE]==original[ADMIN_COOKIE] and set(auth())=={ADMIN_COOKIE,CUSTOMER_COOKIE}
+        p.locator('.account-menu summary').click();p.locator('.account-menu button[type=submit]').click();expect(p).to_have_url(__import__('re').compile('/Admin/Account/Login'))
+        assert set(auth())=={CUSTOMER_COOKIE};customer.reload();expect(customer.locator('.account-menu .menu-user-name')).to_have_text('QA Order User 3')
+        passed('Admin and Customer tabs keep separate identities; preview remains Admin through links; storefront Admin logout removes only Admin cookie')
+        ctx.close()
+        for account in (None,accounts[2]):
+            c=b.new_context(ignore_https_errors=True);page=c.new_page()
+            if account:login_page(page,account)
+            page.goto(om.QA_BASE+'/?portal=admin&role=Admin&UserId=1');assert page.locator('.shop-admin-return').count()==0
+            page.goto(om.QA_BASE+'/Admin/Admin/TongQuan');expect(page).to_have_url(__import__('re').compile('/Admin/Account/Login'))
+            c.close()
+        b.close()
+    assert table_hashes(om.qa_sql)==before
+    passed('Customer/Anonymous cannot expose Admin controls or enter Dashboard using query parameters; browsing/login/logout changes no business rows')
+    a=gs.client();sign_in(a,accounts[0],True);source=gs.get(a,'/?portal=admin')[0]
+    for path in ('/GioHang/QuanLyGioHang','/ThanhToan/XacNhanMuaHang/1','/ThanhToan/XacNhanGioHang','/ThanhToan/DonHangCuaToi'):
+        code,h,_=gs.request(a,path+'?portal=admin');assert code in (302,403) and (code==403 or 'AccessDenied' in h.get('Location','')),(path,code,h.get('Location'))
+    for path in ('/GioHang/ThemVaoGioHang/1','/GioHang/CapNhatSoLuong/1','/GioHang/XoaKhoiGioHang/1','/ThanhToan/MuaNgay/1','/ThanhToan/XacNhanMuaHang/1','/ThanhToan/XacNhanGioHang','/ThanhToan/ThongBaoDaChuyenKhoan/1'):
+        code,h,_=gs.post(a,path+'?portal=admin',source,{'Quantity':1,'ExpectedVersion':0});assert code in (302,403) and (code==403 or 'AccessDenied' in h.get('Location','')),(path,code,h.get('Location'))
+    assert table_hashes(om.qa_sql)==before and 'QA Order User 1' in gs.get(a,'/Admin/Admin/TongQuan')[1]
+    passed('Authenticated Admin GET/POST cart, Buy Now, checkout and transfer endpoints are forbidden with valid CSRF; every table/stock/order unchanged')
+    # A second genuine Customer cookie does not bypass the selected Admin preview's restrictions.
+    sign_in(a,accounts[2]);source=gs.get(a,'/?portal=admin')[0]
+    assert 'QA Order User 1' in gs.get(a,'/?portal=admin')[1] and 'QA Order User 3' in gs.get(a,'/')[1]
+    code,h,_=gs.post(a,'/ThanhToan/MuaNgay/1?portal=admin',source,{'Quantity':1});assert code==302 and 'AccessDenied' in h['Location']
+    assert table_hashes(om.qa_sql)==before
+    buyer=gs.client();sign_in(buyer,accounts[2]);page=gs.get(buyer,'/SanPham/ChiTietSanPham/1')[0]
+    assert gs.post(buyer,'/GioHang/ThemVaoGioHang/1',page,{'Quantity':1})[0]==302
+    page=gs.get(buyer,'/ThanhToan/XacNhanGioHang')[0];stock=int(om.qa_sql('SELECT StockQuantity FROM Products WHERE Id=1'))
+    values={name:page.input(name) for name in ('QuotedPrice','PolicyVersion','CartQuote','ConfirmationToken')}
+    values.update({'Quantity':1,'RecipientName':'QA Navigation Customer','Phone':'0912345678','Address':'123 QA Navigation Address','PaymentMethod':'COD'})
+    code,h,_=gs.post(buyer,'/ThanhToan/XacNhanGioHang',page,values);assert code==302 and '/ThanhToan/ChiTietDonHang/' in h['Location']
+    assert int(om.qa_sql('SELECT StockQuantity FROM Products WHERE Id=1'))==stock-1
+    assert 'QA Navigation Customer' in gs.get(buyer,h['Location'])[1]
+    passed('Customer cart and real COD checkout still work; selected Admin preview cannot borrow the simultaneous Customer cookie to buy')
+    (OUT/'navigation-results.json').write_text(json.dumps({'status':'PASS','checks':checks,'writes':'synthetic isolated QA only'},indent=2))
+
 if __name__=='__main__':
-    {'baseline':baseline,'prepare':prepare,'reproduce':reproduce,'refresh':refresh,'browser':browser_checks,'security':security,'expired-browser':expired_browser,'payment':payment_smoke,'persistence':persistence,'remaining':remaining,'preservation':preservation,'production':production,'teardown':om.teardown}[sys.argv[1]]()
+    {'baseline':baseline,'prepare':prepare,'reproduce':reproduce,'refresh':refresh,'browser':browser_checks,'security':security,'expired-browser':expired_browser,'payment':payment_smoke,'navigation':navigation,'persistence':persistence,'remaining':remaining,'preservation':preservation,'production':production,'teardown':om.teardown}[sys.argv[1]]()

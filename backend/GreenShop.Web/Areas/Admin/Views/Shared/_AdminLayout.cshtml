@@ -1,4 +1,5 @@
 @{
+    var engagementAction = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "KhachHang", StringComparison.OrdinalIgnoreCase) ? ViewContext.RouteData.Values["action"]?.ToString() : null;
     var isProducts = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "SanPham", StringComparison.OrdinalIgnoreCase);
     var isCategories = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "DanhMuc", StringComparison.OrdinalIgnoreCase);
     var isOrders = string.Equals(ViewContext.RouteData.Values["controller"]?.ToString(), "DonHang", StringComparison.OrdinalIgnoreCase);
@@ -154,6 +155,7 @@
         }
     </style>
     <link rel="stylesheet" href="~/css/admin-theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/customer-engagement.css" asp-append-version="true" />
 </head>
 <body class="admin-shell @(isProducts ? "admin-products" : "")">
     <nav class="navbar fixed-top admin-topbar shadow-sm px-3">
@@ -178,11 +180,12 @@
                 </span>
                 <div class="dropdown admin-settings-menu">
                     <button class="btn btn-outline-success btn-sm dropdown-toggle" id="adminSettingsMenu" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Cài đặt cửa hàng"><i class="fa-solid fa-gear" aria-hidden="true"></i></button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminSettingsMenu"><li><a class="dropdown-item @(isSettings ? "active" : "")" asp-area="Admin" asp-controller="CaiDatCuaHang" asp-action="QuanLyThanhToanVanChuyen"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Cài đặt thanh toán &amp; vận chuyển</a></li></ul>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminSettingsMenu"><li><a class="dropdown-item @(isSettings ? "active" : "")" asp-area="Admin" asp-controller="CaiDatCuaHang" asp-action="QuanLyThanhToanVanChuyen"><i class="fa-solid fa-sliders" aria-hidden="true"></i>Cài đặt thanh toán &amp; vận chuyển</a></li><li><a class="dropdown-item" asp-area="Admin" asp-controller="KhachHang" asp-action="Slider">Slider trang chủ</a></li></ul>
                 </div>
+                @await Component.InvokeAsync("AdminAlerts")
                 <a class="btn btn-outline-success btn-sm"
                    aria-label="Xem website"
-                   href="@Url.Action("Index", "Home", new { area = "" })">
+                   href="@Url.Action("Index", "Home", new { area = "", portal = "admin" })">
                     <i class="fa-solid fa-globe me-1"></i><span class="d-none d-lg-inline">Xem website</span>
                 </a>
                 <form id="logoutForm"
@@ -213,11 +216,14 @@
                 <i class="fa-solid fa-tags"></i><span class="flex-grow-1">Quản lý Danh mục</span>
             </a>
             <a class="nav-link @(isOrders ? "active" : "")" asp-area="Admin" asp-controller="DonHang" asp-action="QuanLyDonHang" aria-current="@(isOrders ? "page" : null)">
-                <i class="fa-solid fa-receipt" aria-hidden="true"></i><span class="flex-grow-1">Quản lý Đơn hàng</span>
+                <i class="fa-solid fa-receipt" aria-hidden="true"></i><span class="flex-grow-1">Quản lý Đơn hàng</span>@await Component.InvokeAsync("AdminAlerts",new{kind="orders"})
             </a>
             <a class="nav-link @(isUsers ? "active" : "")" asp-area="Admin" asp-controller="NguoiDung" asp-action="QuanLyNguoiDung" aria-current="@(isUsers ? "page" : null)">
                 <i class="fa-solid fa-users-gear" aria-hidden="true"></i><span class="flex-grow-1">Người dùng &amp; Phân quyền</span>
             </a>
+            <a class="nav-link @(engagementAction is "TinNhan" or "TroChuyen" ? "active" : "")" aria-current="@(engagementAction is "TinNhan" or "TroChuyen" ? "page" : null)" asp-area="Admin" asp-controller="KhachHang" asp-action="TinNhan"><i class="fa-regular fa-comments" aria-hidden="true"></i><span class="flex-grow-1">Tin nhắn khách hàng</span>@await Component.InvokeAsync("AdminAlerts",new{kind="messages"})</a>
+            <a class="nav-link @(engagementAction == "DanhGia" ? "active" : "")" aria-current="@(engagementAction == "DanhGia" ? "page" : null)" asp-area="Admin" asp-controller="KhachHang" asp-action="DanhGia"><i class="fa-regular fa-star" aria-hidden="true"></i><span>Đánh giá khách hàng</span></a>
+            <a class="nav-link @(engagementAction == "Slider" ? "active" : "")" aria-current="@(engagementAction == "Slider" ? "page" : null)" asp-area="Admin" asp-controller="KhachHang" asp-action="Slider"><i class="fa-regular fa-images" aria-hidden="true"></i><span>Slider trang chủ</span></a>
         </nav>
         <div class="admin-sidebar-note"><span class="admin-sidebar-leaf"><i class="fa-solid fa-leaf" aria-hidden="true"></i></span><strong>Mỗi ngày, thêm xanh.</strong><p>Chăm chút cửa hàng của bạn<br />từ những điều nhỏ nhất.</p></div>
     </aside>
@@ -247,6 +253,7 @@
     </script>
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/admin-theme.js" asp-append-version="true" defer></script>
+    <script src="~/js/customer-engagement.js" asp-append-version="true" defer></script>
     @if(isSettings) { <script src="~/js/payment-shipping.js" asp-append-version="true" defer></script> }
     @if (isOrders || isProducts || isDashboard) { <script src="~/js/admin-excel.js" asp-append-version="true" defer></script> }
 </body>

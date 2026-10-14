@@ -20,11 +20,38 @@ namespace GreenShop.Web.Data
         public DbSet<OrderItem> OrderItems { get; set; } = null!;
         public DbSet<OrderStatusHistory> OrderStatusHistories { get; set; } = null!;
         public DbSet<PaymentShippingSettings> PaymentShippingSettings { get; set; } = null!;
+        public DbSet<HomeSliderSettings> HomeSliderSettings { get; set; } = null!;
+        public DbSet<ProductReview> ProductReviews { get; set; } = null!;
+        public DbSet<ShopConversation> ShopConversations { get; set; } = null!;
+        public DbSet<ShopMessage> ShopMessages { get; set; } = null!;
 
         protected override void OnModelCreating(
             ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<HomeSliderSettings>(e => {
+                e.Property(s=>s.Id).ValueGeneratedNever();e.Property(s=>s.Mode).HasMaxLength(20);
+                e.Property(s=>s.Version).IsConcurrencyToken();
+                e.ToTable(t=>t.HasCheckConstraint("CK_HomeSliderSettings", "`Id` = 1 AND `ProductCount` BETWEEN 1 AND 100 AND `Days` BETWEEN 0 AND 3650 AND `Mode` IN ('all','bestsellers')"));
+                e.HasData(new HomeSliderSettings {Id=1,Mode="bestsellers",ProductCount=5,Days=30,Version=0});
+            });
+            modelBuilder.Entity<ProductReview>(e=> {
+                e.HasIndex(r=>r.OrderItemId).IsUnique();e.HasIndex(r=>new {r.ProductId,r.CreatedAt});e.HasIndex(r=>r.AdminReadAt);
+                e.HasOne(r=>r.OrderItem).WithMany().HasForeignKey(r=>r.OrderItemId).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(r=>r.User).WithMany().HasForeignKey(r=>r.UserId).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(r=>r.Product).WithMany().HasForeignKey(r=>r.ProductId).OnDelete(DeleteBehavior.SetNull);
+                e.ToTable(t=>t.HasCheckConstraint("CK_ProductReviews_Stars","`Stars` BETWEEN 1 AND 5"));
+            });
+            modelBuilder.Entity<ShopConversation>(e=> {
+                e.HasIndex(c=>c.CustomerId).IsUnique();e.HasIndex(c=>c.UpdatedAt);
+                e.HasOne(c=>c.Customer).WithMany().HasForeignKey(c=>c.CustomerId).OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<ShopMessage>(e=> {
+                e.HasIndex(m=>new {m.SenderId,m.RequestToken}).IsUnique();e.HasIndex(m=>new {m.ConversationId,m.Id});e.HasIndex(m=>new {m.SenderId,m.CreatedAt});
+                e.HasOne(m=>m.Conversation).WithMany().HasForeignKey(m=>m.ConversationId).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(m=>m.Sender).WithMany().HasForeignKey(m=>m.SenderId).OnDelete(DeleteBehavior.Restrict);
+            });
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)

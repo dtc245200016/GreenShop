@@ -1,0 +1,12 @@
+@model ShopChatViewModel
+@{ var admin=User.IsInRole("Admin");if(admin) Layout="~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";ViewData["Title"]=Model.Title; }
+<section class="@(admin?"engagement-heading":"shop-page-heading")"><h1>@Model.Title</h1><p>Trao đổi trực tiếp với @(admin?"khách hàng":"cửa hàng"). Tin nhắn được lưu để bạn tiếp tục cuộc trò chuyện.</p></section>
+<section class="shop-chat" data-shop-chat data-messages-url="@Url.Action("TinNhanMoi",new{id=Model.ConversationId})" data-read-url="@Url.Action("DaDoc",new{id=Model.ConversationId})" data-admin="@(admin?"true":"false")">
+    <div class="chat-messages" data-chat-messages role="log" aria-live="polite" aria-relevant="additions" aria-label="Nội dung trò chuyện"><p class="chat-empty" data-chat-empty>Đang tải cuộc trò chuyện…</p></div>
+    <form asp-action="GuiTinNhan" asp-route-id="@Model.ConversationId" method="post" data-chat-form>
+        <label for="chat-content">Tin nhắn</label><textarea id="chat-content" name="Content" rows="3" maxlength="2000" required placeholder="Nhập tin nhắn của bạn…"></textarea>
+        <input type="hidden" name="RequestToken" value="@Guid.NewGuid().ToString("N")" />
+        <div class="chat-actions"><small>Ctrl + Enter để gửi</small><button class="@(admin?"btn btn-success":"shop-btn primary")" type="submit"><i class="fa-regular fa-paper-plane" aria-hidden="true"></i> Gửi tin nhắn</button></div>
+    </form><p class="chat-feedback" data-chat-feedback role="status" aria-live="polite"></p>
+</section>
+@if(admin) { <a class="btn btn-outline-secondary mt-3" asp-action="TinNhan">Quay lại hộp thư</a> }

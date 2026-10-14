@@ -19,6 +19,28 @@
         },{threshold:.15});observer.observe(element);
     };
     document.querySelectorAll("[data-chart]").forEach(chart => {
+        // SVG text otherwise shrinks with its 900-unit viewBox on narrow screens.
+        const svg=chart.querySelector(".dash-svg");
+        const labels=[...chart.querySelectorAll(".dash-axis")];
+        const sizeLabels=()=>{
+            const scale=svg?.getScreenCTM()?.a;
+            if(!scale||scale<=0)return;
+            const width=svg.getBoundingClientRect().width;
+            const capacity=Math.max(2,Math.floor(width/100));
+            const step=Math.max(1,Math.ceil((labels.length-1)/(capacity-1)));
+            labels.forEach((label,i)=>{
+                label.style.fontSize=`${14/scale}px`;
+                label.style.display=i===labels.length-1||i%step===0?"":"none";
+                if(i===0)label.setAttribute("text-anchor","start");
+                if(i===labels.length-1)label.setAttribute("text-anchor","end");
+            });
+        };
+        sizeLabels();
+        const labelObserver="ResizeObserver" in window?new ResizeObserver(sizeLabels):null;
+        if(svg)labelObserver?.observe(svg);
+        if(!labelObserver)window.addEventListener("resize",sizeLabels);
+        window.addEventListener("pagehide",()=>labelObserver?.disconnect(),{once:true});
+        window.addEventListener("pageshow",()=>{if(svg)labelObserver?.observe(svg);sizeLabels();});
         const tooltip = chart.querySelector("[role=tooltip]");
         const selection=chart.closest(".dash-panel").querySelector("[data-chart-selection]");
         const bars=[...chart.querySelectorAll(".dash-bar")];let selected;

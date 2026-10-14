@@ -1,0 +1,8 @@
+@model ShopReviewsViewModel
+@{ViewData["Title"]="Đánh giá khách hàng";}
+<section class="engagement-heading"><h1>Đánh giá khách hàng</h1><p>Đánh giá được đăng từ khách đã nhận hàng. Điểm sản phẩm là trung bình của tất cả đánh giá.</p></section>
+<section class="engagement-panel">
+@if(Model.Reviews.Count==0){<p>Chưa có đánh giá.</p>}
+@foreach(var review in Model.Reviews){<div class="admin-review"><strong>@review.ProductName</strong><partial name="~/Views/Shared/_ProductReviews.cshtml" model="@(new[]{review})" />@if(review.AdminReadAt==null){<form asp-action="DaDocDanhGia" asp-route-id="@review.Id" method="post" data-submit-once data-engagement-submit><button class="btn btn-outline-success" type="submit">Đánh dấu đã đọc</button></form>}<a class="btn btn-outline-secondary" asp-action="TinNhan">Hộp thư khách hàng</a></div>}
+<nav class="engagement-pagination" aria-label="Phân trang đánh giá">@if(Model.Page>1){<a class="btn btn-outline-secondary" asp-route-page="@(Model.Page-1)">Trang trước</a>}<span>Trang @Model.Page</span>@if(Model.HasNext){<a class="btn btn-outline-secondary" asp-route-page="@(Model.Page+1)">Trang sau</a>}</nav>
+</section>

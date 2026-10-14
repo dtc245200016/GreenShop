@@ -151,7 +151,8 @@ def motion():
         track.focus();track.press('Home');customer.wait_for_timeout(700);bounds=track.bounding_box();url=customer.url
         customer.mouse.move(bounds['x']+bounds['width']*.8,bounds['y']+50);customer.mouse.down();customer.mouse.move(bounds['x']+bounds['width']*.35,bounds['y']+50,steps=20);customer.mouse.up();customer.wait_for_timeout(700)
         assert track.evaluate('(e)=>e.scrollLeft')>20 and customer.url==url
-        assert track.locator('.shop-product-card').count()==int(om.qa_sql('SELECT COUNT(*) FROM Products'))
+        expected_ids=[int(i) for i in om.qa_sql('SELECT p.Id FROM Products p LEFT JOIN Categories c ON c.Id=p.CategoryId WHERE p.CategoryId IS NULL OR c.IsActive=1 ORDER BY p.Id DESC LIMIT 12').splitlines()]
+        assert track.locator('.shop-product-card').evaluate_all('(cards)=>cards.map(c=>Number(c.dataset.productId))')==expected_ids
         assert track.locator('form').count()==track.locator('.shop-product-card').count()*2
         passed('Real carousel auto-slides, pauses on hover/focus, resumes explicitly; arrows/dots/keyboard/mouse drag work without cloned cards/forms or accidental navigation')
         # Click an existing real purchase form after dragging, then place an actual QA order.

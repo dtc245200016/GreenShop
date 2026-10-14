@@ -60,10 +60,10 @@ def browser():
         oid=int(page.url.rsplit('/',1)[1]);assert om.qa_sql(f'SELECT Quantity FROM OrderItems WHERE OrderId={oid}')=='1'
         passed('Homepage card Buy Now: real anonymous POST -> safe login return -> quantity 1 confirmation -> real COD order; no order/stock change before confirmation')
         # Hero Buy Now uses its own form and exact featured ID. Going back then adding to cart remains separate.
-        page.goto(om.QA_BASE+'/');hero=page.locator('.hero-purchase form');action=hero.get_attribute('action');hero_pid=int(action.rsplit('/',1)[1]);assert hero_pid==int(page.locator('.hero-featured').get_attribute('href').rsplit('/',1)[1])
-        if page.locator('.hero-purchase button').is_enabled():
-            count=om.qa_sql('SELECT COUNT(*) FROM Orders');page.locator('.hero-purchase button').click();expect(page).to_have_url(re.compile(f'/ThanhToan/XacNhanMuaHang/{hero_pid}'));assert om.qa_sql('SELECT COUNT(*) FROM Orders')==count
-            page.go_back();expect(page.locator('.hero-purchase')).to_be_visible()
+        page.goto(om.QA_BASE+'/');hero=page.locator('[data-hero-slide][aria-hidden=false] .hero-purchase form');action=hero.get_attribute('action');hero_pid=int(action.rsplit('/',1)[1]);assert hero_pid==int(page.locator('[data-hero-slide][aria-hidden=false] .hero-featured').get_attribute('href').rsplit('/',1)[1])
+        if page.locator('[data-hero-slide][aria-hidden=false] .hero-purchase button').is_enabled():
+            count=om.qa_sql('SELECT COUNT(*) FROM Orders');page.locator('[data-hero-slide][aria-hidden=false] .hero-purchase button').click();expect(page).to_have_url(re.compile(f'/ThanhToan/XacNhanMuaHang/{hero_pid}'));assert om.qa_sql('SELECT COUNT(*) FROM Orders')==count
+            page.go_back();expect(page.locator('[data-hero-slide][aria-hidden=false] .hero-purchase')).to_be_visible()
         available=page.locator('.shop-product-card:has(.product-card-action button:not(:disabled))').first;cart_pid=int(available.get_attribute('data-product-id'));available.get_by_role('button',name='Thêm vào giỏ',exact=True).click();expect(page).to_have_url(re.compile('/GioHang/QuanLyGioHang'));assert int(om.qa_sql(f'SELECT Quantity FROM CartItems WHERE UserId=3 AND ProductId={cart_pid}'))>=1
         passed('Hero Buy Now targets the displayed product; authenticated confirmation; independent Add to cart works after back navigation')
         for width in (1440,768,360,320):
@@ -128,5 +128,71 @@ def public_preview():
     (OUT/'public-preview-results.json').write_text(json.dumps({'status':'PASS','checks':'Production public home/catalog at 1440/360px; real photos load; no overflow or JS errors; GET only'}))
     print('PASS: Production public home/catalog screenshots, real photos, responsive layout and no JavaScript errors; GET only.',flush=True)
 
+def botanical():
+    """Real theme/vine interactions; UI checks create no orders and preserve every QA row."""
+    om.configure_qa();import portal_sessions as ps
+    from playwright.sync_api import expect
+    accounts=json.loads((OUT/'accounts.json').read_text());checks=[]
+    def passed(label):checks.append(label);print('PASS: '+label,flush=True)
+    def overflow(page):assert page.evaluate('document.documentElement.scrollWidth<=innerWidth'),page.viewport_size
+    def contrast(page):
+        return page.evaluate("""() => {
+          const rgb=c=>c.match(/[\\d.]+/g).slice(0,3).map(Number),lum=c=>rgb(c).map(n=>{n/=255;return n<=.04045?n/12.92:((n+.055)/1.055)**2.4}).reduce((v,n,i)=>v+n*[.2126,.7152,.0722][i],0);
+          const ratio=(a,b)=>(Math.max(lum(a),lum(b))+.05)/(Math.min(lum(a),lum(b))+.05);
+          return ['body','.shop-header .shop-brand','.shop-main-nav>a[aria-current=page]','.hero-copy>p'].map(s=>{
+            const e=document.querySelector(s);if(!e)return 99;let b=e;while(b.parentElement&&getComputedStyle(b).backgroundColor==='rgba(0, 0, 0, 0)')b=b.parentElement;
+            return ratio(getComputedStyle(e).color,getComputedStyle(b).backgroundColor);
+          });
+        }""")
+    with ps.playwright() as pw:
+        b=pw.chromium.launch();c=b.new_context(ignore_https_errors=True,viewport={'width':1536,'height':1000},color_scheme='light');p=c.new_page();errors=[];missing=[]
+        p.on('pageerror',lambda e:errors.append(str(e)))
+        p.on('response',lambda r:missing.append(r.url) if r.url.startswith(om.QA_BASE) and r.request.resource_type in ('script','stylesheet','font') and r.status>=400 else None)
+        p.goto(om.QA_BASE+'/');expect(p.locator('html')).to_have_attribute('data-theme','light')
+        flower=p.get_by_role('button',name='Chuyển sang giao diện tối',exact=True);flower.focus();flower.press('Space');expect(p.locator('html')).to_have_attribute('data-theme','dark')
+        p.reload();expect(p.locator('html')).to_have_attribute('data-theme','dark')
+        second=c.new_page();second.goto(om.QA_BASE+'/SanPham/CuaHang');expect(second.locator('html')).to_have_attribute('data-theme','dark')
+        p.get_by_role('button',name='Chuyển sang giao diện sáng',exact=True).click();expect(second.locator('html')).to_have_attribute('data-theme','light');second.close()
+        passed('Native flower button supports Space/Enter, changes actual theme without reload; preference persists across reload/new tab and storage events')
+        ps.login_page(p,accounts[2]);p.goto(om.QA_BASE+'/');auth={x['name']:x['value'] for x in c.cookies() if x['name']==ps.CUSTOMER_COOKIE};before=ps.table_hashes(om.qa_sql)
+        for theme in ('light','dark'):
+            p.evaluate('(t)=>localStorage.setItem("greenshop.theme",t)',theme)
+            for width in (320,375,390,768,1024,1280,1440,1536):
+                p.set_viewport_size({'width':width,'height':1000});p.goto(om.QA_BASE+'/',wait_until='networkidle');expect(p.locator('html')).to_have_attribute('data-theme',theme);overflow(p)
+                if width in (390,1536):p.screenshot(path=str(OUT/f'botanical-{theme}-{width}.png'),full_page=True)
+                if width>=1024:assert min(contrast(p))>=4.5,contrast(p)
+                if width<768:
+                    p.get_by_role('button',name='Mở menu điều hướng',exact=True).click();expect(p.locator('#shop-navigation-dialog')).to_be_visible();overflow(p);p.keyboard.press('Escape')
+            for path in ('/SanPham/CuaHang','/SanPham/ChiTietSanPham/1','/GioHang/QuanLyGioHang','/ThanhToan/XacNhanMuaHang/1','/ThanhToan/DonHangCuaToi'):
+                p.goto(om.QA_BASE+path);overflow(p);expect(p.locator('html')).to_have_attribute('data-theme',theme)
+                assert p.evaluate('getComputedStyle(document.body).backgroundColor')==('rgb(11, 25, 18)' if theme=='dark' else 'rgb(241, 247, 237)')
+            p.goto(om.QA_BASE+'/ThanhToan/XacNhanMuaHang/1');p.locator('#Address').fill('QA unsent address');token=p.locator('[name=__RequestVerificationToken]').first.get_attribute('value')
+            p.locator('[data-theme-toggle]').click();expect(p.locator('#Address')).to_have_value('QA unsent address');assert p.locator('[name=__RequestVerificationToken]').first.get_attribute('value')==token
+        assert auth=={x['name']:x['value'] for x in c.cookies() if x['name']==ps.CUSTOMER_COOKIE};assert ps.table_hashes(om.qa_sql)==before
+        passed('Both themes at all 8 viewports; Customer pages, forms, cart/checkout/history use matching surfaces; sampled contrast AA; theme changes preserve form/token/cookie and every DB row')
+        p.goto(om.QA_BASE+'/');p.set_viewport_size({'width':1536,'height':1000});p.emulate_media(reduced_motion='no-preference')
+        bounds=p.locator('[data-botanical-nav]').bounding_box();p.mouse.move(bounds['x']+bounds['width']*.23,bounds['y']+bounds['height']*.25)
+        p.wait_for_function("[...document.querySelectorAll('.vine-leaf')].some(e=>e.getAnimations().length>0)")
+        p.wait_for_timeout(950);assert p.locator('.vine-leaf').evaluate_all('(leaves)=>leaves.every(e=>e.getAnimations().length===0)')
+        p.emulate_media(reduced_motion='reduce');p.mouse.move(bounds['x']+bounds['width']*.66,bounds['y']+15)
+        assert p.locator('.vine-leaf').evaluate_all('(leaves)=>leaves.every(e=>e.getAnimations().length===0)')
+        p.locator('[data-theme-toggle]').click();assert p.locator('[data-theme-toggle]').get_attribute('aria-label').startswith('Chuyển sang giao diện')
+        passed('Nearby leaves sway on pointer movement, settle without idle loops; reduced motion stops leaf/flower/button motion while preserving theme control')
+        assert not errors and not missing,(errors,missing);c.close()
+        for storage in (True,False):
+            ctx=b.new_context(ignore_https_errors=True,color_scheme='dark');page=ctx.new_page()
+            if not storage:page.add_init_script("Object.defineProperty(window,'localStorage',{get(){throw new DOMException('blocked')}})")
+            page.goto(om.QA_BASE+'/Account/Register');expect(page.locator('html')).to_have_attribute('data-theme','dark');page.locator('#FullName').fill('QA Unsubmitted');page.locator('[data-theme-toggle]').click();expect(page.locator('#FullName')).to_have_value('QA Unsubmitted');expect(page.locator('html')).to_have_attribute('data-theme','light');ctx.close()
+        passed('Auth layout, system dark preference and blocked localStorage all work; theme does not submit or reset signup fields')
+        ctx=b.new_context(ignore_https_errors=True);page=ctx.new_page();ps.login_page(page,accounts[0],ps.ADMIN_LOGIN);page.get_by_role('link',name='Xem website',exact=True).click()
+        for width in (320,768,1536):
+            page.set_viewport_size({'width':width,'height':1000});page.goto(om.QA_BASE+'/?portal=admin');overflow(page);page.locator('[data-theme-toggle]').click();expect(page.locator('.account-menu .menu-user-name')).to_have_text('QA Order User 1')
+            assert page.locator('form[action*="ThanhToan"],form[action*="GioHang"]').count()==0
+            if width<768:page.get_by_role('button',name='Mở menu điều hướng',exact=True).click()
+            page.get_by_role('link',name='Quay lại quản trị',exact=True).click();expect(page).to_have_url(om.QA_BASE+'/Admin/Admin/TongQuan')
+            assert page.locator('html').get_attribute('data-theme') is None
+        ctx.close();b.close();passed('Admin preview retains identity across theme changes; return to Dashboard works on phone/tablet/desktop; Admin dashboard stays independent')
+    (OUT/'botanical-results.json').write_text(json.dumps({'status':'PASS','checks':checks,'writes':'No orders created by theme/UI checks'},indent=2))
+
 if __name__=='__main__':
-    {'prepare':prepare,'start':om.start,'refresh':lambda:om.start(False),'business':om.run_business,'edge':om.edge_checks,'browser':browser,'security':cards_security,'preservation':preservation,'production':production,'public-preview':public_preview,'teardown':om.teardown,'admin-regression':om.browser_checks}[sys.argv[1]]()
+    {'prepare':prepare,'start':om.start,'refresh':lambda:om.start(False),'business':om.run_business,'edge':om.edge_checks,'browser':browser,'botanical':botanical,'security':cards_security,'preservation':preservation,'production':production,'public-preview':public_preview,'teardown':om.teardown,'admin-regression':om.browser_checks}[sys.argv[1]]()

@@ -19,7 +19,7 @@ public static class ShoppingIdentity
         var path = value.Split('?', '#')[0];
         // Only existing GET pages; never send a login back to a mutation endpoint.
         return System.Text.RegularExpressions.Regex.IsMatch(path,
-            @"^/(?:Home(?:/Index)?|SanPham/(?:CuaHang|ChiTietSanPham/[1-9][0-9]*)|GioHang/QuanLyGioHang|ThanhToan/(?:XacNhanMuaHang/[1-9][0-9]*|XacNhanGioHang|ThanhToanVietQR/[1-9][0-9]*|DonHangCuaToi|ChiTietDonHang/[1-9][0-9]*))?/?$",
+            @"^/(?:Home(?:/Index)?|SanPham/(?:CuaHang|ChiTietSanPham/[1-9][0-9]*)|GioHang/QuanLyGioHang|TuongTac/(?:TroChuyen|DanhGia/[1-9][0-9]*)|ThanhToan/(?:XacNhanMuaHang/[1-9][0-9]*|XacNhanGioHang|ThanhToanVietQR/[1-9][0-9]*|DonHangCuaToi|ChiTietDonHang/[1-9][0-9]*))?/?$",
             System.Text.RegularExpressions.RegexOptions.IgnoreCase) ? value : null;
     }
 }

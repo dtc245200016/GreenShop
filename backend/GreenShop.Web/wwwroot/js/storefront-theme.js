@@ -1,6 +1,62 @@
 // Visual feedback only. Existing storefront.js owns menus and form submissions.
 (() => {
     "use strict";
+    if (!document.body.classList.contains("storefront")) return;
+    const key="greenshop.theme",root=document.documentElement;
+    const system=matchMedia("(prefers-color-scheme: dark)"),reduced=matchMedia("(prefers-reduced-motion: reduce)");
+    let preference=null,transition;
+    try { const saved=localStorage.getItem(key);if(saved==="light"||saved==="dark")preference=saved; } catch {}
+    const apply=(theme,animate=false)=>{
+        if(animate&&!reduced.matches){root.dataset.themeChanging="true";clearTimeout(transition);transition=setTimeout(()=>delete root.dataset.themeChanging,320);}
+        root.dataset.theme=theme;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content",theme==="dark"?"#142d21":"#fbfdf9");
+        document.querySelectorAll("[data-theme-toggle]").forEach(button=>{
+            const label=theme==="dark"?"Chuyển sang giao diện sáng":"Chuyển sang giao diện tối";
+            button.setAttribute("aria-label",label);button.setAttribute("aria-pressed",String(theme==="dark"));button.title=label;
+            button.querySelector("[data-theme-label]").textContent=label;
+        });
+    };
+    apply(preference||(system.matches?"dark":"light"));
+    document.addEventListener("click",event=>{
+        if(!event.target.closest("[data-theme-toggle]"))return;
+        const theme=root.dataset.theme==="dark"?"light":"dark";
+        preference=theme;try{localStorage.setItem(key,theme);}catch{}
+        apply(theme,true);
+    });
+    addEventListener("storage",event=>{
+        if(event.key!==key&&event.key!==null)return;
+        preference=event.newValue==="dark"||event.newValue==="light"?event.newValue:null;
+        apply(preference||(system.matches?"dark":"light"),true);
+    });
+    system.addEventListener("change",()=>{if(!preference)apply(system.matches?"dark":"light",true);});
+    reduced.addEventListener("change",()=>{if(reduced.matches){clearTimeout(transition);delete root.dataset.themeChanging;}});
+    addEventListener("pagehide",()=>clearTimeout(transition));
+    // One delegated listener per vine. Animate only nearby leaves, never layout or an idle loop.
+    document.querySelectorAll("[data-botanical-nav]").forEach(vine=>{
+        const leaves=[...vine.querySelectorAll("[data-vine-position]")];
+        let bounds,previous=-1,last=0;
+        const sway=event=>{
+            if(reduced.matches||event.pointerType==="touch")return;
+            bounds??=vine.getBoundingClientRect();
+            const x=(event.clientX-bounds.left)/bounds.width*1200,index=Math.round(x/90);
+            if(index===previous||performance.now()-last<100)return;
+            previous=index;last=performance.now();
+            leaves.filter(leaf=>Math.abs(Number(leaf.dataset.vinePosition)-x)<140).forEach((leaf,i)=>{
+                leaf.getAnimations().forEach(animation=>animation.cancel());
+                const direction=i%2?1:-1;
+                leaf.animate([{transform:"rotate(0deg) translateY(0)"},{transform:`rotate(${direction*7}deg) translateY(-2px)`,offset:.32},{transform:`rotate(${-direction*3}deg) translateY(1px)`,offset:.72},{transform:"rotate(0deg) translateY(0)"}],
+                    {duration:650,delay:Math.min(160,Math.abs(Number(leaf.dataset.vinePosition)-x)*.7+i*15),easing:"cubic-bezier(.25,.7,.35,1)"});
+            });
+        };
+        vine.addEventListener("pointerenter",event=>{bounds=vine.getBoundingClientRect();previous=-1;sway(event);});
+        vine.addEventListener("pointermove",sway,{passive:true});
+        vine.addEventListener("pointerleave",()=>{bounds=undefined;previous=-1;});
+        addEventListener("resize",()=>{bounds=undefined;},{passive:true});
+        reduced.addEventListener("change",()=>{if(reduced.matches)leaves.forEach(leaf=>leaf.getAnimations().forEach(animation=>animation.cancel()));});
+    });
+})();
+(() => {
+    "use strict";
     const reduced=matchMedia("(prefers-reduced-motion: reduce)");
     const timers=new WeakMap();
     document.addEventListener("pointerdown",event=>{

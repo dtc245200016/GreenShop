@@ -31,7 +31,7 @@ def browser():
     def passed(s):checks.append(s);print('PASS: '+s,flush=True)
     with sync_playwright() as pw:
         browser=pw.chromium.launch(headless=True);context=browser.new_context(ignore_https_errors=True,viewport={'width':1440,'height':1000});page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
-        page.goto(om.QA_BASE+'/Account/Login');page.locator('#Email').fill(account[0]);page.locator('[name=Password]').fill(account[1]);page.locator('form:has(#Email) button[type=submit]').click();expect(page).to_have_url(om.QA_BASE+dm.BASE)
+        page.goto(om.QA_BASE+'/Admin/Account/Login');page.locator('#Email').fill(account[0]);page.locator('[name=Password]').fill(account[1]);page.locator('form:has(#Email) button[type=submit]').click();expect(page).to_have_url(om.QA_BASE+dm.BASE)
         admin=om.admin_sessions()[0]
         category=om.qa_sql("SELECT Id FROM Categories WHERE Name='UI Modal QA'")
         if not category:
@@ -83,5 +83,100 @@ def production():
     response=client.open(req,timeout=30);assert response.code==200 and response.read(4)==b'wOF2'
     print('PASS: Production shared theme assets and local Vietnamese font serve 200.',flush=True)
 
+
+def typography(override=False,phase='all'):
+    """Verify real Vietnamese text, forms and icons across all shared layouts in QA."""
+    import portal_sessions as ps
+    from playwright.sync_api import expect
+    if gs.compose!=om.qa_compose:om.configure_qa()
+    assert om.qa_sql('SELECT DATABASE()')=='greenshop_order_qa'
+    accounts=json.loads((OUT/'accounts.json').read_text());checks=[]
+    category=om.qa_sql('SELECT Id FROM Categories ORDER BY Id LIMIT 1')
+    if not category:
+        category=om.qa_sql("INSERT INTO Categories (Name,Description,IsActive) VALUES ('QA Readable Category','QA type fixture',1); SELECT LAST_INSERT_ID()")
+    product=om.qa_sql('SELECT Id FROM Products ORDER BY Id LIMIT 1')
+    conversation=om.qa_sql('SELECT Id FROM ShopConversations WHERE CustomerId=3 LIMIT 1')
+    admin_paths=[dm.BASE,'/Admin/SanPham/QuanLySanPham','/Admin/SanPham/ThemSanPham',
+        *('/Admin/SanPham/'+a+'/'+product for a in ('SuaSanPham','ChiTietSanPham','XoaSanPham')),
+        '/Admin/DanhMuc/QuanLyDanhMuc','/Admin/DanhMuc/ThemDanhMuc',
+        *('/Admin/DanhMuc/'+a+'/'+category for a in ('ChiTietDanhMuc','SuaDanhMuc','XoaDanhMuc')),
+        '/Admin/NguoiDung/QuanLyNguoiDung','/Admin/NguoiDung/ChiTietNguoiDung/3',
+        '/Admin/DonHang/QuanLyDonHang','/Admin/DonHang/ChiTietDonHang/1',
+        '/Admin/CaiDatCuaHang/QuanLyThanhToanVanChuyen',
+        '/Admin/KhachHang/Slider','/Admin/KhachHang/TinNhan','/Admin/KhachHang/DanhGia']
+    if conversation:admin_paths.append('/Admin/KhachHang/TroChuyen/'+conversation)
+    if phase=='dashboard':admin_paths=[dm.BASE]
+    with ps.playwright() as pw:
+        browser=pw.chromium.launch();errors=[];missing=[]
+        def watch(page):
+            if override:
+                page.route(re.compile(re.escape(om.QA_BASE)+r'/css/[^/?]+\.css(?:\?.*)?$'),lambda route:route.fulfill(content_type='text/css',body=(gs.ROOT/'backend/GreenShop.Web/wwwroot/css'/route.request.url.split('/css/')[-1].split('?')[0]).read_text()))
+                page.route(re.compile(re.escape(om.QA_BASE)+r'/js/admin-dashboard\.js(?:\?.*)?$'),lambda route:route.fulfill(content_type='application/javascript',body=(gs.ROOT/'backend/GreenShop.Web/wwwroot/js/admin-dashboard.js').read_text()))
+            page.on('pageerror',lambda e:errors.append(str(e)))
+            page.on('response',lambda r:missing.append((r.status,r.url)) if r.request.resource_type in ('stylesheet','script','font') and r.status>=400 else None)
+        context=browser.new_context(ignore_https_errors=True,viewport={'width':1440,'height':1000});page=context.new_page();watch(page);ps.login_page(page,accounts[0],ps.ADMIN_LOGIN)
+        def verify(path,width,admin=False):
+            response=page.goto(om.QA_BASE+path,wait_until='networkidle');assert response.status==(403 if path.endswith('/AccessDenied') else 200),(width,path,response.status)
+            page.evaluate('document.fonts.ready');page.wait_for_timeout(350)
+            assert page.evaluate('document.documentElement.scrollWidth<=innerWidth'),(width,path,'page overflow')
+            assert 'Be Vietnam Pro' in page.locator('body').evaluate('e=>getComputedStyle(e).fontFamily')
+            assert page.evaluate("document.fonts.check('400 16px \"Be Vietnam Pro\"','Đơn hàng Người dùng Chọn file')")
+            assert float(page.locator('body').evaluate('e=>parseFloat(getComputedStyle(e).fontSize)'))>=16
+            # Inspect actual rendered text, excluding decorative marks and notification counters.
+            failures=page.evaluate("""()=>{
+                const root=document.querySelector('main'),walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),bad=[];
+                while(walker.nextNode()){
+                    const n=walker.currentNode,e=n.parentElement;
+                    if(!n.textContent.trim()||!e||e.closest('script,style,.visually-hidden,[hidden],[inert],.hero-stamp,.hero-visual-label,.hero-caption small,.shop-eyebrow,.shop-alert-badge,.product-add-label'))continue;
+                    const s=getComputedStyle(e);if(!e.getClientRects().length||s.visibility==='hidden')continue;
+                    if(!s.fontFamily.includes('Be Vietnam Pro')||parseFloat(s.fontSize)<14)bad.push([e.tagName,e.className,n.textContent.trim().slice(0,40),s.fontFamily,s.fontSize]);
+                }return bad.slice(0,12)
+            }""")
+            assert not failures,(width,path,failures)
+            for input in page.locator('main input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=file]),main select,main textarea').all():
+                if input.is_visible():assert float(input.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)'))>=16,(width,path,'input too small')
+            icon=page.locator('.fa-solid,.fa-regular').first
+            if icon.count():assert 'Font Awesome' in icon.evaluate('e=>getComputedStyle(e).fontFamily')
+            if admin:
+                if path==dm.BASE:
+                    if width<=575:
+                        assert page.locator('.dash-kpis').evaluate('e=>getComputedStyle(e).gridTemplateColumns.split(" ").length')==1
+                        assert page.locator('.dash-value').evaluate_all('(values)=>values.every(e=>{const range=document.createRange();range.selectNodeContents(e);return range.getClientRects().length===1})'),(width,'KPI number split over lines')
+                    ticks=page.locator('.dash-axis:visible')
+                    assert ticks.count()>=2
+                    assert ticks.evaluate_all('(ticks)=>ticks.every(t=>parseFloat(getComputedStyle(t).fontSize)*t.getScreenCTM().a>=13.9)')
+                    bar=page.locator('.dash-bar').first;bar.focus();bar.press('Enter');expect(bar).to_have_attribute('aria-pressed','true');expect(page.locator('[data-chart-selection]')).to_contain_text(bar.get_attribute('data-label'))
+                    bar.press('Escape');expect(bar).to_have_attribute('aria-pressed','false')
+                assert float(page.locator('.admin-sidebar .nav-link').first.evaluate('e=>parseFloat(getComputedStyle(e).fontSize)'))>=15
+                for button in page.locator('.admin-topbar button,.admin-topbar a').all():
+                    if button.is_visible():
+                        b=button.bounding_box();assert b['x']>=-1 and b['x']+b['width']<=width+1,(width,path,'clipped header control')
+        for width in (() if phase=='auth' else (1440,768,390,320)):
+            page.set_viewport_size({'width':width,'height':1000})
+            for path in admin_paths:verify(path,width,True)
+            page.goto(om.QA_BASE+dm.BASE,wait_until='networkidle');page.screenshot(path=str(OUT/f'typography-admin-{width}.png'),animations='disabled',full_page=True)
+            checks.append(f'Admin {width}px: {len(admin_paths)} pages, fonts/inputs/table text/icons/assets/overflow')
+            print('PASS: '+checks[-1],flush=True)
+        context.close();context=browser.new_context(ignore_https_errors=True,viewport={'width':1440,'height':1000});page=context.new_page();watch(page);ps.login_page(page,accounts[2])
+        paths=['/','/SanPham/CuaHang','/SanPham/ChiTietSanPham/'+product,'/GioHang/QuanLyGioHang','/ThanhToan/DonHangCuaToi','/ThanhToan/ChiTietDonHang/1','/TuongTac/TroChuyen']
+        item=om.qa_sql('SELECT i.Id FROM OrderItems i JOIN Orders o ON o.Id=i.OrderId WHERE o.UserId=3 AND o.Status=1 AND i.ProductId IS NOT NULL AND NOT EXISTS(SELECT 1 FROM ProductReviews r WHERE r.OrderItemId=i.Id) LIMIT 1')
+        if item:paths.append('/TuongTac/DanhGia/'+item)
+        for theme in (() if phase in ('auth','dashboard') else ('light','dark')):
+            context.add_init_script(f"localStorage.setItem('greenshop.theme','{theme}')")
+            for width in (1440,768,390,320):
+                page.set_viewport_size({'width':width,'height':1000})
+                for path in paths:verify(path,width)
+                page.goto(om.QA_BASE+'/',wait_until='networkidle');page.screenshot(path=str(OUT/f'typography-home-{theme}-{width}.png'),animations='disabled',full_page=True)
+                checks.append(f'Customer {theme}/{width}px: fonts/inputs/body/icons/assets/overflow')
+                print('PASS: '+checks[-1],flush=True)
+        context.close();context=browser.new_context(ignore_https_errors=True);page=context.new_page();watch(page)
+        for width in (() if phase=='dashboard' else (1440,390,320)):
+            page.set_viewport_size({'width':width,'height':900})
+            for path in ('/Account/Login','/Admin/Account/Login','/Account/Register','/Account/AccessDenied'):verify(path,width)
+            checks.append(f'Auth {width}px: Customer/Admin login, register and genuine 403 denial page; fonts/forms/icons/assets/overflow')
+            print('PASS: '+checks[-1],flush=True)
+        assert not errors and not missing,(errors,missing);context.close();browser.close()
+    (OUT/f'typography-{phase}-results.json').write_text(json.dumps({'status':'PASS','phase':phase,'checks':checks},indent=2))
+
 if __name__=='__main__':
-    {'prepare':prepare,'start':om.start,'refresh':lambda:om.start(False),'browser':browser,'preservation':preservation,'production':production,'teardown':om.teardown,'fixtures':dm.fixtures,'dashboard-browser':dm.browser,'user-business':lambda:us.business(check_legacy=False),'user-browser':us.browser,'order-business':om.run_business,'order-edge':om.edge_checks,'order-browser':om.browser_checks}[sys.argv[1]]()
+    {'prepare':prepare,'start':om.start,'refresh':lambda:om.start(False),'browser':browser,'typography':typography,'preservation':preservation,'production':production,'teardown':om.teardown,'fixtures':dm.fixtures,'dashboard-browser':dm.browser,'user-business':lambda:us.business(check_legacy=False),'user-browser':us.browser,'order-business':om.run_business,'order-edge':om.edge_checks,'order-browser':om.browser_checks}[sys.argv[1]]()

@@ -17,10 +17,15 @@ public class SanPhamController(AppDbContext db) : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> ChiTietSanPham([FromRoute] int id, CancellationToken ct)
+    public async Task<IActionResult> ChiTietSanPham([FromRoute] int id, int reviewPage=1, CancellationToken ct=default)
     {
         if (!ModelState.IsValid || id <= 0) return NotFound();
+        if(reviewPage<1 || reviewPage>100000) return BadRequest();
         var model = await StoreCatalog.Project(StoreCatalog.Saleable(db).Where(p => p.Id == id), db).FirstOrDefaultAsync(ct);
-        return model == null ? NotFound() : View(model);
+        if(model==null) return NotFound();
+        reviewPage=Math.Min(reviewPage,Math.Max(1,(int)Math.Ceiling(model.ReviewCount/20d)));
+        ViewData["ReviewPage"]=reviewPage;
+        ViewData["Reviews"]=await db.ProductReviews.AsNoTracking().Include(r=>r.User).Where(r=>r.ProductId==id).OrderByDescending(r=>r.Id).Skip((reviewPage-1)*20).Take(20).ToListAsync(ct);
+        return View(model);
     }
 }

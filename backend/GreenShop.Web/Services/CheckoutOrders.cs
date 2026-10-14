@@ -32,7 +32,7 @@ public class CheckoutOrders(AppDbContext db,IDataProtectionProvider protection)
         db.ChangeTracker.Clear();
         await using var transaction=await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted,ct);
         var user=await ShoppingIdentity.LockUserAsync(db,userId,ct);
-        if(user==null || !user.IsActive || user.SessionVersion!=sessionVersion) return new CheckoutResult(403,0,"Tài khoản không còn phiên đăng nhập hợp lệ.");
+        if(user==null || !user.IsActive || user.Role!=UserRole.Customer || user.SessionVersion!=sessionVersion) return new CheckoutResult(403,0,"Tài khoản không còn phiên đăng nhập hợp lệ.");
         var existing=await db.Orders.AsNoTracking().FirstOrDefaultAsync(o=>o.UserId==userId && o.ConfirmationToken==form.ConfirmationToken,ct);
         if(existing!=null) return new CheckoutResult(200,existing.Id,"Đơn hàng đã được ghi nhận.");
         var policy=(await db.PaymentShippingSettings.FromSqlRaw("SELECT * FROM PaymentShippingSettings WHERE Id=1 FOR UPDATE").AsNoTracking().ToListAsync(ct)).Single();

@@ -9,7 +9,12 @@ namespace GreenShop.Web.Controllers;
 public class HomeController(AppDbContext db) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Index(CancellationToken ct) => View(await StoreCatalog.LoadAsync(db, null, null, "newest", 1, ct));
+    public async Task<IActionResult> Index(CancellationToken ct)
+    {
+        var model=(await StoreCatalog.LoadAsync(db,null,null,"newest",1,ct))!;
+        model.HeroProducts=await StoreCatalog.HeroAsync(db,ct);
+        return View(model);
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error() => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

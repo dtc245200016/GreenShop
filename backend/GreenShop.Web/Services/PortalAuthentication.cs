@@ -14,6 +14,8 @@ public static class PortalAuthentication
     public const string CustomerScheme = "GreenShop.Customer";
     public const string CustomerCookie = "GreenShop.Customer";
     public const string MigratedCustomerItem = "GreenShop.MigratedCustomer";
+    public const string StorefrontAdminItem = "GreenShop.StorefrontAdmin";
+    public const string PreviewParameter = "portal";
     public const string CustomerLoginRoute = "CustomerLogin";
     public const string AdminLoginRoute = "AdminLogin";
     public const string CustomerLogoutRoute = "CustomerLogout";
@@ -35,17 +37,27 @@ public static class PortalAuthentication
 
     public static async Task MigrateLegacyCustomerAsync(HttpContext context)
     {
-        if(!IsAdmin(context.Request) && !context.Request.Cookies.ContainsKey(CustomerCookie)
+        if(!IsAdmin(context.Request) && !context.Request.Path.StartsWithSegments("/Account")
+            && (!context.Request.Cookies.ContainsKey(CustomerCookie)
+                || context.Request.Query[PreviewParameter]=="admin")
             && context.Request.Cookies.ContainsKey(AdminCookie))
         {
-            // Validate the old ticket with its original handler and DB session checks.
-            // AuthenticateAsync never assigns an Admin principal to the storefront.
-            await context.AuthenticateAsync(AdminScheme);
+            // Reuse the genuine, DB-validated Admin ticket. The query selects a view,
+            // never a role; ordinary Customer tabs keep their own existing cookie.
+            var result=await context.AuthenticateAsync(AdminScheme);
+            if(result.Succeeded && result.Principal?.IsInRole("Admin")==true)
+                context.Items[StorefrontAdminItem]=result.Principal;
         }
     }
 
     public static void RestoreMigratedCustomer(HttpContext context)
     {
+        if(!IsAdmin(context.Request) && context.Items.TryGetValue(StorefrontAdminItem,out var admin)
+            && admin is ClaimsPrincipal adminPrincipal)
+        {
+            context.User=adminPrincipal;
+            return;
+        }
         if(!IsAdmin(context.Request) && context.User.Identity?.IsAuthenticated!=true
             && context.Items.TryGetValue(MigratedCustomerItem,out var principal) && principal is ClaimsPrincipal customer)
             context.User=customer;

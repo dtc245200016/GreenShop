@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GreenShop.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Customer")]
 public class GioHangController(AppDbContext db, ILogger<GioHangController> logger) : Controller
 {
     [HttpGet]
@@ -34,6 +34,7 @@ public class GioHangController(AppDbContext db, ILogger<GioHangController> logge
     [AllowAnonymous, HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> ThemVaoGioHang([FromRoute] int id, QuantityViewModel model, CancellationToken ct)
     {
+        if(User.IsInRole("Admin"))return Forbid();
         if (User.Identity?.IsAuthenticated != true)
             return RedirectToAction("Login", "Account", new { returnUrl = Url.Action("ChiTietSanPham", "SanPham", new { id }) });
         var userId = ShoppingIdentity.UserId(User);
@@ -69,7 +70,7 @@ public class GioHangController(AppDbContext db, ILogger<GioHangController> logge
         {
             await using var transaction=await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted,ct);
             var actor=await ShoppingIdentity.LockUserAsync(db,userId,ct);
-            if(actor==null || !actor.IsActive || actor.SessionVersion!=UserSession.Version(User)) return -1;
+            if(actor==null || !actor.IsActive || actor.Role!=UserRole.Customer || actor.SessionVersion!=UserSession.Version(User)) return -1;
             var count=await db.CartItems.Where(i=>i.Id==id && i.UserId==userId).ExecuteDeleteAsync(ct);
             await transaction.CommitAsync(ct);return count;
         });
@@ -86,7 +87,9 @@ public class GioHangController(AppDbContext db, ILogger<GioHangController> logge
             {
                 db.ChangeTracker.Clear();
                 await using var transaction = await db.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted, ct);
-                if (await ShoppingIdentity.LockUserAsync(db, userId, ct) == null) return "Tài khoản không còn tồn tại.";
+                var actor=await ShoppingIdentity.LockUserAsync(db,userId,ct);
+                if(actor==null || !actor.IsActive || actor.Role!=UserRole.Customer || actor.SessionVersion!=UserSession.Version(User))
+                    return "Phiên mua hàng không còn hợp lệ.";
                 var product = (await db.Products.FromSqlInterpolated($"SELECT * FROM Products WHERE Id = {productId} FOR UPDATE").AsNoTracking().ToListAsync(ct)).SingleOrDefault();
                 if (product == null || (product.CategoryId.HasValue && !await db.Categories.AnyAsync(c => c.Id == product.CategoryId && c.IsActive, ct))) return "Sản phẩm không còn được bán.";
                 var item = await db.CartItems.SingleOrDefaultAsync(i => i.UserId == userId && i.ProductId == productId, ct);

@@ -14,9 +14,22 @@ public static class StoreCatalog
         Id = p.Id, Name = p.Name, Price = p.Price, ImageUrl = p.ImageUrl, Description = p.Description,
         StockQuantity = p.StockQuantity, CategoryId = p.CategoryId,
         CategoryName = p.Category == null ? "Chưa phân loại" : p.Category.Name,
+        ReviewCount = db.ProductReviews.Count(r=>r.ProductId==p.Id),
+        AverageStars = db.ProductReviews.Where(r=>r.ProductId==p.Id).Average(r=>(double?)r.Stars),
         SoldCount = db.OrderItems.Where(i => i.ProductId == p.Id && i.Order.Status == OrderStatus.Completed)
             .Sum(i => (long?)i.Quantity) ?? 0
     });
+
+    public static async Task<IReadOnlyList<StoreProductViewModel>> HeroAsync(AppDbContext db, CancellationToken ct)
+    {
+        var settings=await db.HomeSliderSettings.AsNoTracking().SingleAsync(ct);
+        var products=Saleable(db);
+        if(settings.Mode=="all") return await Project(products.OrderByDescending(p=>p.Id),db).ToListAsync(ct);
+        var start=settings.Days==0 ? DateTime.MinValue : DateTime.UtcNow.AddDays(-settings.Days);
+        var sales=db.OrderItems.Where(i=>i.Order.Status==OrderStatus.Completed && i.Order.CreatedAt>=start);
+        var ranked=products.OrderByDescending(p=>sales.Where(i=>i.ProductId==p.Id).Sum(i=>(long?)i.Quantity)??0).ThenByDescending(p=>p.Id).Take(settings.ProductCount);
+        return await Project(ranked,db).ToListAsync(ct);
+    }
 
     public static async Task<StoreCatalogViewModel?> LoadAsync(AppDbContext db, int? categoryId, string? search, string sort, int page, CancellationToken ct)
     {

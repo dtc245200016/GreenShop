@@ -10,12 +10,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GreenShop.Web.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Customer")]
 public class ThanhToanController(AppDbContext db, ILogger<ThanhToanController> logger, IDataProtectionProvider protection) : Controller
 {
     [AllowAnonymous, HttpPost, ValidateAntiForgeryToken]
     public IActionResult MuaNgay([FromRoute] int id, QuantityViewModel model)
     {
+        if(User.IsInRole("Admin"))return Forbid();
         var quantity = ModelState.IsValid ? model.Quantity : 1;
         var destination = Url.Action(nameof(XacNhanMuaHang), new { id, quantity });
         if (User.Identity?.IsAuthenticated != true) return RedirectToAction("Login", "Account", new { returnUrl = destination });
@@ -148,7 +149,9 @@ public class ThanhToanController(AppDbContext db, ILogger<ThanhToanController> l
         var userId = ShoppingIdentity.UserId(User);
         if (userId == 0) return Forbid();
         var order = await db.Orders.AsNoTracking().Include(o => o.Items).FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId, ct);
-        return order == null ? NotFound() : View(order);
+        if(order==null) return NotFound();
+        ViewData["ReviewedItems"]=await db.ProductReviews.Where(r=>r.OrderItem.OrderId==id && r.UserId==userId).Select(r=>r.OrderItemId).ToListAsync(ct);
+        return View(order);
     }
 
     private Task<StoreProductViewModel?> GetProductAsync(int id, CancellationToken ct) =>
