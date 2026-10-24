@@ -2,6 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GreenShop.Web.Models
 {
+    public static class ShopOwnership
+    {
+        public const string OwnerEmail = "trungdtt123@gmail.com";
+        public static bool IsOwnerEmail(string? email) => string.Equals(email?.Trim(),OwnerEmail,StringComparison.OrdinalIgnoreCase);
+    }
+
     public enum UserRole
     {
         Customer = 0,

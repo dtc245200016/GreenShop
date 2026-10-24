@@ -1,0 +1,86 @@
+{
+  "status": "PASS",
+  "observed_epoch": 1792757536.4653828,
+  "removed": [
+    {
+      "path": "/home/trung/GreenShop-Official/backend/GreenShop.Web/bin",
+      "bytes": 53676993,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/GreenShop-Official/backend/GreenShop.Web/obj",
+      "bytes": 3594944,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/GreenShop-Official/tests/__pycache__",
+      "bytes": 48931,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/GreenShop-Official/tests/security-hardening/__pycache__",
+      "bytes": 77086,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/GreenShop-Official/tests/monitoring/__pycache__",
+      "bytes": 100808,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/GreenShop-Official/tests/logging/__pycache__",
+      "bytes": 122245,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/GreenShop-Official/scripts/__pycache__",
+      "bytes": 41246,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/DTC245200016_BTL_TKQT_HTPM/backend/GreenShop.Web/bin",
+      "bytes": 106980340,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/DTC245200016_BTL_TKQT_HTPM/backend/GreenShop.Web/obj",
+      "bytes": 7102740,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/DTC245200016_BTL_TKQT_HTPM/tests/__pycache__",
+      "bytes": 795008,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/DTC245200016_BTL_TKQT_HTPM/tests/ExcelWorkbookCheck/bin",
+      "bytes": 45704284,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/DTC245200016_BTL_TKQT_HTPM/tests/ExcelWorkbookCheck/obj",
+      "bytes": 389018,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/DTC245200016_BTL_TKQT_HTPM/tests/AiProviderCheck/bin",
+      "bytes": 45817360,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    },
+    {
+      "path": "/home/trung/DTC245200016_BTL_TKQT_HTPM/tests/AiProviderCheck/obj",
+      "bytes": 509336,
+      "reason": "Ignored generated build/Python cache; no tracked files or runtime bind source"
+    }
+  ],
+  "generated_bytes_removed": 264960339,
+  "docker_resources_removed": [],
+  "protected": [
+    "all runtime volumes and databases",
+    "all backups",
+    "TLS, uploads, keys and secrets",
+    "QA environment",
+    "old workspace source and all staged files"
+  ],
+  "reason_no_docker_prune": "Exited/release containers and unverified volumes may retain unique data; no broad deletion needed"
+}

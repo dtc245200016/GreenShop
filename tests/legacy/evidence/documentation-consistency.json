@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "observed_utc": "2026-10-23T12:28:04.229293+00:00",
+  "documents_checked": [
+    "README.md",
+    "monitoring/README.md",
+    "docs/evidence/commit3/gs-sec-001-investigation.md",
+    "docs/evidence/commit3/database-connection-investigation.md",
+    "docs/evidence/commit3/main-restoration.md",
+    "docs/evidence/commit3/README.md",
+    "docs/evidence/commit3/security-hardening.md",
+    "docs/evidence/commit3/final-hardening.md",
+    "docs/evidence/commit3/logql-queries.md"
+  ],
+  "source_and_runtime_services": {
+    "main": [
+      "cadvisor",
+      "db",
+      "grafana",
+      "loki",
+      "mysql-exporter",
+      "nginx",
+      "nginx-exporter",
+      "phpmyadmin",
+      "prometheus",
+      "promtail",
+      "qa-alert-receiver",
+      "web_app"
+    ],
+    "qa": [
+      "cadvisor",
+      "db",
+      "grafana",
+      "loki",
+      "mysql-exporter",
+      "nginx",
+      "nginx-exporter",
+      "phpmyadmin",
+      "prometheus",
+      "promtail",
+      "qa-alert-receiver",
+      "web_app"
+    ]
+  },
+  "service_count": 12,
+  "main_ports": {
+    "grafana": "127.0.0.1:3000",
+    "prometheus": "127.0.0.1:9090",
+    "loki": "unpublished",
+    "promtail": "unpublished"
+  },
+  "dashboard_uids": [
+    "greenshop-infrastructure",
+    "greenshop-application",
+    "greenshop-security",
+    "greenshop-logs"
+  ],
+  "alert_rule_count": 4,
+  "loki_datasource_uid": "greenshop-loki",
+  "broken_links": [],
+  "readme_stale_statements": [],
+  "exact_logql_reference": "diagnostic-logql.json",
+  "real_browser_reference": "diagnostic-browser.json",
+  "command_scope_review": "Fresh-host default Compose instructions separated from existing Main authoritative project/plan; QA outage tools explicitly scoped; no credential rotation instructed for current task.",
+  "limitations_preserved": true,
+  "historical_m1_m2_evidence_modified": false
+}

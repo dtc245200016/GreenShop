@@ -19,9 +19,12 @@ namespace GreenShop.Web.Controllers
     {
         private readonly AppDbContext _context;
 
-        public AccountController(AppDbContext context)
+        private readonly Observability _observability;
+
+        public AccountController(AppDbContext context, Observability observability)
         {
             _context = context;
+            _observability = observability;
         }
 
         #region 1. ĐĂNG KÝ (REGISTER)
@@ -50,6 +53,10 @@ namespace GreenShop.Web.Controllers
                 ModelState.AddModelError(nameof(model.Password),"Mật khẩu quá dài. Vui lòng chọn mật khẩu ngắn hơn để các ký tự đều được bảo vệ.");
             if (!ModelState.IsValid) return View(model);
             model.Email=model.Email.Trim().ToLowerInvariant();
+            if(ShopOwnership.IsOwnerEmail(model.Email)) {
+                ModelState.AddModelError("Email","Email này dành cho tài khoản chủ shop và không thể đăng ký công khai.");
+                return View(model);
+            }
 
             if (await _context.Users.AnyAsync(u => u.Email.ToLower() == model.Email.ToLower()))
             {
@@ -125,6 +132,7 @@ namespace GreenShop.Web.Controllers
 
             if (user == null || !BCryptNet.Verify(model.Password, user.PasswordHash))
             {
+                _observability.LoginFailed(HttpContext);
                 ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không chính xác.");
                 return View(model);
             }
@@ -137,6 +145,7 @@ namespace GreenShop.Web.Controllers
 
             if(adminPortal && user.Role!=UserRole.Admin)
             {
+                _observability.AccessDenied(HttpContext, "portal_role_mismatch");
                 ModelState.AddModelError(string.Empty,"Tài khoản này không có quyền quản trị. Vui lòng đăng nhập ở trang khách hàng.");
                 return View(model);
             }
@@ -181,6 +190,8 @@ namespace GreenShop.Web.Controllers
                 isAdmin ? PortalAuthentication.AdminScheme : PortalAuthentication.CustomerScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
+
+            _observability.LoginSucceeded(HttpContext);
 
             if (returnUrl != null && (!isAdmin || adminPortal)) return LocalRedirect(returnUrl);
 

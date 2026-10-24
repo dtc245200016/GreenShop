@@ -1,0 +1,348 @@
+{
+  "status": "PASS_WITH_ACCEPTED_RISK",
+  "rubric": "PASS",
+  "overall": "PARTIAL",
+  "observed_epoch": 1792757418.6553576,
+  "runtime": {
+    "db": {
+      "container_id": "420f22286f2b8550620c9f48625bb1b30ca0f37114b388246d2807a140261299",
+      "image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_database_net",
+        "dtc245200016_btl_tkqt_htpm_db_admin_net"
+      ],
+      "uid_config": "",
+      "privileged": false,
+      "cap_drop": null,
+      "security_opt": null,
+      "readonly_rootfs": false,
+      "health": "healthy",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {}
+      }
+    },
+    "nginx": {
+      "container_id": "118ba3b2f5208695838b59a21cdacceebf89e8bf7aa572e78d36b94fb0a50a40",
+      "image": "sha256:df221db836e1754089190208cee7eeda94f233197056426eda74a43ab1abeac2",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_app_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "uid_config": "",
+      "privileged": false,
+      "cap_drop": null,
+      "security_opt": null,
+      "readonly_rootfs": false,
+      "health": "healthy",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    },
+    "phpmyadmin": {
+      "container_id": "ecacca3997ce58b366ab9533314167af84940835f2055c264f06bab5f9bc27ac",
+      "image": "sha256:42a200db07b4e70fbf32c594ad4521cf16399b8e54bbb5adceae98e7566dfbeb",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_admin_net",
+        "dtc245200016_btl_tkqt_htpm_database_net"
+      ],
+      "uid_config": "root",
+      "privileged": false,
+      "cap_drop": null,
+      "security_opt": null,
+      "readonly_rootfs": false,
+      "health": "healthy",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {}
+      }
+    },
+    "web_app": {
+      "container_id": "2294ac1d08dee2c7797ca61fa224b4cf9ba65426926cd54c1e648fb6606efd79",
+      "image": "sha256:2ac615ae0981b581a46b704f1f2b27ab75c45f437aeb3d1d2f4dbdc03cd48e81",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_app_net",
+        "dtc245200016_btl_tkqt_htpm_database_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "uid_config": "1654:1654",
+      "privileged": false,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "readonly_rootfs": false,
+      "health": "healthy",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    },
+    "prometheus": {
+      "container_id": "81dd44dbe95123af5694491901b5992e7f9bd2c4675bffc7c58f130409dd2861",
+      "image": "sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_admin_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "uid_config": "nobody",
+      "privileged": false,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "readonly_rootfs": false,
+      "health": "healthy",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    },
+    "grafana": {
+      "container_id": "d711d5bff38de023ffcf40f5e31484afc772be433836cb1d01bfa99a4481eff3",
+      "image": "sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_admin_net",
+        "dtc245200016_btl_tkqt_htpm_logging_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "uid_config": "472",
+      "privileged": false,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "readonly_rootfs": false,
+      "health": "healthy",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    },
+    "mysql-exporter": {
+      "container_id": "bfb2f9ebd2bb8947cef6bca48b55923ed0ece35f3fccb7786a5e37d21880717d",
+      "image": "sha256:abed8dac117b4ae5b70757f988e44795935b9a72c3b58d720c67ba688f8cb79e",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_database_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "uid_config": "nobody",
+      "privileged": false,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "readonly_rootfs": false,
+      "health": "running",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    },
+    "nginx-exporter": {
+      "container_id": "9897bd70e552a5ab9fdc3f956b68d8d798a70478ec0c6c228feea61766046127",
+      "image": "sha256:85666e7fde7e253f1c6d978f9a961245df4c9cdb7677e1866d9bb28e8f9ee41d",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "uid_config": "1001:1001",
+      "privileged": false,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "readonly_rootfs": false,
+      "health": "running",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    },
+    "cadvisor": {
+      "container_id": "60ff5c90182aeed75df9505cf1b0394ec6fcaeb9f22cebf794a43c26a2b8f139",
+      "image": "sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "uid_config": "",
+      "privileged": false,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "readonly_rootfs": false,
+      "health": "healthy",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    },
+    "qa-alert-receiver": {
+      "container_id": "f452cbfab32d5e10f3c7ef57528b26db5b56b1a189bfaa386bba50b48d87a22a",
+      "image": "sha256:9c51ecce261773a684c8345b2d4673700055c513b4d54bc0719337d3e4ee552e",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "uid_config": "65534:65534",
+      "privileged": false,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "readonly_rootfs": true,
+      "health": "running",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    },
+    "loki": {
+      "container_id": "6622d6f36abf4ced0f0ae1e9d69dd2d3386595a9945695ab153a5558430d5e15",
+      "image": "sha256:a95db62e07568722e6143cf85b51b565a8225b775c17d475d9a776cbd4eb29ce",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_logging_net"
+      ],
+      "uid_config": "10001:10001",
+      "privileged": false,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "readonly_rootfs": true,
+      "health": "healthy",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    },
+    "promtail": {
+      "container_id": "9ff7c9d37eae18a98ed82a0e140196cc1b86b0d79849381d4b80f11ff387fce2",
+      "image": "sha256:a761cb834cfaeee29745440d4884d6748f0a08d8f68928db1d707018c1dcfbe9",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_logging_net"
+      ],
+      "uid_config": "10001:0",
+      "privileged": false,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "readonly_rootfs": true,
+      "health": "healthy",
+      "oom_killed": false,
+      "restarts": 0,
+      "log_rotation": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      }
+    }
+  },
+  "network_probes": {
+    "web_app -> dtc245200016_btl_tkqt_htpm_database_net": true,
+    "nginx -> dtc245200016_btl_tkqt_htpm_database_net": false,
+    "promtail -> dtc245200016_btl_tkqt_htpm_database_net": false,
+    "nginx -> dtc245200016_btl_tkqt_htpm_db_admin_net": false,
+    "promtail -> dtc245200016_btl_tkqt_htpm_db_admin_net": false
+  },
+  "web_uid": 1654,
+  "headers": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "SAMEORIGIN",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Server": "nginx"
+  },
+  "metrics_without_token": 404,
+  "metrics_invalid_token": 404,
+  "metrics_valid_token": 200,
+  "public_stub_status": 404,
+  "http_redirect": 301,
+  "exporter_grants": [
+    "GRANT PROCESS ON *.* TO `greenshop_exporter`@`%`"
+  ],
+  "exporter_denials": {
+    "business_select": true,
+    "business_write": true,
+    "user_admin": true
+  },
+  "secrets_parent_0700": true,
+  "grafana_anonymous_and_default_denied": true,
+  "residual_risks": [
+    "Previously accepted Grafana/MySQL-root credential reuse; provenance/randomness not proven, passwords preserved.",
+    "Nginx/phpMyAdmin root masters, mysqld UID999 and cAdvisor host/socket boundary retained.",
+    "App retains schema-scoped DDL for existing EF startup migration workflow.",
+    "Main DB/phpMyAdmin json-file rotation not applied; retained containers have unbounded driver defaults.",
+    "Self-signed lab TLS; no new CSP/HSTS policy.",
+    "No physical Loki retention-expiry observation or host reboot/CVE scan claimed."
+  ]
+}

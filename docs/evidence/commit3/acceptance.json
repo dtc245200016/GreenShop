@@ -1,0 +1,1741 @@
+{
+  "observed_epoch": 1792761054.4720962,
+  "project": "dtc245200016_btl_tkqt_htpm",
+  "compose_file": "/home/trung/GreenShop-Official/docker-compose.yml",
+  "single_main_only": true,
+  "runtime": {
+    "web_app": {
+      "id": "db0ca3b3195a85b1dc6337da4ea06d3b0ea10648647e60b01a41a192ef017b67",
+      "image": "sha256:ba50143aeffd8100a3454ab036398b9e778aa890a02b92f1d388ec88c0737f2d",
+      "health": "healthy",
+      "uid": 1654,
+      "gid": 1654,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "1",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_app_net",
+        "dtc245200016_btl_tkqt_htpm_database_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "logging": {
+        "Type": "syslog",
+        "Config": {
+          "cache-max-file": "3",
+          "cache-max-size": "10m",
+          "max-buffer-size": "4m",
+          "mode": "non-blocking",
+          "syslog-address": "udp://127.0.0.1:1514",
+          "syslog-format": "rfc5424micro",
+          "tag": "greenshop-web"
+        }
+      },
+      "platform_manifest": "sha256:4edfb83f83d813e175b9a9a6ba53518de87090e9930cf492efa50905b90d96a9",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "grafana": {
+      "id": "6b5d2b1e4bce16b26f7bf82a261bf1baed9d94611bac328d2b4f2facf35e0d7a",
+      "image": "sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f",
+      "health": "healthy",
+      "uid": 472,
+      "gid": 0,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "1",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_admin_net",
+        "dtc245200016_btl_tkqt_htpm_logging_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "logging": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "platform_manifest": "sha256:7b22f3edf947329d75eba7a62d9f6ea1ac1e786736813ef7a98cfb275a52e49b",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "prometheus": {
+      "id": "0ddc019d347e2ab74492280c0c237af49c4eebb40763d2de73629a4d13a4e38a",
+      "image": "sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e",
+      "health": "healthy",
+      "uid": 65534,
+      "gid": 65534,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "1",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_admin_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "logging": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "platform_manifest": "sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "mysql-exporter": {
+      "id": "c594960c9a78b607aaf86e5925e25406189c6d2475f4c3ceb33d1f204774941a",
+      "image": "sha256:abed8dac117b4ae5b70757f988e44795935b9a72c3b58d720c67ba688f8cb79e",
+      "health": "running",
+      "uid": 65534,
+      "gid": 65534,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "1",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_database_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "logging": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "platform_manifest": "sha256:bc812e999bc45e60ae3241e1e4d44de53ea5eefb9aa7caa94eec68798f629842",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "alert-receiver": {
+      "id": "734619b183030a735ae6aa457c66f275ca15a7d945f6f9d5c970af6d4dfb46d2",
+      "image": "sha256:9c51ecce261773a684c8345b2d4673700055c513b4d54bc0719337d3e4ee552e",
+      "health": "healthy",
+      "uid": 65534,
+      "gid": 65534,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "1",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "logging": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "platform_manifest": "sha256:b18b7c0ecd765d0608e439663196f2cfe4b572dccfffe1490530f7398df4b271",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "promtail": {
+      "id": "dda9585114931ca5118b05dd55bff10fa8e8afaa7cfcc6bfa08509e5372fa2eb",
+      "image": "sha256:a761cb834cfaeee29745440d4884d6748f0a08d8f68928db1d707018c1dcfbe9",
+      "health": "healthy",
+      "uid": 10001,
+      "gid": 10001,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "1",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_admin_net",
+        "dtc245200016_btl_tkqt_htpm_logging_net"
+      ],
+      "logging": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "platform_manifest": "sha256:90a93ba8969799344f197d408334b57d4b86b8b11f32506f840606fc9588366d",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "phpmyadmin": {
+      "id": "02bae735ea8d0f918ccb495a4dd6c391c2567a9a183e0a8be34dee96cfb048f9",
+      "image": "sha256:42a200db07b4e70fbf32c594ad4521cf16399b8e54bbb5adceae98e7566dfbeb",
+      "health": "healthy",
+      "uid": 0,
+      "gid": 0,
+      "effective_capabilities": "00000000a80425fb",
+      "no_new_privileges": "0",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_admin_net",
+        "dtc245200016_btl_tkqt_htpm_database_net"
+      ],
+      "logging": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "platform_manifest": "sha256:42a200db07b4e70fbf32c594ad4521cf16399b8e54bbb5adceae98e7566dfbeb",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "cadvisor": {
+      "id": "96f98c945289a700aee3c980141cd1a282744d1663468e00762f2035e00e8fa8",
+      "image": "sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a",
+      "health": "healthy",
+      "uid": 0,
+      "gid": 0,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "1",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "logging": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "platform_manifest": "sha256:bd7c00644d65e6c9fc2c151cab70d2e86d7fe3e0182cfb9863120ec2e017cf01",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "nginx": {
+      "id": "c43908a187a083367d236be04373fd9371867f2013898c8f52e5a6ea2235a79a",
+      "image": "sha256:df221db836e1754089190208cee7eeda94f233197056426eda74a43ab1abeac2",
+      "health": "healthy",
+      "uid": 0,
+      "gid": 0,
+      "effective_capabilities": "00000000a80425fb",
+      "no_new_privileges": "0",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_app_net",
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "logging": {
+        "Type": "syslog",
+        "Config": {
+          "cache-max-file": "3",
+          "cache-max-size": "10m",
+          "max-buffer-size": "4m",
+          "mode": "non-blocking",
+          "syslog-address": "udp://127.0.0.1:1514",
+          "syslog-format": "rfc5424micro",
+          "tag": "nginx"
+        }
+      },
+      "platform_manifest": "sha256:0530961ff0592b58c10f767535cc0abdfccf9e389ff7cc90f87320c1bc7e8506",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "loki": {
+      "id": "ef4be4c5f3241d799e1476b539ed5d5faa8619353a4f739035fa0a501c2c6fb7",
+      "image": "sha256:01d1adea073902b27262a62dcc9ba4845206312ba327944c75133d62f51c9596",
+      "health": "healthy",
+      "uid": 10001,
+      "gid": 10001,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "1",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_logging_net"
+      ],
+      "logging": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "platform_manifest": "sha256:da3bcfc7994e3ad09d8225e842489b500589512f509b9941c2b7167848278ec4",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "db": {
+      "id": "d46cdb13095dfd7c21232940832f306f972d4b1d4a6452c157a6911df766793a",
+      "image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+      "health": "healthy",
+      "uid": 999,
+      "gid": 999,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "0",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_database_net",
+        "dtc245200016_btl_tkqt_htpm_db_admin_net"
+      ],
+      "logging": {
+        "Type": "syslog",
+        "Config": {
+          "cache-max-file": "3",
+          "cache-max-size": "10m",
+          "max-buffer-size": "4m",
+          "mode": "non-blocking",
+          "syslog-address": "udp://127.0.0.1:1514",
+          "syslog-format": "rfc5424micro",
+          "tag": "mysql"
+        }
+      },
+      "platform_manifest": "sha256:62fb722c78b24245ddff1796a0fcee4a49cc5b87e0aaaf20c92d1da9e0a2497b",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    },
+    "nginx-exporter": {
+      "id": "468d54337c2895bb2eb8ee0c89d52d1684ea08a8800e1b66fb97834d3cdecfeb",
+      "image": "sha256:85666e7fde7e253f1c6d978f9a961245df4c9cdb7677e1866d9bb28e8f9ee41d",
+      "health": "running",
+      "uid": 1001,
+      "gid": 1001,
+      "effective_capabilities": "0000000000000000",
+      "no_new_privileges": "1",
+      "networks": [
+        "dtc245200016_btl_tkqt_htpm_monitoring_net"
+      ],
+      "logging": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "platform_manifest": "sha256:520c047935a8a59586c31f51a10d6b13e0efeb07221d7a49455ee51f236dcd62",
+      "canonical_env_mount_secret_image_alias_match": true,
+      "oom": false,
+      "restarts": 0
+    }
+  },
+  "statuses": {
+    "SINGLE_COMPOSE": "PASS",
+    "MAIN_ONLY": "PASS",
+    "WEBSITE_BUSINESS": "PASS",
+    "M2_MONITORING": "PASS",
+    "M3_LOGGING": "PASS",
+    "REQUIREMENT_6_RUBRIC": "PASS",
+    "RECREATE_REGRESSION": "PASS",
+    "SECURITY_INCIDENT": "PASS",
+    "MAIN_PRESERVATION": "PASS",
+    "SECRET_SCAN": "PASS",
+    "GIT_DIFF_CHECK": "PASS",
+    "SECURITY_HARDENING_OVERALL": "PARTIAL"
+  },
+  "limits": [
+    "MySQL root password kept at operator request; randomness provenance unverified, distinct from newly randomized Grafana password.",
+    "Syslog UDP/non-blocking path can lose centralized logs during collector outage; local Docker cache remains; no replay/exactly-once claim.",
+    "Nginx/PMA root masters, cAdvisor host/socket boundary and schema DDL for startup EF retained.",
+    "No new full browser/WebSocket/Gemini/CVE/VM reboot or physical retention/rollover observation claimed.",
+    "Legacy source archived rather than deleted to preserve uncommitted work; existing backup archives retained.",
+    "Known-secret matching and PNG byte validity are finite checks, not OCR or a comprehensive unknown-secret/CVE audit."
+  ],
+  "network_probes": {
+    "web_app\u2192dtc245200016_btl_tkqt_htpm_database_net": true,
+    "nginx\u2192dtc245200016_btl_tkqt_htpm_database_net": false,
+    "promtail\u2192dtc245200016_btl_tkqt_htpm_database_net": false,
+    "nginx\u2192dtc245200016_btl_tkqt_htpm_db_admin_net": false,
+    "promtail\u2192dtc245200016_btl_tkqt_htpm_db_admin_net": false
+  },
+  "passwords": {
+    "grafana_random256bit_rotation_verified": true,
+    "grafana_mysql_root_distinct": true,
+    "mysql_root_preserved_by_operator_choice": true,
+    "mysql_root_nondefault": true,
+    "mysql_root_random_provenance": "UNVERIFIED"
+  },
+  "headers": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "SAMEORIGIN",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Server": "nginx"
+  },
+  "phpmyadmin_mysqli_select1": true,
+  "exporter_business_access_denied": true,
+  "public_metrics404_internal_valid_token200": true,
+  "tls_hashes_preserved": true,
+  "targets": [
+    {
+      "labels": {
+        "instance": "cadvisor:8080",
+        "job": "cadvisor"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T13:10:57.644867166Z"
+    },
+    {
+      "labels": {
+        "instance": "web_app:8080",
+        "job": "greenshop"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T13:11:05.708611303Z"
+    },
+    {
+      "labels": {
+        "instance": "mysql-exporter:9104",
+        "job": "mysql"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T13:11:00.988927045Z"
+    },
+    {
+      "labels": {
+        "instance": "nginx-exporter:9113",
+        "job": "nginx"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T13:11:06.157988399Z"
+    },
+    {
+      "labels": {
+        "instance": "prometheus:9090",
+        "job": "prometheus"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T13:11:00.111399031Z"
+    }
+  ],
+  "required_promql": {
+    "up{job=\"greenshop\"}": [
+      {
+        "metric": {
+          "__name__": "up",
+          "instance": "web_app:8080",
+          "job": "greenshop"
+        },
+        "value": [
+          1792761066.321,
+          "1"
+        ]
+      }
+    ],
+    "mysql_up": [
+      {
+        "metric": {
+          "__name__": "mysql_up",
+          "instance": "mysql-exporter:9104",
+          "job": "mysql"
+        },
+        "value": [
+          1792761066.325,
+          "1"
+        ]
+      }
+    ],
+    "nginx_up": [
+      {
+        "metric": {
+          "__name__": "nginx_up",
+          "instance": "nginx-exporter:9113",
+          "job": "nginx"
+        },
+        "value": [
+          1792761066.328,
+          "1"
+        ]
+      }
+    ]
+  },
+  "metric_panels": [
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Failed Login Attempts \u2014 process lifetime",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Successful Logins \u2014 process lifetime",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Failed Login Attempts \u2014 Last 1 Minute (exact process window)",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Failed Login Attempts \u2014 Last 5 Minutes (sampled estimate)",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Authentication Failure Trend",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Security Condition \u2014 GS-SEC-001",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Authorization Denied Events",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Recent Failures (exact) and Detection Window",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Overall Service Status",
+      "series": 5
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Container CPU Usage",
+      "series": 12
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Container Memory Usage",
+      "series": 12
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Container Network Traffic",
+      "series": 12
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Container Availability \u2014 seconds since last seen",
+      "series": 12
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Nginx Connections",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "MySQL Availability",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "MySQL Connections",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Nginx Reading / Writing / Waiting",
+      "series": 3
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP Requests Per Second",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP Response Duration P50",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP Response Duration P95",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP Error Rate (4xx + 5xx)",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP 4xx Rate",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP 5xx Rate",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "Request Distribution by Safe Group",
+      "series": 5
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "MySQL Active Threads",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "MySQL Queries",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "Application Availability",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "Nginx Requests",
+      "series": 1
+    }
+  ],
+  "logql": {
+    "nginx": {
+      "query": "{environment=\"main\",service=\"nginx\",job=\"greenshop\"}",
+      "entries": 843,
+      "newest_timestamp_ns": "1792761066633378036"
+    },
+    "greenshop-web": {
+      "query": "{environment=\"main\",service=\"greenshop-web\",job=\"greenshop\"}",
+      "entries": 33,
+      "newest_timestamp_ns": "1792760279714972845"
+    },
+    "mysql": {
+      "query": "{environment=\"main\",service=\"mysql\",job=\"greenshop\"}",
+      "entries": 2,
+      "newest_timestamp_ns": "1792761067141318572"
+    },
+    "http404": {
+      "query": "{environment=\"main\",service=\"nginx\",job=\"greenshop\"} | json | status=\"404\" | __error__=\"\"",
+      "entries": 6,
+      "newest_timestamp_ns": "1792761066278979555"
+    },
+    "http400plus": {
+      "query": "{environment=\"main\",service=\"nginx\",job=\"greenshop\"} | json | status >= 400 | __error__=\"\"",
+      "entries": 15,
+      "newest_timestamp_ns": "1792761066278979555"
+    },
+    "auth.login.succeeded": {
+      "query": "{environment=\"main\",service=\"greenshop-web\",job=\"greenshop\"} | json | event=\"auth.login.succeeded\" | __error__=\"\"",
+      "entries": 6,
+      "newest_timestamp_ns": "1792760279714972845"
+    },
+    "auth.login.failed": {
+      "query": "{environment=\"main\",service=\"greenshop-web\",job=\"greenshop\"} | json | event=\"auth.login.failed\" | __error__=\"\"",
+      "entries": 5,
+      "newest_timestamp_ns": "1792760208830335384"
+    },
+    "auth.access.denied": {
+      "query": "{environment=\"main\",service=\"greenshop-web\",job=\"greenshop\"} | json | event=\"auth.access.denied\" | __error__=\"\"",
+      "entries": 2,
+      "newest_timestamp_ns": "1792760120140607768"
+    },
+    "category.created": {
+      "query": "{environment=\"main\",service=\"greenshop-web\",job=\"greenshop\"} | json | event=\"category.created\" | __error__=\"\"",
+      "entries": 2,
+      "newest_timestamp_ns": "1792760120851237181"
+    },
+    "product.created": {
+      "query": "{environment=\"main\",service=\"greenshop-web\",job=\"greenshop\"} | json | event=\"product.created\" | __error__=\"\"",
+      "entries": 2,
+      "newest_timestamp_ns": "1792760121217456729"
+    },
+    "order.created": {
+      "query": "{environment=\"main\",service=\"greenshop-web\",job=\"greenshop\"} | json | event=\"order.created\" | __error__=\"\"",
+      "entries": 2,
+      "newest_timestamp_ns": "1792760122210971485"
+    }
+  },
+  "fresh_mysql_after_final_recreate": true,
+  "labels_browser_api": "PASS",
+  "preservation": {
+    "AdminNotifications": {
+      "original_rows_unchanged": 12,
+      "new_rows": 7
+    },
+    "CartItems": {
+      "original_rows_unchanged": 6,
+      "new_rows": 2
+    },
+    "Categories": {
+      "original_rows_unchanged": 6,
+      "new_rows": 2
+    },
+    "HomeSliderSettings": {
+      "original_rows_unchanged": 1,
+      "new_rows": 0
+    },
+    "OrderItems": {
+      "original_rows_unchanged": 11,
+      "new_rows": 2
+    },
+    "OrderStatusHistories": {
+      "original_rows_unchanged": 51,
+      "new_rows": 0
+    },
+    "Orders": {
+      "original_rows_unchanged": 11,
+      "new_rows": 2
+    },
+    "PaymentShippingSettings": {
+      "original_rows_unchanged": 1,
+      "new_rows": 0
+    },
+    "ProductReviews": {
+      "original_rows_unchanged": 5,
+      "new_rows": 0
+    },
+    "Products": {
+      "original_rows_unchanged": 7,
+      "new_rows": 2
+    },
+    "ShopConversationReads": {
+      "original_rows_unchanged": 4,
+      "new_rows": 0
+    },
+    "ShopConversations": {
+      "original_rows_unchanged": 3,
+      "new_rows": 0
+    },
+    "ShopMessages": {
+      "original_rows_unchanged": 7,
+      "new_rows": 0
+    },
+    "Users": {
+      "original_rows_unchanged": 7,
+      "new_rows": 4
+    },
+    "__EFMigrationsHistory": {
+      "original_rows_unchanged": 10,
+      "new_rows": 0
+    }
+  },
+  "original_file_hashes_preserved": 9,
+  "same_business_volumes": true,
+  "migrations": 10,
+  "business": {
+    "environment": "main",
+    "marker": "EXAM_MAIN_5a1a034008d8",
+    "started": 1792760115.0185134,
+    "checks": [
+      "customer login, secure session cookie",
+      "admin login, secure session cookie",
+      "session and Admin portal role isolation",
+      "website, catalog, readiness, controlled 404/400, public metrics blocked",
+      "category created through CSRF-protected Admin form",
+      "product persisted and exact 2x2 PNG served from uploads",
+      "cart add and persisted customer cart view",
+      "COD order committed, customer detail and stock decremented once",
+      "checkout replay idempotent: same order, no second stock decrement",
+      "Admin order view; authenticated SignalR negotiation and Origin guard"
+    ],
+    "category_id": 73,
+    "product_id": 203,
+    "image": "/uploads/products/f36f5fc73ee24263a01da06d04a50153.png",
+    "order_id": 21,
+    "status": "PASS",
+    "ended": 1792760122.9754214
+  },
+  "restart_and_incident": {
+    "status": "PASS",
+    "web_id_before": "738cefcbe902fafacacedcad60e76b4d26976ce4bbde5916bfa02a8a1a0582fe",
+    "web_id_after": "db0ca3b3195a85b1dc6337da4ea06d3b0ea10648647e60b01a41a192ef017b67",
+    "session_survives": true,
+    "promtail_id_unchanged": true,
+    "normal_after4_firing_after5": true,
+    "loki_unique_events": 5,
+    "firing_received_at": "2026-10-23T12:57:05.020841+00:00",
+    "resolved_received_at": "2026-10-23T12:57:55.019108+00:00",
+    "stable_samples": [
+      {
+        "epoch": 1792760279.7389975,
+        "targets": 5,
+        "metrics": {
+          "up{job=\"greenshop\"}": 1.0,
+          "mysql_up": 1.0,
+          "nginx_up": 1.0
+        }
+      },
+      {
+        "epoch": 1792760289.7505574,
+        "targets": 5,
+        "metrics": {
+          "up{job=\"greenshop\"}": 1.0,
+          "mysql_up": 1.0,
+          "nginx_up": 1.0
+        }
+      },
+      {
+        "epoch": 1792760299.76179,
+        "targets": 5,
+        "metrics": {
+          "up{job=\"greenshop\"}": 1.0,
+          "mysql_up": 1.0,
+          "nginx_up": 1.0
+        }
+      },
+      {
+        "epoch": 1792760309.773534,
+        "targets": 5,
+        "metrics": {
+          "up{job=\"greenshop\"}": 1.0,
+          "mysql_up": 1.0,
+          "nginx_up": 1.0
+        }
+      },
+      {
+        "epoch": 1792760319.7933865,
+        "targets": 5,
+        "metrics": {
+          "up{job=\"greenshop\"}": 1.0,
+          "mysql_up": 1.0,
+          "nginx_up": 1.0
+        }
+      },
+      {
+        "epoch": 1792760329.8062196,
+        "targets": 5,
+        "metrics": {
+          "up{job=\"greenshop\"}": 1.0,
+          "mysql_up": 1.0,
+          "nginx_up": 1.0
+        }
+      },
+      {
+        "epoch": 1792760339.8189912,
+        "targets": 5,
+        "metrics": {
+          "up{job=\"greenshop\"}": 1.0,
+          "mysql_up": 1.0,
+          "nginx_up": 1.0
+        }
+      }
+    ]
+  },
+  "git": {
+    "head_unchanged": true,
+    "index_unchanged": true,
+    "staged_files": 124,
+    "cached_diff_check": "PASS",
+    "working_diff_check": "PASS",
+    "index_blobs_scanned": 427,
+    "working_files_scanned": 309,
+    "secret_findings": 0,
+    "no_commit_push": true,
+    "workingtree_files_scanned_final": 310,
+    "tracked_working_changes": [
+      ".env.example",
+      "README.md",
+      "backend/GreenShop.Web/Areas/Admin/Controllers/DanhMucController.cs",
+      "backend/GreenShop.Web/Areas/Admin/Controllers/SanPhamController.cs",
+      "backend/GreenShop.Web/Controllers/ThanhToanController.cs",
+      "backend/GreenShop.Web/Models/PaymentShipping.cs",
+      "backend/GreenShop.Web/Services/CheckoutOrders.cs",
+      "backend/GreenShop.Web/Services/Observability.cs",
+      "docker-compose.yml",
+      "docs/evidence/commit1/admin-dashboard-qa.png",
+      "docs/evidence/commit1/build-release.txt",
+      "docs/evidence/commit1/checkout-qa.png",
+      "docs/evidence/commit1/commit1-verification.md",
+      "docs/evidence/commit1/compose-services.txt",
+      "docs/evidence/commit1/gemini-chat-qa.png",
+      "docs/evidence/commit1/https-response.txt",
+      "docs/evidence/commit1/hybrid-chat-qa.png",
+      "docs/evidence/commit1/nginx-validation.txt",
+      "docs/evidence/commit1/phpmyadmin-qa.png",
+      "docs/evidence/commit1/review-products-admin-qa.png",
+      "docs/evidence/commit1/review-reply-admin-qa.png",
+      "docs/evidence/commit1/review-reply-customer-qa.png",
+      "docs/evidence/commit2/archive-verification.json",
+      "docs/evidence/commit2/auth-regression.json",
+      "docs/evidence/commit2/availability-alerts.json",
+      "docs/evidence/commit2/backup-verification.json",
+      "docs/evidence/commit2/build-release.txt",
+      "docs/evidence/commit2/business-regression.json",
+      "docs/evidence/commit2/commit2-verification.md",
+      "docs/evidence/commit2/docker-services.txt",
+      "docs/evidence/commit2/engagement-regression.json",
+      "docs/evidence/commit2/evidence-manifest.json",
+      "docs/evidence/commit2/git-status.txt",
+      "docs/evidence/commit2/grafana-access-update.json",
+      "docs/evidence/commit2/grafana-application.png",
+      "docs/evidence/commit2/grafana-infrastructure.png",
+      "docs/evidence/commit2/grafana-main-port3000.png",
+      "docs/evidence/commit2/grafana-port3000-verification.json",
+      "docs/evidence/commit2/grafana-port3000-verification.md",
+      "docs/evidence/commit2/grafana-qa-recovery.png",
+      "docs/evidence/commit2/grafana-security-firing.png",
+      "docs/evidence/commit2/grafana-security.png",
+      "docs/evidence/commit2/incident-1-firing.json",
+      "docs/evidence/commit2/incident-1-resolved.json",
+      "docs/evidence/commit2/incident-2-firing.json",
+      "docs/evidence/commit2/incident-2-resolved.json",
+      "docs/evidence/commit2/live-capture.json",
+      "docs/evidence/commit2/main-deployment.json",
+      "docs/evidence/commit2/main-grafana-ui.json",
+      "docs/evidence/commit2/main-postdeploy-verification.json",
+      "docs/evidence/commit2/main-preservation.json",
+      "docs/evidence/commit2/mysql-exporter-privileges.json",
+      "docs/evidence/commit2/nginx-validation.txt",
+      "docs/evidence/commit2/persistence.json",
+      "docs/evidence/commit2/portal-logout.json",
+      "docs/evidence/commit2/precommit-security-audit.md",
+      "docs/evidence/commit2/prometheus-targets.json",
+      "docs/evidence/commit2/prometheus-targets.png",
+      "docs/evidence/commit2/qa-floating-chat.png",
+      "docs/evidence/commit2/resource-usage.txt",
+      "docs/evidence/commit2/rollback-rehearsal.json",
+      "docs/evidence/commit2/runtime-verification.json",
+      "docs/evidence/commit2/security-alert-firing.png",
+      "docs/evidence/commit2/security-alert-normal.png",
+      "docs/evidence/commit2/security-alert-resolved.png",
+      "docs/evidence/commit2/security-events.json",
+      "docs/evidence/commit2/security-notification-received.png",
+      "docs/evidence/commit2/security-scan.json",
+      "docs/evidence/commit2/threshold-boundary.json",
+      "docs/evidence/commit2/verdict.json",
+      "docs/evidence/commit3/README.md",
+      "docs/evidence/commit3/accepted-security-risk.json",
+      "docs/evidence/commit3/backup-restore.json",
+      "docs/evidence/commit3/baseline-runtime.json",
+      "docs/evidence/commit3/build-and-ai-tests.json",
+      "docs/evidence/commit3/business-regression.json",
+      "docs/evidence/commit3/changes.json",
+      "docs/evidence/commit3/database-connection-investigation.json",
+      "docs/evidence/commit3/database-connection-investigation.md",
+      "docs/evidence/commit3/diagnostic-browser.json",
+      "docs/evidence/commit3/diagnostic-logql.json",
+      "docs/evidence/commit3/diagnostic-pipeline-tests.json",
+      "docs/evidence/commit3/diagnostic-runtime-main.json",
+      "docs/evidence/commit3/diagnostic-runtime-qa.json",
+      "docs/evidence/commit3/docker-log-rotation-final.json",
+      "docs/evidence/commit3/documentation-consistency.json",
+      "docs/evidence/commit3/engagement-regression.json",
+      "docs/evidence/commit3/final-hardening.md",
+      "docs/evidence/commit3/git-hygiene.json",
+      "docs/evidence/commit3/grafana-password-audit.json",
+      "docs/evidence/commit3/grafana-rotation-qa.json",
+      "docs/evidence/commit3/gs-sec-001-firing.json",
+      "docs/evidence/commit3/gs-sec-001-investigation.md",
+      "docs/evidence/commit3/gs-sec-001-resolved.json",
+      "docs/evidence/commit3/gs-sec-001-ui-cycle.json",
+      "docs/evidence/commit3/logging-diagnostic-investigation.json",
+      "docs/evidence/commit3/logql-queries.md",
+      "docs/evidence/commit3/main-browser.json",
+      "docs/evidence/commit3/main-hardening.json",
+      "docs/evidence/commit3/main-logging-before-core.json",
+      "docs/evidence/commit3/main-logql.json",
+      "docs/evidence/commit3/main-loki-datasource.png",
+      "docs/evidence/commit3/main-network-segmentation.json",
+      "docs/evidence/commit3/main-persistence.json",
+      "docs/evidence/commit3/main-plan-diff.json",
+      "docs/evidence/commit3/main-preservation.json",
+      "docs/evidence/commit3/main-security-audit.json",
+      "docs/evidence/commit3/main-smoke.json",
+      "docs/evidence/commit3/main-state-backup.json",
+      "docs/evidence/commit3/main-verification-headers.html",
+      "docs/evidence/commit3/main-verification-headers.png",
+      "docs/evidence/commit3/main-verification-logging.html",
+      "docs/evidence/commit3/main-verification-logging.png",
+      "docs/evidence/commit3/main-verification-network.html",
+      "docs/evidence/commit3/main-verification-network.png",
+      "docs/evidence/commit3/main-verification-runtime.html",
+      "docs/evidence/commit3/main-verification-runtime.png",
+      "docs/evidence/commit3/manifest.json",
+      "docs/evidence/commit3/process-privileges-final.json",
+      "docs/evidence/commit3/qa-acceptance.json",
+      "docs/evidence/commit3/qa-browser.json",
+      "docs/evidence/commit3/qa-diagnostic-dashboard.png",
+      "docs/evidence/commit3/qa-diagnostic-explore.png",
+      "docs/evidence/commit3/qa-diagnostic-panel.png",
+      "docs/evidence/commit3/qa-explore-application.png",
+      "docs/evidence/commit3/qa-explore-mysql.png",
+      "docs/evidence/commit3/qa-explore-nginx.png",
+      "docs/evidence/commit3/qa-floating-chat.png",
+      "docs/evidence/commit3/qa-hardening.json",
+      "docs/evidence/commit3/qa-incident-before.png",
+      "docs/evidence/commit3/qa-incident-firing.png",
+      "docs/evidence/commit3/qa-incident-loki.png",
+      "docs/evidence/commit3/qa-incident-notifications.png",
+      "docs/evidence/commit3/qa-incident-resolved.png",
+      "docs/evidence/commit3/qa-log-rotation.json",
+      "docs/evidence/commit3/qa-logql.json",
+      "docs/evidence/commit3/qa-logs-dashboard.png",
+      "docs/evidence/commit3/qa-loki-datasource.png",
+      "docs/evidence/commit3/qa-persistence.json",
+      "docs/evidence/commit3/qa-plan-diff.json",
+      "docs/evidence/commit3/qa-rollback.json",
+      "docs/evidence/commit3/qa-security-audit.json",
+      "docs/evidence/commit3/qa-upload-session.json",
+      "docs/evidence/commit3/remediation-baseline.json",
+      "docs/evidence/commit3/resources.json",
+      "docs/evidence/commit3/rubric-acceptance.json",
+      "docs/evidence/commit3/screenshot-integrity-final.json",
+      "docs/evidence/commit3/security-hardening.md",
+      "docs/evidence/commit3/staged-security-audit.json",
+      "docs/evidence/commit3/time-sync.json",
+      "docs/evidence/commit3/verification.json",
+      "monitoring/README.md",
+      "monitoring/grafana/provisioning/alerting/notifications.yml",
+      "monitoring/grafana/provisioning/alerting/rules.yml",
+      "monitoring/promtail/promtail.yml",
+      "scripts/check-logging-storage.py",
+      "scripts/deploy-monitoring.py",
+      "scripts/logging-runtime.py",
+      "scripts/start-main-logging.py",
+      "tests/admin_ui.py",
+      "tests/customer_engagement.py",
+      "tests/customer_ui.py",
+      "tests/dashboard_management.py",
+      "tests/excel_exports.py",
+      "tests/logging/acceptance.py",
+      "tests/logging/browser.py",
+      "tests/logging/diagnostic_capture.py",
+      "tests/logging/diagnostic_logql.py",
+      "tests/logging/diagnostic_pipeline_test.py",
+      "tests/logging/diagnostic_runtime.py",
+      "tests/logging/documentation_consistency.py",
+      "tests/logging/evidence_view.py",
+      "tests/logging/incident_ui.py",
+      "tests/logging/main_persistence.py",
+      "tests/logging/main_smoke.py",
+      "tests/logging/mysql_investigation.py",
+      "tests/logging/operations.py",
+      "tests/logging/report.py",
+      "tests/logging/rotation.py",
+      "tests/m1_acceptance.py",
+      "tests/monitoring/acceptance.py",
+      "tests/monitoring/capture.py",
+      "tests/monitoring/engagement.py",
+      "tests/monitoring/faults.py",
+      "tests/monitoring/main_smoke.py",
+      "tests/monitoring/receiver.py",
+      "tests/monitoring/regression.py",
+      "tests/monitoring/requirements.txt",
+      "tests/order_management.py",
+      "tests/payment_shipping.py",
+      "tests/portal_sessions.py",
+      "tests/qa_support.py",
+      "tests/security-hardening/audit.py",
+      "tests/security-hardening/grafana_password_audit.py",
+      "tests/security-hardening/grafana_rotation_qa.py",
+      "tests/security-hardening/log_rotation_qa.py",
+      "tests/security-hardening/process_privileges.py",
+      "tests/security-hardening/regression.py",
+      "tests/security-hardening/rubric_acceptance.py",
+      "tests/security-hardening/staged_snapshot_audit.py",
+      "tests/storefront_regression.py",
+      "tests/system_review.py",
+      "tests/ui_redesign.py",
+      "tests/user_management.py"
+    ],
+    "untracked_paths": [
+      "docs/demo.md",
+      "docs/evidence/commit3/acceptance.json",
+      "docs/evidence/commit3/main-restoration.md",
+      "docs/evidence/commit3/restoration-restart-incident.json",
+      "monitoring/alerts/receiver.py",
+      "tests/legacy/README.md",
+      "tests/legacy/admin_ui.py",
+      "tests/legacy/customer_engagement.py",
+      "tests/legacy/customer_ui.py",
+      "tests/legacy/dashboard_management.py",
+      "tests/legacy/deployment/check-logging-storage.py",
+      "tests/legacy/deployment/deploy-monitoring.py",
+      "tests/legacy/deployment/logging-runtime.py",
+      "tests/legacy/deployment/start-main-logging.py",
+      "tests/legacy/evidence/documentation-consistency.json",
+      "tests/legacy/evidence/manifest.json",
+      "tests/legacy/evidence/process-privileges-final.json",
+      "tests/legacy/evidence/restoration-acceptance.json",
+      "tests/legacy/evidence/restoration-admin-workflow.json",
+      "tests/legacy/evidence/restoration-business.json",
+      "tests/legacy/evidence/restoration-cleanup.json",
+      "tests/legacy/evidence/restoration-config-consistency.json",
+      "tests/legacy/evidence/restoration-dashboards.json",
+      "tests/legacy/evidence/restoration-final-audit.json",
+      "tests/legacy/evidence/restoration-final-runtime.json",
+      "tests/legacy/evidence/restoration-hardening.json",
+      "tests/legacy/evidence/restoration-logql.json",
+      "tests/legacy/evidence/restoration-loki-main.json",
+      "tests/legacy/evidence/restoration-loki-qa.json",
+      "tests/legacy/evidence/restoration-preservation.json",
+      "tests/legacy/excel_exports.py",
+      "tests/legacy/logging/acceptance.py",
+      "tests/legacy/logging/browser.py",
+      "tests/legacy/logging/diagnostic_capture.py",
+      "tests/legacy/logging/diagnostic_logql.py",
+      "tests/legacy/logging/diagnostic_runtime.py",
+      "tests/legacy/logging/documentation_consistency.py",
+      "tests/legacy/logging/evidence_view.py",
+      "tests/legacy/logging/incident_ui.py",
+      "tests/legacy/logging/main_persistence.py",
+      "tests/legacy/logging/main_smoke.py",
+      "tests/legacy/logging/mysql_investigation.py",
+      "tests/legacy/logging/operations.py",
+      "tests/legacy/logging/report.py",
+      "tests/legacy/logging/rotation.py",
+      "tests/legacy/m1_acceptance.py",
+      "tests/legacy/monitoring/acceptance.py",
+      "tests/legacy/monitoring/capture.py",
+      "tests/legacy/monitoring/engagement.py",
+      "tests/legacy/monitoring/faults.py",
+      "tests/legacy/monitoring/main_smoke.py",
+      "tests/legacy/monitoring/receiver.py",
+      "tests/legacy/monitoring/regression.py",
+      "tests/legacy/monitoring/requirements.txt",
+      "tests/legacy/order_management.py",
+      "tests/legacy/payment_shipping.py",
+      "tests/legacy/portal_sessions.py",
+      "tests/legacy/qa_support.py",
+      "tests/legacy/security-hardening/audit.py",
+      "tests/legacy/security-hardening/grafana_password_audit.py",
+      "tests/legacy/security-hardening/grafana_rotation_qa.py",
+      "tests/legacy/security-hardening/log_rotation_qa.py",
+      "tests/legacy/security-hardening/process_privileges.py",
+      "tests/legacy/security-hardening/regression.py",
+      "tests/legacy/security-hardening/rubric_acceptance.py",
+      "tests/legacy/security-hardening/staged_snapshot_audit.py",
+      "tests/legacy/storefront_regression.py",
+      "tests/legacy/system_review.py",
+      "tests/legacy/ui_redesign.py",
+      "tests/legacy/user_management.py"
+    ],
+    "current_index_sha256": "9e2f5f998f6b2faf446f894a363107b5f107ad4e57c8f80f16e72e98dac95e47"
+  },
+  "cleanup": {
+    "containers": [
+      "greenshop-m2-qa-loki-1",
+      "greenshop-m2-qa-promtail-1",
+      "greenshop-m2-qa-web_app-1",
+      "greenshop-m2-qa-phpmyadmin-1",
+      "greenshop-m2-qa-db-1",
+      "greenshop-m2-qa-nginx-1",
+      "greenshop-m2-qa-grafana-1",
+      "greenshop-m2-qa-prometheus-1",
+      "greenshop-m2-qa-qa-alert-receiver-1",
+      "greenshop-m2-qa-nginx-exporter-1",
+      "greenshop-m2-qa-cadvisor-1",
+      "greenshop-m2-qa-mysql-exporter-1",
+      "greenshop-release-qa-3f097eea98-nginx-1",
+      "greenshop-release-qa-3f097eea98-web_app-1",
+      "greenshop-release-qa-3f097eea98-phpmyadmin-1",
+      "greenshop-release-qa-3f097eea98-db-1",
+      "greenshop-release-qa-04c44ccd59-web_app-1",
+      "greenshop-release-qa-04c44ccd59-nginx-1",
+      "greenshop-release-qa-04c44ccd59-db-1",
+      "greenshop-release-qa-04c44ccd59-phpmyadmin-1",
+      "greenshop-release-qa-341da3f2f2-web_app-1",
+      "greenshop-release-qa-341da3f2f2-db-1",
+      "greenshop-release-qa-341da3f2f2-nginx-1",
+      "greenshop-release-qa-341da3f2f2-phpmyadmin-1",
+      "greenshop-user-qa-web_app-1",
+      "greenshop-user-qa-nginx-1",
+      "greenshop-user-qa-db-1",
+      "greenshop-main-qa-alert-receiver"
+    ],
+    "networks": [
+      "greenshop-m2-qa_admin_net",
+      "greenshop-m2-qa_app_net",
+      "greenshop-m2-qa_database_net",
+      "greenshop-m2-qa_db_admin_net",
+      "greenshop-m2-qa_logging_net",
+      "greenshop-m2-qa_monitoring_net",
+      "greenshop-release-qa-3f097eea98_app_net",
+      "greenshop-release-qa-04c44ccd59_app_net",
+      "greenshop-release-qa-341da3f2f2_app_net",
+      "greenshop-user-qa_default"
+    ],
+    "volumes": [
+      "greenshop-m2-qa_data_protection_keys",
+      "greenshop-m2-qa_grafana_data",
+      "greenshop-m2-qa_loki_data",
+      "greenshop-m2-qa_mysql_data",
+      "greenshop-m2-qa_product_images",
+      "greenshop-m2-qa_prometheus_data",
+      "greenshop-m2-qa_promtail_positions",
+      "greenshop-release-qa-3f097eea98_mysql_data",
+      "greenshop-release-qa-04c44ccd59_mysql_data",
+      "greenshop-release-qa-5feac09538_mysql_data",
+      "greenshop-release-qa-37b2f60b27_mysql_data",
+      "greenshop-release-qa-77c6690b7f_mysql_data",
+      "greenshop-release-qa-341da3f2f2_mysql_data",
+      "greenshop-release-qa-800ec21317_mysql_data",
+      "greenshop-release-qa-ab1fec7973_mysql_data"
+    ],
+    "image_tags": [
+      "greenshop-m3-web:exam-fffe718577f9",
+      "greenshop-m3-web:release",
+      "greenshop-m3-web:qa",
+      "greenshop-m2-web:qa",
+      "greenshop-m2-web:release",
+      "greenshop-release-qa-3f097eea98-web:release",
+      "greenshop-release-qa-04c44ccd59-web:release",
+      "greenshop-release-qa-800ec21317-web:release",
+      "greenshop-release-qa-ab1fec7973-web:release",
+      "greenshop-release-qa-341da3f2f2-web:release",
+      "greenshop-release-qa-77c6690b7f-web:release",
+      "greenshop-release-qa-5feac09538-web:release",
+      "greenshop-release-qa-37b2f60b27-web:release",
+      "greenshop-typography:qa",
+      "greenshop-autoplay:qa",
+      "greenshop-engagement:qa",
+      "greenshop-header:qa",
+      "greenshop-botanical:qa",
+      "greenshop-admin-navigation:qa",
+      "greenshop-source-cleanup:qa"
+    ],
+    "skipped": [],
+    "files": [
+      "docs/evidence/commit2/precommit-security-audit.md",
+      "docs/evidence/commit2/archive-verification.json",
+      "docs/evidence/commit2/grafana-security-firing.png",
+      "docs/evidence/commit2/rollback-rehearsal.json",
+      "docs/evidence/commit2/evidence-manifest.json",
+      "docs/evidence/commit2/runtime-verification.json",
+      "docs/evidence/commit2/resource-usage.txt",
+      "docs/evidence/commit2/main-grafana-ui.json",
+      "docs/evidence/commit2/grafana-port3000-verification.json",
+      "docs/evidence/commit2/incident-1-firing.json",
+      "docs/evidence/commit2/persistence.json",
+      "docs/evidence/commit2/backup-verification.json",
+      "docs/evidence/commit2/grafana-qa-recovery.png",
+      "docs/evidence/commit2/portal-logout.json",
+      "docs/evidence/commit2/prometheus-targets.png",
+      "docs/evidence/commit2/grafana-security.png",
+      "docs/evidence/commit2/security-alert-resolved.png",
+      "docs/evidence/commit2/grafana-main-port3000.png",
+      "docs/evidence/commit2/docker-services.txt",
+      "docs/evidence/commit2/nginx-validation.txt",
+      "docs/evidence/commit2/incident-2-resolved.json",
+      "docs/evidence/commit2/main-preservation.json",
+      "docs/evidence/commit2/security-events.json",
+      "docs/evidence/commit2/build-release.txt",
+      "docs/evidence/commit2/qa-floating-chat.png",
+      "docs/evidence/commit2/engagement-regression.json",
+      "docs/evidence/commit2/availability-alerts.json",
+      "docs/evidence/commit2/git-status.txt",
+      "docs/evidence/commit2/auth-regression.json",
+      "docs/evidence/commit2/verdict.json",
+      "docs/evidence/commit2/incident-2-firing.json",
+      "docs/evidence/commit2/security-alert-normal.png",
+      "docs/evidence/commit2/mysql-exporter-privileges.json",
+      "docs/evidence/commit2/incident-1-resolved.json",
+      "docs/evidence/commit2/security-scan.json",
+      "docs/evidence/commit2/grafana-application.png",
+      "docs/evidence/commit2/main-postdeploy-verification.json",
+      "docs/evidence/commit2/security-notification-received.png",
+      "docs/evidence/commit2/threshold-boundary.json",
+      "docs/evidence/commit2/grafana-port3000-verification.md",
+      "docs/evidence/commit2/prometheus-targets.json",
+      "docs/evidence/commit2/main-deployment.json",
+      "docs/evidence/commit2/grafana-infrastructure.png",
+      "docs/evidence/commit2/live-capture.json",
+      "docs/evidence/commit2/business-regression.json",
+      "docs/evidence/commit2/grafana-access-update.json",
+      "docs/evidence/commit2/security-alert-firing.png",
+      "docs/evidence/commit3/grafana-rotation-qa.json",
+      "docs/evidence/commit3/remediation-baseline.json",
+      "docs/evidence/commit3/database-connection-investigation.json",
+      "docs/evidence/commit3/main-smoke.json",
+      "docs/evidence/commit3/rubric-acceptance.json",
+      "docs/evidence/commit3/qa-diagnostic-dashboard.png",
+      "docs/evidence/commit3/time-sync.json",
+      "docs/evidence/commit3/main-verification-logging.png",
+      "docs/evidence/commit3/qa-explore-application.png",
+      "docs/evidence/commit3/qa-explore-nginx.png",
+      "docs/evidence/commit3/backup-restore.json",
+      "docs/evidence/commit3/baseline-runtime.json",
+      "docs/evidence/commit3/qa-upload-session.json",
+      "docs/evidence/commit3/gs-sec-001-resolved.json",
+      "docs/evidence/commit3/main-network-segmentation.json",
+      "docs/evidence/commit3/main-loki-datasource.png",
+      "docs/evidence/commit3/staged-security-audit.json",
+      "docs/evidence/commit3/main-verification-headers.html",
+      "docs/evidence/commit3/changes.json",
+      "docs/evidence/commit3/main-browser.json",
+      "docs/evidence/commit3/qa-logql.json",
+      "docs/evidence/commit3/main-verification-headers.png",
+      "docs/evidence/commit3/qa-rollback.json",
+      "docs/evidence/commit3/screenshot-integrity-final.json",
+      "docs/evidence/commit3/main-verification-network.html",
+      "docs/evidence/commit3/build-and-ai-tests.json",
+      "docs/evidence/commit3/main-verification-runtime.html",
+      "docs/evidence/commit3/logging-diagnostic-investigation.json",
+      "docs/evidence/commit3/main-verification-runtime.png",
+      "docs/evidence/commit3/main-hardening.json",
+      "docs/evidence/commit3/qa-incident-notifications.png",
+      "docs/evidence/commit3/qa-plan-diff.json",
+      "docs/evidence/commit3/qa-incident-resolved.png",
+      "docs/evidence/commit3/qa-diagnostic-explore.png",
+      "docs/evidence/commit3/qa-loki-datasource.png",
+      "docs/evidence/commit3/qa-diagnostic-panel.png",
+      "docs/evidence/commit3/qa-persistence.json",
+      "docs/evidence/commit3/main-state-backup.json",
+      "docs/evidence/commit3/main-preservation.json",
+      "docs/evidence/commit3/main-plan-diff.json",
+      "docs/evidence/commit3/qa-hardening.json",
+      "docs/evidence/commit3/qa-logs-dashboard.png",
+      "docs/evidence/commit3/diagnostic-runtime-qa.json",
+      "docs/evidence/commit3/gs-sec-001-ui-cycle.json",
+      "docs/evidence/commit3/qa-floating-chat.png",
+      "docs/evidence/commit3/qa-incident-before.png",
+      "docs/evidence/commit3/resources.json",
+      "docs/evidence/commit3/engagement-regression.json",
+      "docs/evidence/commit3/grafana-password-audit.json",
+      "docs/evidence/commit3/main-verification-network.png",
+      "docs/evidence/commit3/main-security-audit.json",
+      "docs/evidence/commit3/qa-browser.json",
+      "docs/evidence/commit3/main-logging-before-core.json",
+      "docs/evidence/commit3/diagnostic-logql.json",
+      "docs/evidence/commit3/gs-sec-001-firing.json",
+      "docs/evidence/commit3/qa-security-audit.json",
+      "docs/evidence/commit3/accepted-security-risk.json",
+      "docs/evidence/commit3/main-persistence.json",
+      "docs/evidence/commit3/qa-incident-loki.png",
+      "docs/evidence/commit3/main-verification-logging.html",
+      "docs/evidence/commit3/git-hygiene.json",
+      "docs/evidence/commit3/main-logql.json",
+      "docs/evidence/commit3/qa-acceptance.json",
+      "docs/evidence/commit3/docker-log-rotation-final.json",
+      "docs/evidence/commit3/business-regression.json",
+      "docs/evidence/commit3/qa-incident-firing.png",
+      "docs/evidence/commit3/verification.json",
+      "docs/evidence/commit3/qa-log-rotation.json",
+      "docs/evidence/commit3/diagnostic-browser.json",
+      "docs/evidence/commit3/qa-explore-mysql.png",
+      "docs/evidence/commit3/diagnostic-runtime-main.json",
+      "docs/evidence/commit1/hybrid-chat-qa.png",
+      "docs/evidence/commit1/gemini-chat-qa.png",
+      "docs/evidence/commit1/review-products-admin-qa.png",
+      "docs/evidence/commit1/https-response.txt",
+      "docs/evidence/commit1/checkout-qa.png",
+      "docs/evidence/commit1/nginx-validation.txt",
+      "docs/evidence/commit1/build-release.txt",
+      "docs/evidence/commit1/review-reply-admin-qa.png",
+      "docs/evidence/commit1/admin-dashboard-qa.png",
+      "docs/evidence/commit1/review-reply-customer-qa.png",
+      "docs/evidence/commit1/compose-services.txt",
+      "docs/evidence/commit1/phpmyadmin-qa.png"
+    ],
+    "recoverability": "Deleted evidence only: byte-identical existing Git index blobs; index not modified",
+    "archived_source_moves": [
+      [
+        "scripts/logging-runtime.py",
+        "tests/legacy/deployment/logging-runtime.py"
+      ],
+      [
+        "scripts/deploy-monitoring.py",
+        "tests/legacy/deployment/deploy-monitoring.py"
+      ],
+      [
+        "scripts/start-main-logging.py",
+        "tests/legacy/deployment/start-main-logging.py"
+      ],
+      [
+        "scripts/check-logging-storage.py",
+        "tests/legacy/deployment/check-logging-storage.py"
+      ],
+      [
+        "tests/m1_acceptance.py",
+        "tests/legacy/m1_acceptance.py"
+      ],
+      [
+        "tests/customer_engagement.py",
+        "tests/legacy/customer_engagement.py"
+      ],
+      [
+        "tests/system_review.py",
+        "tests/legacy/system_review.py"
+      ],
+      [
+        "tests/user_management.py",
+        "tests/legacy/user_management.py"
+      ],
+      [
+        "tests/customer_ui.py",
+        "tests/legacy/customer_ui.py"
+      ],
+      [
+        "tests/ui_redesign.py",
+        "tests/legacy/ui_redesign.py"
+      ],
+      [
+        "tests/qa_support.py",
+        "tests/legacy/qa_support.py"
+      ],
+      [
+        "tests/excel_exports.py",
+        "tests/legacy/excel_exports.py"
+      ],
+      [
+        "tests/portal_sessions.py",
+        "tests/legacy/portal_sessions.py"
+      ],
+      [
+        "tests/payment_shipping.py",
+        "tests/legacy/payment_shipping.py"
+      ],
+      [
+        "tests/storefront_regression.py",
+        "tests/legacy/storefront_regression.py"
+      ],
+      [
+        "tests/dashboard_management.py",
+        "tests/legacy/dashboard_management.py"
+      ],
+      [
+        "tests/admin_ui.py",
+        "tests/legacy/admin_ui.py"
+      ],
+      [
+        "tests/order_management.py",
+        "tests/legacy/order_management.py"
+      ],
+      [
+        "tests/security-hardening/staged_snapshot_audit.py",
+        "tests/legacy/security-hardening/staged_snapshot_audit.py"
+      ],
+      [
+        "tests/security-hardening/grafana_rotation_qa.py",
+        "tests/legacy/security-hardening/grafana_rotation_qa.py"
+      ],
+      [
+        "tests/security-hardening/process_privileges.py",
+        "tests/legacy/security-hardening/process_privileges.py"
+      ],
+      [
+        "tests/security-hardening/grafana_password_audit.py",
+        "tests/legacy/security-hardening/grafana_password_audit.py"
+      ],
+      [
+        "tests/security-hardening/audit.py",
+        "tests/legacy/security-hardening/audit.py"
+      ],
+      [
+        "tests/security-hardening/rubric_acceptance.py",
+        "tests/legacy/security-hardening/rubric_acceptance.py"
+      ],
+      [
+        "tests/security-hardening/log_rotation_qa.py",
+        "tests/legacy/security-hardening/log_rotation_qa.py"
+      ],
+      [
+        "tests/security-hardening/regression.py",
+        "tests/legacy/security-hardening/regression.py"
+      ],
+      [
+        "tests/monitoring/engagement.py",
+        "tests/legacy/monitoring/engagement.py"
+      ],
+      [
+        "tests/monitoring/receiver.py",
+        "tests/legacy/monitoring/receiver.py"
+      ],
+      [
+        "tests/monitoring/acceptance.py",
+        "tests/legacy/monitoring/acceptance.py"
+      ],
+      [
+        "tests/monitoring/main_smoke.py",
+        "tests/legacy/monitoring/main_smoke.py"
+      ],
+      [
+        "tests/monitoring/capture.py",
+        "tests/legacy/monitoring/capture.py"
+      ],
+      [
+        "tests/monitoring/faults.py",
+        "tests/legacy/monitoring/faults.py"
+      ],
+      [
+        "tests/monitoring/regression.py",
+        "tests/legacy/monitoring/regression.py"
+      ],
+      [
+        "tests/logging/diagnostic_logql.py",
+        "tests/legacy/logging/diagnostic_logql.py"
+      ],
+      [
+        "tests/logging/mysql_investigation.py",
+        "tests/legacy/logging/mysql_investigation.py"
+      ],
+      [
+        "tests/logging/main_persistence.py",
+        "tests/legacy/logging/main_persistence.py"
+      ],
+      [
+        "tests/logging/documentation_consistency.py",
+        "tests/legacy/logging/documentation_consistency.py"
+      ],
+      [
+        "tests/logging/acceptance.py",
+        "tests/legacy/logging/acceptance.py"
+      ],
+      [
+        "tests/logging/main_smoke.py",
+        "tests/legacy/logging/main_smoke.py"
+      ],
+      [
+        "tests/logging/diagnostic_runtime.py",
+        "tests/legacy/logging/diagnostic_runtime.py"
+      ],
+      [
+        "tests/logging/operations.py",
+        "tests/legacy/logging/operations.py"
+      ],
+      [
+        "tests/logging/rotation.py",
+        "tests/legacy/logging/rotation.py"
+      ],
+      [
+        "tests/logging/report.py",
+        "tests/legacy/logging/report.py"
+      ],
+      [
+        "tests/logging/diagnostic_capture.py",
+        "tests/legacy/logging/diagnostic_capture.py"
+      ],
+      [
+        "tests/logging/evidence_view.py",
+        "tests/legacy/logging/evidence_view.py"
+      ],
+      [
+        "tests/logging/browser.py",
+        "tests/legacy/logging/browser.py"
+      ],
+      [
+        "tests/logging/incident_ui.py",
+        "tests/legacy/logging/incident_ui.py"
+      ]
+    ],
+    "qa_config_removed": [
+      "/home/trung/.local/share/greenshop-monitoring/qa",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/diagnostic-v2/promtail-v1.yml",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/diagnostic-v2/network-before.json",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/targets/containers.json",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/contact-points-before.json",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/proposed-plan.json",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/dashboards-before.json",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/before-plan.json",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/datasources-before.json",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/rules-before.json",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/core-before.json",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/ownership.json"
+    ],
+    "existing_backups_preserved": [
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/keys.tar",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/uploads.tar",
+      "/home/trung/.local/share/greenshop-monitoring/m3/qa/tls.tar"
+    ],
+    "runtime_plan": "Old private Main plan retained by rename to compose.retired.json; no startup references",
+    "consolidated_docs_removed": [
+      "docs/evidence/commit3/README.md",
+      "docs/evidence/commit3/final-hardening.md",
+      "docs/evidence/commit3/security-hardening.md",
+      "docs/evidence/commit3/logql-queries.md",
+      "docs/evidence/commit3/gs-sec-001-investigation.md",
+      "docs/evidence/commit3/database-connection-investigation.md"
+    ],
+    "archived_evidence_moves": [
+      {
+        "from": "docs/evidence/commit3/restoration-logql.json",
+        "to": "tests/legacy/evidence/restoration-logql.json",
+        "sha256": "93834316383069f9c3a6b2541045c877102bbd9ca5664ae90a2d8749373139b4"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-final-runtime.json",
+        "to": "tests/legacy/evidence/restoration-final-runtime.json",
+        "sha256": "1ffc1c24ccfb05ed0303207a65d028b5f69e9626554f5f8f510fc4cca5bc28ff"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-loki-main.json",
+        "to": "tests/legacy/evidence/restoration-loki-main.json",
+        "sha256": "45de67b20aabc7c7fbe0a1907c35553276d86793eb9e90aa3672cf0d98e87e38"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-admin-workflow.json",
+        "to": "tests/legacy/evidence/restoration-admin-workflow.json",
+        "sha256": "633277b378e028153175a400e8b59a2477140b7b14d0c9b14e57380371105a89"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-cleanup.json",
+        "to": "tests/legacy/evidence/restoration-cleanup.json",
+        "sha256": "2ca7f307cc85fc27a3d9ee9291d76d4f56b253c262833b76d8a0d58bf14d585c"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-loki-qa.json",
+        "to": "tests/legacy/evidence/restoration-loki-qa.json",
+        "sha256": "0555b2822ef0d0f5ec4a5f6c9616c5cd9efd36c768e9fe10f54d1382cd8e1684"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-final-audit.json",
+        "to": "tests/legacy/evidence/restoration-final-audit.json",
+        "sha256": "b10e8586f382fee04d0ae8ff1ce62d5c76eb31275f72079663496a8037815b51"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-dashboards.json",
+        "to": "tests/legacy/evidence/restoration-dashboards.json",
+        "sha256": "3ed2335995096e4e9167a766e63cf15a0a5ae235cd4109cdc4a23b59dc9d02b1"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-acceptance.json",
+        "to": "tests/legacy/evidence/restoration-acceptance.json",
+        "sha256": "0eb59ceedddd0577d3e970e88aac9c64d0c6a2a444564d09084007fac1c4ec88"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-preservation.json",
+        "to": "tests/legacy/evidence/restoration-preservation.json",
+        "sha256": "0dbc71fa886e3665e39215c0b5ac1265de00150b84ecffaf762aa81c0d273089"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-business.json",
+        "to": "tests/legacy/evidence/restoration-business.json",
+        "sha256": "2303a81ad96b061ef340efecb9b233618dc0fce368b750e07ab9c18f2192d82b"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-hardening.json",
+        "to": "tests/legacy/evidence/restoration-hardening.json",
+        "sha256": "768259aa41302134db0219b38e1bc2d5ad1f43338259f033e8160da2f8fff321"
+      },
+      {
+        "from": "docs/evidence/commit3/restoration-config-consistency.json",
+        "to": "tests/legacy/evidence/restoration-config-consistency.json",
+        "sha256": "6b91a9ca0a0025405a4ad91ae0d391410084ab20bc0e1e039a3fa45ef7ff5c56"
+      },
+      {
+        "from": "docs/evidence/commit3/documentation-consistency.json",
+        "to": "tests/legacy/evidence/documentation-consistency.json",
+        "sha256": "68c47a520245cf78bcb5bc4602ffc2a23184e55355579474ab285987bdcff48c"
+      },
+      {
+        "from": "docs/evidence/commit3/manifest.json",
+        "to": "tests/legacy/evidence/manifest.json",
+        "sha256": "7b3ee2085717822912e67763dd9cba92b73976c08a4cc6abc77c2d87857cbf41"
+      },
+      {
+        "from": "docs/evidence/commit3/process-privileges-final.json",
+        "to": "tests/legacy/evidence/process-privileges-final.json",
+        "sha256": "0dcc308291141328a9fe1b52da45f3829495a3e0a302298c321800971c5a891a"
+      }
+    ]
+  },
+  "no_database_reset": true,
+  "no_new_backup": true,
+  "status": "PASS_WITH_DOCUMENTED_LIMITS",
+  "ordinary_compose_up_build_retested": true,
+  "loki_restart": {
+    "status": "PASS",
+    "fixed_window_events_preserved": 5,
+    "same_frozen_entries": true,
+    "datasource_health": "OK",
+    "scope": "Canonical Compose restart, no volume reset"
+  },
+  "homepage_local_css_js200": 11,
+  "root_master_nonroot_worker_audit": {
+    "nginx": [
+      {
+        "name": "nginx",
+        "uid": 0,
+        "gid": 0
+      },
+      {
+        "name": "nginx",
+        "uid": 101,
+        "gid": 101
+      },
+      {
+        "name": "nginx",
+        "uid": 101,
+        "gid": 101
+      },
+      {
+        "name": "nginx",
+        "uid": 101,
+        "gid": 101
+      },
+      {
+        "name": "nginx",
+        "uid": 101,
+        "gid": 101
+      }
+    ],
+    "phpmyadmin": [
+      {
+        "name": "apache2",
+        "uid": 0,
+        "gid": 0
+      },
+      {
+        "name": "apache2",
+        "uid": 33,
+        "gid": 33
+      },
+      {
+        "name": "apache2",
+        "uid": 33,
+        "gid": 33
+      },
+      {
+        "name": "apache2",
+        "uid": 33,
+        "gid": 33
+      },
+      {
+        "name": "apache2",
+        "uid": 33,
+        "gid": 33
+      },
+      {
+        "name": "apache2",
+        "uid": 33,
+        "gid": 33
+      },
+      {
+        "name": "apache2",
+        "uid": 33,
+        "gid": 33
+      }
+    ],
+    "db": [
+      {
+        "name": "mysqld",
+        "uid": 999,
+        "gid": 999
+      }
+    ]
+  },
+  "service_label_values_verified": [
+    "greenshop-web",
+    "mysql",
+    "nginx"
+  ],
+  "alert_annotations_current_thresholds_unchanged": true,
+  "documentation": {
+    "status": "PASS",
+    "active_markdown": 6,
+    "docs_files": 18,
+    "broken_links": [],
+    "historical_screenshots_valid": 11,
+    "old_guides_consolidated": true
+  },
+  "final_observed_epoch": 1792761710.5112445,
+  "final_targets_up": 5,
+  "evidence_sha256": {
+    "docs/demo.md": "eb1eaeed9b83faf98db25c243f5d6af780b18b2479a4ff1834ed62d274b52120",
+    "docs/evidence/commit2/main-prometheus-targets.png": "84174741dd3882f32b84e629f14b0ebc1ac60bf8f3680041ee5d9cb92d572af4",
+    "docs/evidence/commit2/main-grafana-infrastructure.png": "49639c4d032e7095856f28ed3d84253bff619ee45b2d86318152df1e9fd6e31d",
+    "docs/evidence/commit2/main-grafana-application.png": "c9cf04b81726c79c06db6ed082e171649c9dd1924fab3531f98ec8d0840dae8d",
+    "docs/evidence/commit2/main-grafana-security.png": "a729166b69a920016d3494a1bd178bef5956b1178725de39c11bdd0a5ae1ae3e",
+    "docs/evidence/commit2/commit2-verification.md": "1117b5ffdae6f6a01723170761e2784eaa1db1457bf5b9d23d35b5373f2b7a73",
+    "docs/evidence/commit3/main-explore-mysql.png": "f89d796409c48c6a057615a6fd4c6cf7f206e61da6bc8f0edf2e675f9f3e6986",
+    "docs/evidence/commit3/main-explore-application.png": "fc027c2e21687eb1813d6f9b943486082cfc5727f5e4ac5f90b9fd9b136c7011",
+    "docs/evidence/commit3/main-logs-dashboard.png": "0346a9d8e4160e286fdebfbc3f3c28780544d99dc7c21c38983f4e739a7d5522",
+    "docs/evidence/commit3/main-explore-nginx.png": "4d5b841a9f9830f1d739af14f3498097dbbe4de3cd154e22d8da38215680b921",
+    "docs/evidence/commit3/main-restoration.md": "cb2687200d2f4d3a124fef8b172746a40437c11df4a058edadbc5d6bd065c431",
+    "docs/evidence/commit3/restoration-restart-incident.json": "09dc14d425598d4c16701530db1ff0bd1874fc6c512a0f461ea1a62f119f6bc7",
+    "docs/evidence/commit3/diagnostic-pipeline-tests.json": "e79a34c1edfdca6ceda4857c8141e9a38c9eaab798b661ca26f2d6af6b8b91b6",
+    "docs/evidence/commit1/products-main.png": "b47c7aaf7cd766ccdccef0189242d7c1bc9eacc42a780f6e240315acd8fc1a5c",
+    "docs/evidence/commit1/commit1-verification.md": "f6a1bfc10b08d211075c8620f115244ecc9e5b521d8efdb81847984f6b3d5834",
+    "docs/evidence/commit1/floating-chat-main.png": "6a8a80c88fdbb431866aa08b356948d9c0a03d729ffc883eca0e265cc80e34c4",
+    "docs/evidence/commit1/storefront-main.png": "311a61d2f1518b3f7ea0421bb4cf56168b1e64cadc87f79b78d07b33d1aa836f"
+  },
+  "source_config_sha256": {
+    "docker-compose.yml": "394eb2df58e2159900a1a784e7989ad666ba20a706668af755e5346e4632edb2",
+    "monitoring/promtail/promtail.yml": "b548af2c216b90908994df2df285bcfe48f413df998bcd61788a79f3fd1f9994",
+    "monitoring/grafana/provisioning/alerting/rules.yml": "74af4bbb49728e4615056fd52c6e069dabbf0d9864b1bb2659ca44a0a4b17ba6"
+  }
+}

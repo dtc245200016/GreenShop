@@ -12,7 +12,7 @@ public class AdminAlertsViewComponent(AppDbContext db) : ViewComponent
         if(!User.IsInRole("Admin")) return Content("");
         const string key="GreenShop.AdminAlerts";
         var counts=HttpContext.Items[key] as ShopAlertCounts;
-        if(counts==null) {counts=await ShopCommunication.AlertsAsync(db,HttpContext.RequestAborted);HttpContext.Items[key]=counts;}
+        if(counts==null) {counts=await ShopCommunication.AlertsAsync(db,ShoppingIdentity.UserId(HttpContext.User),HttpContext.RequestAborted);HttpContext.Items[key]=counts;}
         ViewData["Kind"]=kind;return View(counts);
     }
 }

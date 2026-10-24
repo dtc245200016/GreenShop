@@ -1,0 +1,203 @@
+{
+  "status": "PASS",
+  "restart_started_epoch": 1792760176.898818,
+  "web_id_before": "738cefcbe902fafacacedcad60e76b4d26976ce4bbde5916bfa02a8a1a0582fe",
+  "web_id_after": "db0ca3b3195a85b1dc6337da4ea06d3b0ea10648647e60b01a41a192ef017b67",
+  "same_image": "sha256:ba50143aeffd8100a3454ab036398b9e778aa890a02b92f1d388ec88c0737f2d",
+  "networks_preserved": true,
+  "volumes_preserved": true,
+  "session_survives_recreate": true,
+  "promtail_id_unchanged": true,
+  "availability_samples": [
+    [
+      1792760176.8994238,
+      200
+    ],
+    [
+      1792760177.91995,
+      502
+    ],
+    [
+      1792760179.9860296,
+      502
+    ],
+    [
+      1792760180.9936697,
+      502
+    ],
+    [
+      1792760182.0035508,
+      200
+    ],
+    [
+      1792760183.197061,
+      200
+    ],
+    [
+      1792760184.4172273,
+      200
+    ]
+  ],
+  "incident": {
+    "four": "Normal",
+    "five": "Firing",
+    "resolved": "Normal",
+    "loki_events": [
+      {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:56:27.349Z",
+        "service": "greenshop-web",
+        "level": "Warning",
+        "category": "GreenShop.Web.Services.Observability",
+        "event_id": "2001",
+        "event": "auth.login.failed",
+        "diagnostic_code": "auth.login.failed",
+        "diagnostic_message": "Authentication security event.",
+        "exception_type": "",
+        "request_id": "0HNPH0K4U0D28:00000001",
+        "trace_id": "291532b338f9a6c61c988be673bc2b28",
+        "route": "authentication",
+        "reason_code": "invalid_credentials",
+        "incident": "GS-SEC-001"
+      },
+      {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:56:28.489Z",
+        "service": "greenshop-web",
+        "level": "Warning",
+        "category": "GreenShop.Web.Services.Observability",
+        "event_id": "2001",
+        "event": "auth.login.failed",
+        "diagnostic_code": "auth.login.failed",
+        "diagnostic_message": "Authentication security event.",
+        "exception_type": "",
+        "request_id": "0HNPH0K4U0D2A:00000001",
+        "trace_id": "f5af9567287e51d09396c6c71e8caf40",
+        "route": "authentication",
+        "reason_code": "invalid_credentials",
+        "incident": "GS-SEC-001"
+      },
+      {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:56:29.643Z",
+        "service": "greenshop-web",
+        "level": "Warning",
+        "category": "GreenShop.Web.Services.Observability",
+        "event_id": "2001",
+        "event": "auth.login.failed",
+        "diagnostic_code": "auth.login.failed",
+        "diagnostic_message": "Authentication security event.",
+        "exception_type": "",
+        "request_id": "0HNPH0K4U0D2C:00000001",
+        "trace_id": "8e6d814b21230e715811ac18b167e30c",
+        "route": "authentication",
+        "reason_code": "invalid_credentials",
+        "incident": "GS-SEC-001"
+      },
+      {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:56:30.702Z",
+        "service": "greenshop-web",
+        "level": "Warning",
+        "category": "GreenShop.Web.Services.Observability",
+        "event_id": "2001",
+        "event": "auth.login.failed",
+        "diagnostic_code": "auth.login.failed",
+        "diagnostic_message": "Authentication security event.",
+        "exception_type": "",
+        "request_id": "0HNPH0K4U0D2F:00000001",
+        "trace_id": "7447d91f235966a40b00a81d7471293e",
+        "route": "authentication",
+        "reason_code": "invalid_credentials",
+        "incident": "GS-SEC-001"
+      },
+      {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:56:48.828Z",
+        "service": "greenshop-web",
+        "level": "Warning",
+        "category": "GreenShop.Web.Services.Observability",
+        "event_id": "2001",
+        "event": "auth.login.failed",
+        "diagnostic_code": "auth.login.failed",
+        "diagnostic_message": "Authentication security event.",
+        "exception_type": "",
+        "request_id": "0HNPH0K4U0D2K:00000001",
+        "trace_id": "774d501acd3c5ca442cc5cfcdec55151",
+        "route": "authentication",
+        "reason_code": "invalid_credentials",
+        "incident": "GS-SEC-001"
+      }
+    ],
+    "query": "{environment=\"main\",service=\"greenshop-web\"} | json | event=\"auth.login.failed\" | __error__=\"\"",
+    "firing_received_at": "2026-10-23T12:57:05.020841+00:00",
+    "resolved_received_at": "2026-10-23T12:57:55.019108+00:00",
+    "receiver": "existing internal webhook; no external email/third-party delivery"
+  },
+  "stability_samples": [
+    {
+      "epoch": 1792760279.7389975,
+      "targets": 5,
+      "metrics": {
+        "up{job=\"greenshop\"}": 1.0,
+        "mysql_up": 1.0,
+        "nginx_up": 1.0
+      }
+    },
+    {
+      "epoch": 1792760289.7505574,
+      "targets": 5,
+      "metrics": {
+        "up{job=\"greenshop\"}": 1.0,
+        "mysql_up": 1.0,
+        "nginx_up": 1.0
+      }
+    },
+    {
+      "epoch": 1792760299.76179,
+      "targets": 5,
+      "metrics": {
+        "up{job=\"greenshop\"}": 1.0,
+        "mysql_up": 1.0,
+        "nginx_up": 1.0
+      }
+    },
+    {
+      "epoch": 1792760309.773534,
+      "targets": 5,
+      "metrics": {
+        "up{job=\"greenshop\"}": 1.0,
+        "mysql_up": 1.0,
+        "nginx_up": 1.0
+      }
+    },
+    {
+      "epoch": 1792760319.7933865,
+      "targets": 5,
+      "metrics": {
+        "up{job=\"greenshop\"}": 1.0,
+        "mysql_up": 1.0,
+        "nginx_up": 1.0
+      }
+    },
+    {
+      "epoch": 1792760329.8062196,
+      "targets": 5,
+      "metrics": {
+        "up{job=\"greenshop\"}": 1.0,
+        "mysql_up": 1.0,
+        "nginx_up": 1.0
+      }
+    },
+    {
+      "epoch": 1792760339.8189912,
+      "targets": 5,
+      "metrics": {
+        "up{job=\"greenshop\"}": 1.0,
+        "mysql_up": 1.0,
+        "nginx_up": 1.0
+      }
+    }
+  ],
+  "scope": "One Main Web force-recreate via canonical Compose; Promtail unchanged and syslog follows automatically; no VM reboot"
+}

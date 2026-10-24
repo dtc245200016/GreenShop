@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "scope": "Exact synthetic Main fixtures only; HTTP forms + CSRF + optimistic version",
+  "category_id": 71,
+  "product_id": 201,
+  "order_id": 19,
+  "checks": [
+    "Admin category edit",
+    "Admin product edit preserving current stock",
+    "Admin order transitions 3/4/5/1 completed",
+    "No real records selected or modified"
+  ]
+}

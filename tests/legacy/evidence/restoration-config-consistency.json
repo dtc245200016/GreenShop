@@ -1,0 +1,207 @@
+{
+  "status": "PASS",
+  "observed_epoch": 1792757587.584903,
+  "canonical_generator_exact_match": true,
+  "services": {
+    "db": {
+      "image_id": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+      "container_id": "420f22286f2b8550620c9f48625bb1b30ca0f37114b388246d2807a140261299",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_database_net": [
+          "db"
+        ],
+        "dtc245200016_btl_tkqt_htpm_db_admin_net": [
+          "db"
+        ]
+      },
+      "compose_working_directory": "/home/trung/DTC245200016_BTL_TKQT_HTPM",
+      "config_files": "/home/trung/DTC245200016_BTL_TKQT_HTPM/docker-compose.yml"
+    },
+    "nginx": {
+      "image_id": "sha256:df221db836e1754089190208cee7eeda94f233197056426eda74a43ab1abeac2",
+      "container_id": "118ba3b2f5208695838b59a21cdacceebf89e8bf7aa572e78d36b94fb0a50a40",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_app_net": [
+          "nginx_server",
+          "nginx"
+        ],
+        "dtc245200016_btl_tkqt_htpm_monitoring_net": [
+          "nginx_server",
+          "nginx"
+        ]
+      },
+      "compose_working_directory": "/home/trung/GreenShop-Official",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    },
+    "phpmyadmin": {
+      "image_id": "sha256:42a200db07b4e70fbf32c594ad4521cf16399b8e54bbb5adceae98e7566dfbeb",
+      "container_id": "ecacca3997ce58b366ab9533314167af84940835f2055c264f06bab5f9bc27ac",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_admin_net": [
+          "phpmyadmin"
+        ],
+        "dtc245200016_btl_tkqt_htpm_database_net": [
+          "phpmyadmin"
+        ]
+      },
+      "compose_working_directory": "/home/trung/DTC245200016_BTL_TKQT_HTPM",
+      "config_files": "/home/trung/DTC245200016_BTL_TKQT_HTPM/docker-compose.yml"
+    },
+    "web_app": {
+      "image_id": "sha256:2ac615ae0981b581a46b704f1f2b27ab75c45f437aeb3d1d2f4dbdc03cd48e81",
+      "container_id": "2294ac1d08dee2c7797ca61fa224b4cf9ba65426926cd54c1e648fb6606efd79",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_app_net": [
+          "greenshop_web",
+          "web_app"
+        ],
+        "dtc245200016_btl_tkqt_htpm_database_net": [
+          "greenshop_web",
+          "web_app"
+        ],
+        "dtc245200016_btl_tkqt_htpm_monitoring_net": [
+          "greenshop_web",
+          "web_app"
+        ]
+      },
+      "compose_working_directory": "/home/trung/GreenShop-Official",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    },
+    "prometheus": {
+      "image_id": "sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e",
+      "container_id": "81dd44dbe95123af5694491901b5992e7f9bd2c4675bffc7c58f130409dd2861",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_admin_net": [
+          "dtc245200016_btl_tkqt_htpm-prometheus-1",
+          "prometheus"
+        ],
+        "dtc245200016_btl_tkqt_htpm_monitoring_net": [
+          "dtc245200016_btl_tkqt_htpm-prometheus-1",
+          "prometheus"
+        ]
+      },
+      "compose_working_directory": "/home/trung/.local/share/greenshop-monitoring/main",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    },
+    "grafana": {
+      "image_id": "sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f",
+      "container_id": "d711d5bff38de023ffcf40f5e31484afc772be433836cb1d01bfa99a4481eff3",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_admin_net": [
+          "dtc245200016_btl_tkqt_htpm-grafana-1",
+          "grafana"
+        ],
+        "dtc245200016_btl_tkqt_htpm_logging_net": [
+          "grafana",
+          "dtc245200016_btl_tkqt_htpm-grafana-1"
+        ],
+        "dtc245200016_btl_tkqt_htpm_monitoring_net": [
+          "dtc245200016_btl_tkqt_htpm-grafana-1",
+          "grafana"
+        ]
+      },
+      "compose_working_directory": "/home/trung/.local/share/greenshop-monitoring/main",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    },
+    "mysql-exporter": {
+      "image_id": "sha256:abed8dac117b4ae5b70757f988e44795935b9a72c3b58d720c67ba688f8cb79e",
+      "container_id": "bfb2f9ebd2bb8947cef6bca48b55923ed0ece35f3fccb7786a5e37d21880717d",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_database_net": [
+          "mysql-exporter"
+        ],
+        "dtc245200016_btl_tkqt_htpm_monitoring_net": [
+          "dtc245200016_btl_tkqt_htpm-mysql-exporter-1",
+          "mysql-exporter"
+        ]
+      },
+      "compose_working_directory": "/home/trung/.local/share/greenshop-monitoring/main",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    },
+    "nginx-exporter": {
+      "image_id": "sha256:85666e7fde7e253f1c6d978f9a961245df4c9cdb7677e1866d9bb28e8f9ee41d",
+      "container_id": "9897bd70e552a5ab9fdc3f956b68d8d798a70478ec0c6c228feea61766046127",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_monitoring_net": [
+          "dtc245200016_btl_tkqt_htpm-nginx-exporter-1",
+          "nginx-exporter"
+        ]
+      },
+      "compose_working_directory": "/home/trung/.local/share/greenshop-monitoring/main",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    },
+    "cadvisor": {
+      "image_id": "sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a",
+      "container_id": "60ff5c90182aeed75df9505cf1b0394ec6fcaeb9f22cebf794a43c26a2b8f139",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_monitoring_net": [
+          "dtc245200016_btl_tkqt_htpm-cadvisor-1",
+          "cadvisor"
+        ]
+      },
+      "compose_working_directory": "/home/trung/.local/share/greenshop-monitoring/main",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    },
+    "qa-alert-receiver": {
+      "image_id": "sha256:9c51ecce261773a684c8345b2d4673700055c513b4d54bc0719337d3e4ee552e",
+      "container_id": "f452cbfab32d5e10f3c7ef57528b26db5b56b1a189bfaa386bba50b48d87a22a",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_monitoring_net": [
+          "greenshop-main-qa-alert-receiver",
+          "qa-alert-receiver"
+        ]
+      },
+      "compose_working_directory": "/home/trung/.local/share/greenshop-monitoring/main",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    },
+    "loki": {
+      "image_id": "sha256:a95db62e07568722e6143cf85b51b565a8225b775c17d475d9a776cbd4eb29ce",
+      "container_id": "6622d6f36abf4ced0f0ae1e9d69dd2d3386595a9945695ab153a5558430d5e15",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_logging_net": [
+          "dtc245200016_btl_tkqt_htpm-loki-1",
+          "loki"
+        ]
+      },
+      "compose_working_directory": "/home/trung/GreenShop-Official",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    },
+    "promtail": {
+      "image_id": "sha256:a761cb834cfaeee29745440d4884d6748f0a08d8f68928db1d707018c1dcfbe9",
+      "container_id": "9ff7c9d37eae18a98ed82a0e140196cc1b86b0d79849381d4b80f11ff387fce2",
+      "all_explicit_env_values_match": true,
+      "all_volume_bind_and_secret_mounts_match": true,
+      "aliases": {
+        "dtc245200016_btl_tkqt_htpm_logging_net": [
+          "dtc245200016_btl_tkqt_htpm-promtail-1",
+          "promtail"
+        ]
+      },
+      "compose_working_directory": "/home/trung/GreenShop-Official",
+      "config_files": "/home/trung/.local/share/greenshop-monitoring/main/compose.json"
+    }
+  },
+  "exceptions": "DB/PMA retain historical old Compose labels only; all actual network/env/volume configuration is adopted in Official private plan; no old-workspace bind mounts remain."
+}

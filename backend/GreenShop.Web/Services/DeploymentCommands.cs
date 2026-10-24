@@ -69,6 +69,7 @@ internal static class DeploymentCommands
     {
         var input=await JsonSerializer.DeserializeAsync<AdminInput>(Console.OpenStandardInput()) ?? throw new ArgumentException("Missing input");
         var model=new RegisterViewModel{FullName=input.FullName.Trim(),Email=input.Email.Trim().ToLowerInvariant(),Password=input.Password,ConfirmPassword=input.Password};
+        if(!ShopOwnership.IsOwnerEmail(model.Email))throw new ArgumentException("Initial Admin must use the reserved shop-owner email: "+ShopOwnership.OwnerEmail);
         if(!Validator.TryValidateObject(model,new ValidationContext(model),null,true) || input.Password.Length<12 || Encoding.UTF8.GetByteCount(input.Password)>72)
             throw new ArgumentException("Invalid administrator fields");
         var connectionString=Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection") ?? throw new InvalidOperationException("Missing database configuration");

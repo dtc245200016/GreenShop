@@ -1,0 +1,82 @@
+{
+  "status": "PASS",
+  "observed_epoch": 1792757388.5084274,
+  "all_original_rows_preserved": true,
+  "tables": {
+    "AdminNotifications": {
+      "original_rows_preserved": 10,
+      "new_rows": 2
+    },
+    "CartItems": {
+      "original_rows_preserved": 5,
+      "new_rows": 1
+    },
+    "Categories": {
+      "original_rows_preserved": 5,
+      "new_rows": 1
+    },
+    "HomeSliderSettings": {
+      "original_rows_preserved": 1,
+      "new_rows": 0
+    },
+    "OrderItems": {
+      "original_rows_preserved": 10,
+      "new_rows": 1
+    },
+    "OrderStatusHistories": {
+      "original_rows_preserved": 47,
+      "new_rows": 4
+    },
+    "Orders": {
+      "original_rows_preserved": 10,
+      "new_rows": 1
+    },
+    "PaymentShippingSettings": {
+      "original_rows_preserved": 1,
+      "new_rows": 0
+    },
+    "ProductReviews": {
+      "original_rows_preserved": 5,
+      "new_rows": 0
+    },
+    "Products": {
+      "original_rows_preserved": 6,
+      "new_rows": 1
+    },
+    "ShopConversationReads": {
+      "original_rows_preserved": 4,
+      "new_rows": 0
+    },
+    "ShopConversations": {
+      "original_rows_preserved": 3,
+      "new_rows": 0
+    },
+    "ShopMessages": {
+      "original_rows_preserved": 7,
+      "new_rows": 0
+    },
+    "Users": {
+      "original_rows_preserved": 5,
+      "new_rows": 2
+    },
+    "__EFMigrationsHistory": {
+      "original_rows_preserved": 10,
+      "new_rows": 0
+    }
+  },
+  "migrations_unchanged": 10,
+  "all_original_keys_uploads_hashes_preserved": true,
+  "original_files": 8,
+  "new_files": 1,
+  "db_and_phpmyadmin_ids_mounts_preserved": true,
+  "git_head": "5b55ae826d513692e60b5e9e9f69656f0abf7a44",
+  "git_index_sha256": "9e2f5f998f6b2faf446f894a363107b5f107ad4e57c8f80f16e72e98dac95e47",
+  "new_rows_scope": "Only explicitly generated synthetic Main demo accounts/category/product/order/cart and associated workflow notifications/history; no reset or raw backup",
+  "tls_bytes_preserved": true,
+  "tls_hashes": {
+    "cert.pem": "4bbc8300acf5a25331e9798a1b669c78a89c7f7e7096845de9a98c57c0492050",
+    "key.pem": "d232acc31d46e503956b1a768503535ef96d0b8dda05a4ccde3f31a377f35bf1"
+  },
+  "served_certificate_matches_preserved_file": true,
+  "tls_negotiated": "TLSv1.3"
+}

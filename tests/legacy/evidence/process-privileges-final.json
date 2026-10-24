@@ -1,0 +1,1733 @@
+{
+  "status": "PASS",
+  "observed_utc": "2026-10-23T12:24:53.485287+00:00",
+  "method": "docker inspect + docker top PID list + host /proc/PID/status; no argv/environment exported",
+  "services": [
+    {
+      "environment": "qa",
+      "service": "loki",
+      "container_user": "10001:10001",
+      "processes": [
+        {
+          "pid": 1702526,
+          "is_container_pid1": true,
+          "name": "loki",
+          "uid": [
+            10001,
+            10001,
+            10001,
+            10001
+          ],
+          "gid": [
+            10001,
+            10001,
+            10001,
+            10001
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "qa",
+      "service": "promtail",
+      "container_user": "10001:0",
+      "processes": [
+        {
+          "pid": 1645148,
+          "is_container_pid1": true,
+          "name": "promtail",
+          "uid": [
+            10001,
+            10001,
+            10001,
+            10001
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "qa",
+      "service": "web_app",
+      "container_user": "1654:1654",
+      "processes": [
+        {
+          "pid": 1640774,
+          "is_container_pid1": true,
+          "name": "dotnet",
+          "uid": [
+            1654,
+            1654,
+            1654,
+            1654
+          ],
+          "gid": [
+            1654,
+            1654,
+            1654,
+            1654
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "qa",
+      "service": "phpmyadmin",
+      "container_user": "root",
+      "processes": [
+        {
+          "pid": 5045,
+          "is_container_pid1": true,
+          "name": "apache2",
+          "uid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "00000000a80425fb",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 9960,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 9961,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 9965,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 9973,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 9979,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 10076,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": null,
+      "security_options": null,
+      "host_mount_destinations": [],
+      "classification": "Root master/entrypoint/host collector risk must be assessed separately; no forced USER override."
+    },
+    {
+      "environment": "qa",
+      "service": "db",
+      "container_user": "image entrypoint default",
+      "processes": [
+        {
+          "pid": 5196,
+          "is_container_pid1": true,
+          "name": "mysqld",
+          "uid": [
+            999,
+            999,
+            999,
+            999
+          ],
+          "gid": [
+            999,
+            999,
+            999,
+            999
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": null,
+      "security_options": null,
+      "host_mount_destinations": [],
+      "classification": "Root master/entrypoint/host collector risk must be assessed separately; no forced USER override."
+    },
+    {
+      "environment": "qa",
+      "service": "nginx",
+      "container_user": "image entrypoint default",
+      "processes": [
+        {
+          "pid": 5010,
+          "is_container_pid1": true,
+          "name": "nginx",
+          "uid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "00000000a80425fb",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 9562,
+          "is_container_pid1": false,
+          "name": "nginx",
+          "uid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "gid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 9563,
+          "is_container_pid1": false,
+          "name": "nginx",
+          "uid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "gid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 9564,
+          "is_container_pid1": false,
+          "name": "nginx",
+          "uid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "gid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 9565,
+          "is_container_pid1": false,
+          "name": "nginx",
+          "uid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "gid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": null,
+      "security_options": null,
+      "host_mount_destinations": [],
+      "classification": "Root master/entrypoint/host collector risk must be assessed separately; no forced USER override."
+    },
+    {
+      "environment": "qa",
+      "service": "grafana",
+      "container_user": "472",
+      "processes": [
+        {
+          "pid": 4417,
+          "is_container_pid1": true,
+          "name": "grafana",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11114,
+          "is_container_pid1": false,
+          "name": "gpx_grafana_ela",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11241,
+          "is_container_pid1": false,
+          "name": "gpx_grafana_pos",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11526,
+          "is_container_pid1": false,
+          "name": "gpx_grafana_inf",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11657,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-jae",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11794,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-lok",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11947,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-mss",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 12000,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-mys",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 13677,
+          "is_container_pid1": false,
+          "name": "gpx_grafana_clo",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 14171,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-tem",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 14864,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-pro",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 16460,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-ope",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 17249,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-pyr",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 17580,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-zip",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "qa",
+      "service": "prometheus",
+      "container_user": "nobody",
+      "processes": [
+        {
+          "pid": 4219,
+          "is_container_pid1": true,
+          "name": "prometheus",
+          "uid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "gid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "qa",
+      "service": "qa-alert-receiver",
+      "container_user": "65534:65534",
+      "processes": [
+        {
+          "pid": 5194,
+          "is_container_pid1": true,
+          "name": "python",
+          "uid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "gid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "qa",
+      "service": "nginx-exporter",
+      "container_user": "1001:1001",
+      "processes": [
+        {
+          "pid": 5195,
+          "is_container_pid1": true,
+          "name": "nginx-prometheu",
+          "uid": [
+            1001,
+            1001,
+            1001,
+            1001
+          ],
+          "gid": [
+            1001,
+            1001,
+            1001,
+            1001
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "qa",
+      "service": "cadvisor",
+      "container_user": "image entrypoint default",
+      "processes": [
+        {
+          "pid": 4264,
+          "is_container_pid1": true,
+          "name": "cadvisor",
+          "uid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [
+        "/rootfs",
+        "/sys",
+        "/var/lib/docker",
+        "/var/run"
+      ],
+      "classification": "Root master/entrypoint/host collector risk must be assessed separately; no forced USER override."
+    },
+    {
+      "environment": "qa",
+      "service": "mysql-exporter",
+      "container_user": "nobody",
+      "processes": [
+        {
+          "pid": 4647,
+          "is_container_pid1": true,
+          "name": "mysqld_exporter",
+          "uid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "gid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "main",
+      "service": "loki",
+      "container_user": "10001:10001",
+      "processes": [
+        {
+          "pid": 1705683,
+          "is_container_pid1": true,
+          "name": "loki",
+          "uid": [
+            10001,
+            10001,
+            10001,
+            10001
+          ],
+          "gid": [
+            10001,
+            10001,
+            10001,
+            10001
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "main",
+      "service": "promtail",
+      "container_user": "10001:0",
+      "processes": [
+        {
+          "pid": 1689101,
+          "is_container_pid1": true,
+          "name": "promtail",
+          "uid": [
+            10001,
+            10001,
+            10001,
+            10001
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "main",
+      "service": "web_app",
+      "container_user": "1654:1654",
+      "processes": [
+        {
+          "pid": 1683801,
+          "is_container_pid1": true,
+          "name": "dotnet",
+          "uid": [
+            1654,
+            1654,
+            1654,
+            1654
+          ],
+          "gid": [
+            1654,
+            1654,
+            1654,
+            1654
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "main",
+      "service": "nginx",
+      "container_user": "image entrypoint default",
+      "processes": [
+        {
+          "pid": 1667860,
+          "is_container_pid1": true,
+          "name": "nginx",
+          "uid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "00000000a80425fb",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1668026,
+          "is_container_pid1": false,
+          "name": "nginx",
+          "uid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "gid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1668027,
+          "is_container_pid1": false,
+          "name": "nginx",
+          "uid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "gid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1668028,
+          "is_container_pid1": false,
+          "name": "nginx",
+          "uid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "gid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1668029,
+          "is_container_pid1": false,
+          "name": "nginx",
+          "uid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "gid": [
+            101,
+            101,
+            101,
+            101
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": null,
+      "security_options": null,
+      "host_mount_destinations": [],
+      "classification": "Root master/entrypoint/host collector risk must be assessed separately; no forced USER override."
+    },
+    {
+      "environment": "main",
+      "service": "phpmyadmin",
+      "container_user": "root",
+      "processes": [
+        {
+          "pid": 1155999,
+          "is_container_pid1": true,
+          "name": "apache2",
+          "uid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "00000000a80425fb",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1156285,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1156287,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1156289,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1156290,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1156291,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        },
+        {
+          "pid": 1156676,
+          "is_container_pid1": false,
+          "name": "apache2",
+          "uid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "gid": [
+            33,
+            33,
+            33,
+            33
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": null,
+      "security_options": null,
+      "host_mount_destinations": [],
+      "classification": "Root master/entrypoint/host collector risk must be assessed separately; no forced USER override."
+    },
+    {
+      "environment": "main",
+      "service": "db",
+      "container_user": "image entrypoint default",
+      "processes": [
+        {
+          "pid": 1155482,
+          "is_container_pid1": true,
+          "name": "mysqld",
+          "uid": [
+            999,
+            999,
+            999,
+            999
+          ],
+          "gid": [
+            999,
+            999,
+            999,
+            999
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "0"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": null,
+      "security_options": null,
+      "host_mount_destinations": [],
+      "classification": "Root master/entrypoint/host collector risk must be assessed separately; no forced USER override."
+    },
+    {
+      "environment": "main",
+      "service": "grafana",
+      "container_user": "472",
+      "processes": [
+        {
+          "pid": 4660,
+          "is_container_pid1": true,
+          "name": "grafana",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11116,
+          "is_container_pid1": false,
+          "name": "gpx_grafana_ela",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11216,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-pyr",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11233,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-ope",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11490,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-pro",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11559,
+          "is_container_pid1": false,
+          "name": "gpx_grafana_clo",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 11789,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-tem",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 12010,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-zip",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 12109,
+          "is_container_pid1": false,
+          "name": "gpx_grafana_pos",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 12267,
+          "is_container_pid1": false,
+          "name": "gpx_grafana_inf",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 12274,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-jae",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 12303,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-lok",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 12364,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-mss",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        },
+        {
+          "pid": 12424,
+          "is_container_pid1": false,
+          "name": "gpx_grafana-mys",
+          "uid": [
+            472,
+            472,
+            472,
+            472
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "main",
+      "service": "prometheus",
+      "container_user": "nobody",
+      "processes": [
+        {
+          "pid": 5012,
+          "is_container_pid1": true,
+          "name": "prometheus",
+          "uid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "gid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "main",
+      "service": "nginx-exporter",
+      "container_user": "1001:1001",
+      "processes": [
+        {
+          "pid": 4588,
+          "is_container_pid1": true,
+          "name": "nginx-prometheu",
+          "uid": [
+            1001,
+            1001,
+            1001,
+            1001
+          ],
+          "gid": [
+            1001,
+            1001,
+            1001,
+            1001
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "main",
+      "service": "qa-alert-receiver",
+      "container_user": "65534:65534",
+      "processes": [
+        {
+          "pid": 4324,
+          "is_container_pid1": true,
+          "name": "python",
+          "uid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "gid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    },
+    {
+      "environment": "main",
+      "service": "cadvisor",
+      "container_user": "image entrypoint default",
+      "processes": [
+        {
+          "pid": 4645,
+          "is_container_pid1": true,
+          "name": "cadvisor",
+          "uid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "gid": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [
+        "/rootfs",
+        "/sys",
+        "/var/lib/docker",
+        "/var/run"
+      ],
+      "classification": "Root master/entrypoint/host collector risk must be assessed separately; no forced USER override."
+    },
+    {
+      "environment": "main",
+      "service": "mysql-exporter",
+      "container_user": "nobody",
+      "processes": [
+        {
+          "pid": 4367,
+          "is_container_pid1": true,
+          "name": "mysqld_exporter",
+          "uid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "gid": [
+            65534,
+            65534,
+            65534,
+            65534
+          ],
+          "effective_capabilities": "0000000000000000",
+          "no_new_privileges": "1"
+        }
+      ],
+      "privileged": false,
+      "caps_add": null,
+      "caps_drop": [
+        "ALL"
+      ],
+      "security_options": [
+        "no-new-privileges:true"
+      ],
+      "host_mount_destinations": [],
+      "classification": "Observed actual UID/GID; no privilege change made."
+    }
+  ],
+  "runtime_changes": false,
+  "scope": "Audit PASS means observations collected, not all services non-root."
+}

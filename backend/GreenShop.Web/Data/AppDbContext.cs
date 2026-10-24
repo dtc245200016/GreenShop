@@ -25,6 +25,9 @@ namespace GreenShop.Web.Data
         public DbSet<ShopConversation> ShopConversations { get; set; } = null!;
         public DbSet<ShopMessage> ShopMessages { get; set; } = null!;
 
+        public DbSet<AdminNotification> AdminNotifications { get; set; } = null!;
+        public DbSet<ShopConversationRead> ShopConversationReads { get; set; } = null!;
+
         protected override void OnModelCreating(
             ModelBuilder modelBuilder)
         {
@@ -37,13 +40,21 @@ namespace GreenShop.Web.Data
                 e.HasData(new HomeSliderSettings {Id=1,Mode="bestsellers",ProductCount=5,Days=30,Version=0});
             });
             modelBuilder.Entity<ProductReview>(e=> {
+                e.Property(r=>r.IsCurrent).HasDefaultValue(true);
+                e.Property(r=>r.CurrentProductId).HasComputedColumnSql("CASE WHEN `IsCurrent` = 1 THEN `ProductId` ELSE NULL END", stored:false);
+                e.Property(r=>r.Version).IsConcurrencyToken();
+                e.HasIndex(r=>new {r.UserId,r.CurrentProductId});e.HasIndex(r=>r.UserId);
                 e.HasIndex(r=>r.OrderItemId).IsUnique();e.HasIndex(r=>new {r.ProductId,r.CreatedAt});e.HasIndex(r=>r.AdminReadAt);
                 e.HasOne(r=>r.OrderItem).WithMany().HasForeignKey(r=>r.OrderItemId).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(r=>r.User).WithMany().HasForeignKey(r=>r.UserId).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(r=>r.Product).WithMany().HasForeignKey(r=>r.ProductId).OnDelete(DeleteBehavior.SetNull);
+                e.HasOne<User>().WithMany().HasForeignKey(r=>r.ReplyAdminId).OnDelete(DeleteBehavior.Restrict);
                 e.ToTable(t=>t.HasCheckConstraint("CK_ProductReviews_Stars","`Stars` BETWEEN 1 AND 5"));
             });
             modelBuilder.Entity<ShopConversation>(e=> {
+                e.Property(c=>c.Status).HasDefaultValue("Waiting");e.Property(c=>c.Version).IsConcurrencyToken();
+                e.HasOne(c=>c.AssignedAdmin).WithMany().HasForeignKey(c=>c.AssignedAdminId).OnDelete(DeleteBehavior.Restrict);
+                e.ToTable(t=>t.HasCheckConstraint("CK_ShopConversations_Status", "`Status` IN ('Waiting','InProgress','Resolved')"));
                 e.HasIndex(c=>c.CustomerId).IsUnique();e.HasIndex(c=>c.UpdatedAt);
                 e.HasOne(c=>c.Customer).WithMany().HasForeignKey(c=>c.CustomerId).OnDelete(DeleteBehavior.Restrict);
             });
@@ -51,6 +62,16 @@ namespace GreenShop.Web.Data
                 e.HasIndex(m=>new {m.SenderId,m.RequestToken}).IsUnique();e.HasIndex(m=>new {m.ConversationId,m.Id});e.HasIndex(m=>new {m.SenderId,m.CreatedAt});
                 e.HasOne(m=>m.Conversation).WithMany().HasForeignKey(m=>m.ConversationId).OnDelete(DeleteBehavior.Restrict);
                 e.HasOne(m=>m.Sender).WithMany().HasForeignKey(m=>m.SenderId).OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<AdminNotification>(e=> {
+                e.HasIndex(n=>new {n.RecipientId,n.EventKey}).IsUnique();e.HasIndex(n=>new {n.RecipientId,n.ReadAt,n.Id});
+                e.HasOne(n=>n.Recipient).WithMany().HasForeignKey(n=>n.RecipientId).OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<ShopConversationRead>(e=> {
+                e.HasKey(r=>new {r.ConversationId,r.AdminId});
+                e.HasOne(r=>r.Conversation).WithMany().HasForeignKey(r=>r.ConversationId).OnDelete(DeleteBehavior.Restrict);
+                e.HasOne(r=>r.Admin).WithMany().HasForeignKey(r=>r.AdminId).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<User>()

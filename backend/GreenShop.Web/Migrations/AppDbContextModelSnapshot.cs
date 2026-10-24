@@ -19,6 +19,51 @@ namespace GreenShop.Web.Migrations
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("GreenShop.Web.Models.AdminNotification", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("EventKey")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("RecipientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipientId", "EventKey")
+                        .IsUnique();
+
+                    b.HasIndex("RecipientId", "ReadAt", "Id");
+
+                    b.ToTable("AdminNotifications");
+                });
+
             modelBuilder.Entity("GreenShop.Web.Models.CartItem", b =>
                 {
                     b.Property<int>("Id")
@@ -429,6 +474,11 @@ namespace GreenShop.Web.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int?>("CurrentProductId")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int")
+                        .HasComputedColumnSql("CASE WHEN `IsCurrent` = 1 THEN `ProductId` ELSE NULL END", false);
+
                     b.Property<string>("Image1")
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
@@ -441,6 +491,22 @@ namespace GreenShop.Web.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Image4")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Image5")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("IsCurrent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("OrderItemId")
                         .HasColumnType("int");
 
@@ -452,11 +518,31 @@ namespace GreenShop.Web.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
+                    b.Property<int?>("ReplyAdminId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReplyContent")
+                        .HasMaxLength(1500)
+                        .HasColumnType("varchar(1500)");
+
+                    b.Property<DateTime?>("ReplyCreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ReplyUpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("Stars")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -465,9 +551,13 @@ namespace GreenShop.Web.Migrations
                     b.HasIndex("OrderItemId")
                         .IsUnique();
 
+                    b.HasIndex("ReplyAdminId");
+
                     b.HasIndex("UserId");
 
                     b.HasIndex("ProductId", "CreatedAt");
+
+                    b.HasIndex("UserId", "CurrentProductId");
 
                     b.ToTable("ProductReviews", t =>
                         {
@@ -484,23 +574,60 @@ namespace GreenShop.Web.Migrations
                     b.Property<long>("AdminReadMessageId")
                         .HasColumnType("bigint");
 
+                    b.Property<int?>("AssignedAdminId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<long>("CustomerReadMessageId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasDefaultValue("Waiting");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedAdminId");
 
                     b.HasIndex("CustomerId")
                         .IsUnique();
 
                     b.HasIndex("UpdatedAt");
 
-                    b.ToTable("ShopConversations");
+                    b.ToTable("ShopConversations", t =>
+                        {
+                            t.HasCheckConstraint("CK_ShopConversations_Status", "`Status` IN ('Waiting','InProgress','Resolved')");
+                        });
+                });
+
+            modelBuilder.Entity("GreenShop.Web.Models.ShopConversationRead", b =>
+                {
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AdminId")
+                        .HasColumnType("int");
+
+                    b.Property<long>("ThroughMessageId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ConversationId", "AdminId");
+
+                    b.HasIndex("AdminId");
+
+                    b.ToTable("ShopConversationReads");
                 });
 
             modelBuilder.Entity("GreenShop.Web.Models.ShopMessage", b =>
@@ -592,6 +719,17 @@ namespace GreenShop.Web.Migrations
                     b.HasIndex("Role", "IsActive");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GreenShop.Web.Models.AdminNotification", b =>
+                {
+                    b.HasOne("GreenShop.Web.Models.User", "Recipient")
+                        .WithMany()
+                        .HasForeignKey("RecipientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Recipient");
                 });
 
             modelBuilder.Entity("GreenShop.Web.Models.CartItem", b =>
@@ -690,6 +828,11 @@ namespace GreenShop.Web.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("GreenShop.Web.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("ReplyAdminId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("GreenShop.Web.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -705,13 +848,39 @@ namespace GreenShop.Web.Migrations
 
             modelBuilder.Entity("GreenShop.Web.Models.ShopConversation", b =>
                 {
+                    b.HasOne("GreenShop.Web.Models.User", "AssignedAdmin")
+                        .WithMany()
+                        .HasForeignKey("AssignedAdminId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("GreenShop.Web.Models.User", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("AssignedAdmin");
+
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("GreenShop.Web.Models.ShopConversationRead", b =>
+                {
+                    b.HasOne("GreenShop.Web.Models.User", "Admin")
+                        .WithMany()
+                        .HasForeignKey("AdminId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("GreenShop.Web.Models.ShopConversation", "Conversation")
+                        .WithMany()
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Admin");
+
+                    b.Navigation("Conversation");
                 });
 
             modelBuilder.Entity("GreenShop.Web.Models.ShopMessage", b =>

@@ -21,8 +21,14 @@ public class AdminUserService(AppDbContext db)
             .AsNoTracking().ToListAsync(ct);
         if (!administrators.Any(u => u.Id == actorId && u.SessionVersion == actorSessionVersion))
             return new UserMutationResult(403,"Quyền quản trị của phiên này không còn hiệu lực. Vui lòng đăng nhập lại.");
+        var actor=administrators.Single(u=>u.Id==actorId);
+        var owner=ShopOwnership.IsOwnerEmail(actor.Email);
+        if(operation==AdminUserOperation.Role && !owner)
+            return new UserMutationResult(403,"Chỉ chủ shop mới được thay đổi quyền tài khoản.");
         var account = await ShoppingIdentity.LockUserAsync(db,id,ct);
         if (account == null) return new UserMutationResult(404,"Không tìm thấy tài khoản.");
+        if(!owner && (ShopOwnership.IsOwnerEmail(account.Email) || account.Role==UserRole.Admin && account.Id!=actorId))
+            return new UserMutationResult(403,"Bạn không được thay đổi tài khoản chủ shop hoặc quản trị viên khác.");
         if (account.Version != command.ExpectedVersion || account.Version == long.MaxValue || account.SessionVersion == long.MaxValue)
             return new UserMutationResult(409,"Tài khoản vừa được cập nhật. Hãy kiểm tra thông tin mới trước khi thao tác lại.");
         var query = db.Users.Where(u => u.Id == id && u.Version == command.ExpectedVersion);

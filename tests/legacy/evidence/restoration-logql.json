@@ -1,0 +1,242 @@
+{
+  "observed_epoch": 1792757713.579357,
+  "queries": {
+    "nginx": {
+      "query": "{environment=\"main\",service=\"nginx\"}",
+      "count": 667,
+      "newest_timestamp_ns": "1792757703316605141",
+      "sample": {
+        "timestamp_utc": "",
+        "kind": "nginx",
+        "method": "OTHER",
+        "status": "",
+        "duration": "",
+        "route_group": "unparsed_or_error",
+        "upstream_status": "",
+        "upstream_time": ""
+      }
+    },
+    "web": {
+      "query": "{environment=\"main\",service=\"greenshop-web\"}",
+      "count": 28,
+      "newest_timestamp_ns": "1792757337516833806",
+      "sample": {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:03:15.607Z",
+        "service": "greenshop-web",
+        "level": "Error",
+        "category": "Microsoft.EntityFrameworkCore.Database.Connection",
+        "event_id": "20004",
+        "event": "",
+        "diagnostic_code": "db.connection.failed",
+        "diagnostic_message": "Database connection failed.",
+        "exception_type": "",
+        "request_id": "0HNPGVLJMFEBV:00000001",
+        "trace_id": "d9e06b2ce2f8235e68ea8c3526ad9c84",
+        "route": "health",
+        "reason_code": "",
+        "incident": ""
+      }
+    },
+    "mysql": {
+      "query": "{environment=\"main\",service=\"mysql\"}",
+      "count": 2,
+      "newest_timestamp_ns": "1792757711775913815",
+      "sample": {
+        "kind": "mysql_operational",
+        "timestamp_utc": "2026-10-23T12:15:11.750834Z",
+        "level": "Note",
+        "code": "MY-010914",
+        "component": "Server"
+      }
+    },
+    "http404": {
+      "query": "{environment=\"main\",service=\"nginx\"} | json | status=\"404\" | __error__=\"\"",
+      "count": 3,
+      "newest_timestamp_ns": "1792757417989370836",
+      "sample": {
+        "timestamp_utc": "2026-10-23T12:03:20+00:00",
+        "kind": "nginx",
+        "method": "GET",
+        "status": "404",
+        "duration": "0.000",
+        "route_group": "metrics",
+        "upstream_status": "",
+        "upstream_time": ""
+      }
+    },
+    "http_errors": {
+      "query": "{environment=\"main\",service=\"nginx\"} | json | status >= 400 | __error__=\"\"",
+      "count": 7,
+      "newest_timestamp_ns": "1792757417989370836",
+      "sample": {
+        "timestamp_utc": "2026-10-23T12:03:20+00:00",
+        "kind": "nginx",
+        "method": "GET",
+        "status": "404",
+        "duration": "0.000",
+        "route_group": "metrics",
+        "upstream_status": "",
+        "upstream_time": ""
+      }
+    },
+    "app_errors": {
+      "query": "{environment=\"main\",service=\"greenshop-web\"} | json | level=~\"Error|Critical\" | __error__=\"\"",
+      "count": 1,
+      "newest_timestamp_ns": "1792756995609095498",
+      "sample": {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:03:15.607Z",
+        "service": "greenshop-web",
+        "level": "Error",
+        "category": "Microsoft.EntityFrameworkCore.Database.Connection",
+        "event_id": "20004",
+        "event": "",
+        "diagnostic_code": "db.connection.failed",
+        "diagnostic_message": "Database connection failed.",
+        "exception_type": "",
+        "request_id": "0HNPGVLJMFEBV:00000001",
+        "trace_id": "d9e06b2ce2f8235e68ea8c3526ad9c84",
+        "route": "health",
+        "reason_code": "",
+        "incident": ""
+      }
+    },
+    "auth.login.succeeded": {
+      "query": "{environment=\"main\",service=\"greenshop-web\"} | json | event=\"auth.login.succeeded\" | __error__=\"\"",
+      "count": 5,
+      "newest_timestamp_ns": "1792757337516833806",
+      "sample": {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:03:18.296Z",
+        "service": "greenshop-web",
+        "level": "Information",
+        "category": "GreenShop.Web.Services.Observability",
+        "event_id": "2002",
+        "event": "auth.login.succeeded",
+        "diagnostic_code": "auth.login.succeeded",
+        "diagnostic_message": "Authentication security event.",
+        "exception_type": "",
+        "request_id": "0HNPGVLJMFEC6:00000001",
+        "trace_id": "69591a9f4d80cebdbcf3b6518d9e8854",
+        "route": "authentication",
+        "reason_code": "cookie_issued",
+        "incident": "authentication"
+      }
+    },
+    "auth.access.denied": {
+      "query": "{environment=\"main\",service=\"greenshop-web\"} | json | event=\"auth.access.denied\" | __error__=\"\"",
+      "count": 1,
+      "newest_timestamp_ns": "1792757000729244725",
+      "sample": {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:03:20.728Z",
+        "service": "greenshop-web",
+        "level": "Warning",
+        "category": "GreenShop.Web.Services.Observability",
+        "event_id": "2003",
+        "event": "auth.access.denied",
+        "diagnostic_code": "auth.access.denied",
+        "diagnostic_message": "Authentication security event.",
+        "exception_type": "",
+        "request_id": "0HNPGVLJMFECD:00000001",
+        "trace_id": "7e05aed9e2d3517e7d201dbf31292db2",
+        "route": "admin",
+        "reason_code": "portal_role_mismatch",
+        "incident": "authentication"
+      }
+    },
+    "category.created": {
+      "query": "{environment=\"main\",service=\"greenshop-web\"} | json | event=\"category.created\" | __error__=\"\"",
+      "count": 1,
+      "newest_timestamp_ns": "1792757001344072539",
+      "sample": {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:03:21.343Z",
+        "service": "greenshop-web",
+        "level": "Information",
+        "category": "GreenShop.Web.Areas.Admin.Controllers.DanhMucController",
+        "event_id": "3001",
+        "event": "category.created",
+        "diagnostic_code": "category.created",
+        "diagnostic_message": "Business creation committed.",
+        "exception_type": "",
+        "request_id": "0HNPGVLJMFECK:00000001",
+        "trace_id": "dcf915cec2f8c7dc659e2d667fbaed48",
+        "route": "admin",
+        "reason_code": "committed",
+        "incident": "business"
+      }
+    },
+    "product.created": {
+      "query": "{environment=\"main\",service=\"greenshop-web\"} | json | event=\"product.created\" | __error__=\"\"",
+      "count": 1,
+      "newest_timestamp_ns": "1792757001608122743",
+      "sample": {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:03:21.606Z",
+        "service": "greenshop-web",
+        "level": "Information",
+        "category": "GreenShop.Web.Areas.Admin.Controllers.SanPhamController",
+        "event_id": "3002",
+        "event": "product.created",
+        "diagnostic_code": "product.created",
+        "diagnostic_message": "Business creation committed.",
+        "exception_type": "",
+        "request_id": "0HNPGVLJMFECN:00000001",
+        "trace_id": "c41f22df4be497d9aad469ffb20ec9ca",
+        "route": "admin",
+        "reason_code": "committed",
+        "incident": "business"
+      }
+    },
+    "order.created": {
+      "query": "{environment=\"main\",service=\"greenshop-web\"} | json | event=\"order.created\" | __error__=\"\"",
+      "count": 1,
+      "newest_timestamp_ns": "1792757002459607304",
+      "sample": {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:03:22.458Z",
+        "service": "greenshop-web",
+        "level": "Information",
+        "category": "GreenShop.Web.Controllers.ThanhToanController",
+        "event_id": "3003",
+        "event": "order.created",
+        "diagnostic_code": "order.created",
+        "diagnostic_message": "Business creation committed.",
+        "exception_type": "",
+        "request_id": "0HNPGVLJMFECT:00000001",
+        "trace_id": "c3aa0273a68abeb348dd88b199038bd7",
+        "route": "orders",
+        "reason_code": "committed",
+        "incident": "business"
+      }
+    },
+    "auth.login.failed": {
+      "query": "{environment=\"main\",service=\"greenshop-web\"} | json | event=\"auth.login.failed\" | __error__=\"\"",
+      "count": 5,
+      "newest_timestamp_ns": "1792757152493122373",
+      "sample": {
+        "schema_version": "2",
+        "timestamp_utc": "2026-10-23T12:05:26.776Z",
+        "service": "greenshop-web",
+        "level": "Warning",
+        "category": "GreenShop.Web.Services.Observability",
+        "event_id": "2001",
+        "event": "auth.login.failed",
+        "diagnostic_code": "auth.login.failed",
+        "diagnostic_message": "Authentication security event.",
+        "exception_type": "",
+        "request_id": "0HNPGVNDV4634:00000001",
+        "trace_id": "d66fc5a716d1e3d548b29abd598920a2",
+        "route": "authentication",
+        "reason_code": "invalid_credentials",
+        "incident": "GS-SEC-001"
+      }
+    }
+  },
+  "status": "PASS",
+  "start_epoch": 1792756876.5723975,
+  "mysql_probe_after_loki_recreate_epoch": 1792757711.617061,
+  "mysql_verbosity_restored": true
+}

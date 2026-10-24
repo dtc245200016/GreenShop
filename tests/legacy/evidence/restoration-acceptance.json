@@ -1,0 +1,29 @@
+{
+  "observed_utc": "2026-10-23T12:23:12.786086+00:00",
+  "statuses": {
+    "REQUIREMENT_5": "PASS",
+    "REQUIREMENT_6_RUBRIC": "PASS",
+    "SECURITY_HARDENING_OVERALL": "PARTIAL",
+    "M1_REGRESSION": "PASS",
+    "M2_REGRESSION": "PASS",
+    "QA_REGRESSION": "PASS",
+    "MAIN_PRESERVATION": "PASS",
+    "MAIN_RUNTIME_SYNC": "PASS",
+    "RESTART_RECREATE": "PASS",
+    "SECURITY_INCIDENT_DEMO": "PASS",
+    "DOCKER_LOG_ROTATION": "PARTIAL",
+    "GRAFANA_PASSWORD": "ACCEPTED_RISK_PRESERVED",
+    "SECRET_DISCLOSURE_SCAN": "PASS",
+    "SECURITY_AUDIT": "PASS_WITH_ACCEPTED_RISK",
+    "GIT_DIFF_CHECK": "PASS",
+    "DOCUMENTATION": "PASS",
+    "COMMIT_3_READY": "YES_WORKING_TREE_REVIEW_STAGE_REQUIRED"
+  },
+  "staged_files_preserved": 124,
+  "new_remediation_unstaged": true,
+  "no_commit_push": true,
+  "no_database_reset": true,
+  "no_new_backup": true,
+  "blocking_runtime_findings": [],
+  "limits": "Overall hardening PARTIAL and Main DB/PMA rotation deferred. New changes require explicit staging before a future Git commit; current index is intentionally preserved, not a full final remediation snapshot. Historical screenshots retained; no new browser pixel/WebSocket/Gemini/VM reboot/CVE claims."
+}

@@ -46,8 +46,13 @@ public class NguoiDungController(AppDbContext db, ILogger<NguoiDungController> l
         var account=await Display(db.Users.AsNoTracking().Where(u=>u.Id==id)).FirstOrDefaultAsync(ct);
         if (account==null) return NotFound();
         var activeAdmins=await db.Users.AsNoTracking().CountAsync(u=>u.IsActive && u.Role==UserRole.Admin,ct);
+        var actorId=ShoppingIdentity.UserId(User);
+        var owner=await db.Users.AsNoTracking().AnyAsync(u=>u.Id==actorId && u.IsActive && u.Role==UserRole.Admin && u.Email.ToLower()==ShopOwnership.OwnerEmail,ct);
+        var self=id==actorId;var protectedOwner=ShopOwnership.IsOwnerEmail(account.Email);
+        var last=account.IsActive && account.Role==UserRole.Admin && activeAdmins<=1;
         return View("ChiTietNguoiDung",new AdminUserDetailViewModel { Account=account,IsSelf=id==ShoppingIdentity.UserId(User),
-            IsLastAdmin=account.IsActive && account.Role==UserRole.Admin && activeAdmins<=1,SubmittedProfile=submitted });
+            IsLastAdmin=last,SubmittedProfile=submitted,CanEditProfile=owner || !protectedOwner && (self || account.Role==UserRole.Customer),
+            CanChangeRole=owner && !protectedOwner && !self && !last,CanChangeStatus=!self && !protectedOwner && !last && (owner || account.Role==UserRole.Customer) });
     }
 
     [HttpPost,ValidateAntiForgeryToken]
@@ -76,7 +81,7 @@ public class NguoiDungController(AppDbContext db, ILogger<NguoiDungController> l
             result=new UserMutationResult(503,"Chưa thể lưu. Hãy tải lại thông tin tài khoản trước khi thử lại.");
         }
         if (result.StatusCode==404) return NotFound();
-        if (result.StatusCode==403) return Forbid();
+        if (result.StatusCode==403) return StatusCode(403,new{message=result.Message});
         if (result.StatusCode==200)
         {
             TempData["SuccessMessage"]=result.Message;

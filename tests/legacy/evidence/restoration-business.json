@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "observed_epoch": 1792758192.7851667,
+  "environments": {
+    "qa": {
+      "marker": "EXAM_QA_9cef4133f070",
+      "started": 1792756760.5188398,
+      "ended": 1792756820.5040445,
+      "category_id": 16,
+      "product_id": 54,
+      "order_id": 8,
+      "status": "PASS",
+      "checks": [
+        "customer login, secure session cookie",
+        "admin login, secure session cookie",
+        "session and Admin portal role isolation",
+        "website, catalog, readiness, controlled 404/400, public metrics blocked",
+        "category created through CSRF-protected Admin form",
+        "product persisted and exact 2x2 PNG served from uploads",
+        "cart add and persisted customer cart view",
+        "COD order committed, customer detail and stock decremented once",
+        "checkout replay idempotent: same order, no second stock decrement",
+        "Admin order view; authenticated SignalR negotiation and Origin guard"
+      ],
+      "scope": "Synthetic fixtures only; no credentials or customer data exported; exact fixture retained for demo"
+    },
+    "main": {
+      "marker": "EXAM_MAIN_fa2dad225314",
+      "started": 1792756995.6472192,
+      "ended": 1792757003.08741,
+      "category_id": 71,
+      "product_id": 201,
+      "order_id": 19,
+      "status": "PASS",
+      "checks": [
+        "customer login, secure session cookie",
+        "admin login, secure session cookie",
+        "session and Admin portal role isolation",
+        "website, catalog, readiness, controlled 404/400, public metrics blocked",
+        "category created through CSRF-protected Admin form",
+        "product persisted and exact 2x2 PNG served from uploads",
+        "cart add and persisted customer cart view",
+        "COD order committed, customer detail and stock decremented once",
+        "checkout replay idempotent: same order, no second stock decrement",
+        "Admin order view; authenticated SignalR negotiation and Origin guard"
+      ],
+      "scope": "Synthetic fixtures only; no credentials or customer data exported; exact fixture retained for demo"
+    }
+  },
+  "harness_notes": [
+    "QA cart helper initially GET a POST-only endpoint (405); obtained CSRF from product page, resumed exact fixture without creating another category/product.",
+    "Internal metrics uses source-defined 404 for missing/invalid token; positive real-token200 also verified, no access policy changed.",
+    "Fingerprints discover actual primary keys, including composite keys.",
+    "An initial isolated Nginx dry-run yielded8/9 outputs; an identical rerun passed9/9 with all canary assertions retained. Production ingestion and real JSON status/events independently verified."
+  ]
+}

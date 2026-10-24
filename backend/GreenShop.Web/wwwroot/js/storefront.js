@@ -73,15 +73,6 @@
         input.value = String(Math.max(min, Math.min(max, (Number(input.value) || min) + Number(button.dataset.quantityStep))));
         input.dispatchEvent(new Event("input", { bubbles: true }));
     });
-    const updateTotal = () => {
-        const total = document.querySelector("[data-checkout-total]");
-        if (!total) return;
-        const quantity = Number(document.querySelector("#Quantity").value);
-        if (!Number.isInteger(quantity) || quantity < 1 || quantity > 1_000_000) return;
-        document.querySelector("[data-checkout-quantity]").textContent = String(quantity);
-        total.textContent = new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 0 }).format(quantity * Number(total.dataset.unitPrice)) + " đ";
-    };
-    document.addEventListener("input", event => { if (event.target.id === "Quantity") updateTotal(); });
     document.addEventListener("submit", event => {
         const form = event.target;
         if (!form.matches("form[data-submit-once]")) return;

@@ -1,0 +1,188 @@
+{
+  "status": "PASS",
+  "observed_epoch": 1792757102.964073,
+  "panels": [
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Failed Login Attempts \u2014 process lifetime",
+      "expression": "greenshop_auth_login_failures_total",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Successful Logins \u2014 process lifetime",
+      "expression": "greenshop_auth_login_successes_total",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Failed Login Attempts \u2014 Last 1 Minute (exact process window)",
+      "expression": "greenshop_auth_login_failures_last_60s",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Failed Login Attempts \u2014 Last 5 Minutes (sampled estimate)",
+      "expression": "sum(increase(greenshop_auth_login_failures_total[5m]))",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Authentication Failure Trend",
+      "expression": "rate(greenshop_auth_login_failures_total[2m])",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Security Condition \u2014 GS-SEC-001",
+      "expression": "sum(greenshop_auth_login_failures_last_60s) >= bool 5",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Authorization Denied Events",
+      "expression": "greenshop_auth_access_denied_total",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-security",
+      "panel": "Recent Failures (exact) and Detection Window",
+      "expression": "greenshop_auth_login_failures_last_60s",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Overall Service Status",
+      "expression": "up",
+      "series": 5
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Container CPU Usage",
+      "expression": "sum by (container_label_com_docker_compose_project,container_label_com_docker_compose_service) (rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_project=~\"dtc245200016_btl_tkqt_htpm\",container_label_com_docker_compose_service!=\"\"}[2m]))",
+      "series": 12
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Container Memory Usage",
+      "expression": "sum by (container_label_com_docker_compose_project,container_label_com_docker_compose_service) (container_memory_working_set_bytes{container_label_com_docker_compose_project=~\"dtc245200016_btl_tkqt_htpm\",container_label_com_docker_compose_service!=\"\"})",
+      "series": 12
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Container Network Traffic",
+      "expression": "sum by (container_label_com_docker_compose_project,container_label_com_docker_compose_service) (rate(container_network_receive_bytes_total{container_label_com_docker_compose_project=~\"dtc245200016_btl_tkqt_htpm\",container_label_com_docker_compose_service!=\"\"}[2m]) + rate(container_network_transmit_bytes_total{container_label_com_docker_compose_project=~\"dtc245200016_btl_tkqt_htpm\",container_label_com_docker_compose_service!=\"\"}[2m]))",
+      "series": 12
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Container Availability \u2014 seconds since last seen",
+      "expression": "time() - max by (container_label_com_docker_compose_project,container_label_com_docker_compose_service) (container_last_seen{container_label_com_docker_compose_project=~\"dtc245200016_btl_tkqt_htpm\",container_label_com_docker_compose_service!=\"\"})",
+      "series": 12
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Nginx Connections",
+      "expression": "nginx_connections_active",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "MySQL Availability",
+      "expression": "mysql_up",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "MySQL Connections",
+      "expression": "mysql_global_status_threads_connected",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-infrastructure",
+      "panel": "Nginx Reading / Writing / Waiting",
+      "expression": "{__name__=~\"nginx_connections_(reading|writing|waiting)\"}",
+      "series": 3
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP Requests Per Second",
+      "expression": "sum(rate(greenshop_http_requests_total[2m]))",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP Response Duration P50",
+      "expression": "histogram_quantile(0.50, sum by(le)(rate(greenshop_http_request_duration_seconds_bucket[2m])))",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP Response Duration P95",
+      "expression": "histogram_quantile(0.95, sum by(le)(rate(greenshop_http_request_duration_seconds_bucket[2m])))",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP Error Rate (4xx + 5xx)",
+      "expression": "sum(rate(greenshop_http_requests_total{status_code=~\"[45]..\"}[2m])) / clamp_min(sum(rate(greenshop_http_requests_total[2m])),0.001)",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP 4xx Rate",
+      "expression": "sum(rate(greenshop_http_requests_total{status_code=~\"4..\"}[2m]))",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "HTTP 5xx Rate",
+      "expression": "sum(rate(greenshop_http_requests_total{status_code=~\"5..\"}[2m]))",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "Request Distribution by Safe Group",
+      "expression": "sum by(route_group)(rate(greenshop_http_requests_total[2m]))",
+      "series": 9
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "MySQL Active Threads",
+      "expression": "mysql_global_status_threads_running",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "MySQL Queries",
+      "expression": "rate(mysql_global_status_queries[2m])",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "Application Availability",
+      "expression": "up{job=\"greenshop\"}",
+      "series": 1
+    },
+    {
+      "dashboard": "greenshop-application",
+      "panel": "Nginx Requests",
+      "expression": "rate(nginx_http_requests_total[2m])",
+      "series": 1
+    }
+  ],
+  "datasources": [
+    {
+      "uid": "greenshop-loki",
+      "type": "loki",
+      "url": "http://loki:3100",
+      "isDefault": false
+    },
+    {
+      "uid": "greenshop-prometheus",
+      "type": "prometheus",
+      "url": "http://prometheus:9090",
+      "isDefault": true
+    }
+  ]
+}

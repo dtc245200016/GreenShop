@@ -9,6 +9,7 @@
     <small>@(User.Identity?.IsAuthenticated == true ? "Giá và tồn kho sẽ được kiểm tra lại khi xác nhận đặt hàng." : "Đăng nhập để thêm giỏ hàng hoặc mua ngay. Bạn sẽ được quay lại bước mua sắm.")</small>
 </form>
 } else { <p class="shop-admin-note"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Bạn đang xem bằng tài khoản quản trị. Mua hàng dành cho tài khoản khách hàng.</p> }
+<button type="button" class="shop-btn secondary chat-entry" data-chat-mode="shop" aria-controls="hybrid-chat"><i class="fa-regular fa-comments" aria-hidden="true"></i>Chat với Shop</button>
 <div class="detail-description"><h2>Về sản phẩm</h2><p>@(string.IsNullOrWhiteSpace(Model.Description) ? "Sản phẩm chưa có mô tả." : Model.Description)</p></div></div></section>
 
 <section class="shop-panel product-reviews" id="reviews"><h2>Đánh giá từ người mua</h2><partial name="_ProductReviews" model="@((IReadOnlyList<ProductReview>?)ViewData["Reviews"] ?? Array.Empty<ProductReview>())" />

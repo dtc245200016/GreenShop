@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using GreenShop.Web.Data;
 using System.Net;
+using Prometheus;
+using GreenShop.Web.Services;
 using System.Net.Sockets;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
@@ -13,6 +15,9 @@ using System.Threading.RateLimiting;
 if(await GreenShop.Web.Services.DeploymentCommands.TryRunAsync(args))return;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddJsonConsole(o => { o.IncludeScopes=true; o.UseUtcTimestamp=true; o.TimestampFormat="yyyy-MM-ddTHH:mm:ss.fffZ"; });
+builder.Services.AddSingleton<Observability>();
 
 // Cấu hình Database Context MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -29,7 +34,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         mysqlOptions => mysqlOptions.EnableRetryOnFailure()));
 
 // Bật Razor Runtime Compilation để tự nhận thay đổi file .cshtml
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+var mvc = builder.Services.AddControllersWithViews();
+if (builder.Environment.IsDevelopment()) mvc.AddRazorRuntimeCompilation();
 
 builder.Services.AddRateLimiter(options=>
 {
@@ -37,6 +43,8 @@ builder.Services.AddRateLimiter(options=>
         context.GetEndpoint()?.Metadata.GetMetadata<EnableRateLimitingAttribute>()==null
             ? RateLimitPartition.GetNoLimiter("pages")
             : RateLimitPartition.GetConcurrencyLimiter("accounts",_=>new ConcurrencyLimiterOptions{PermitLimit=8,QueueLimit=0}));
+    options.AddPolicy("ai",context=>RateLimitPartition.GetFixedWindowLimiter("ai:"+context.Connection.RemoteIpAddress,
+        _=>new FixedWindowRateLimiterOptions{PermitLimit=Math.Clamp(builder.Configuration.GetValue<int?>("AiChat:RequestsPerMinute")??5,1,10),Window=TimeSpan.FromMinutes(1),QueueLimit=0}));
     options.AddPolicy("account",context=>
     {
         var registration=string.Equals(context.Request.RouteValues["action"]?.ToString(),"Register",StringComparison.OrdinalIgnoreCase);
@@ -51,7 +59,10 @@ builder.Services.AddRateLimiter(options=>
         response.Headers["Retry-After"]=context.Lease.TryGetMetadata(MetadataName.RetryAfter,out var retry)
             ? Math.Max(1,(int)Math.Ceiling(retry.TotalSeconds)).ToString(System.Globalization.CultureInfo.InvariantCulture):"5";
         response.Headers["Cache-Control"]="no-store";response.ContentType="text/plain; charset=utf-8";
-        await response.WriteAsync("Bạn thao tác đăng nhập hoặc đăng ký quá nhanh. Vui lòng đợi một chút rồi thử lại.",ct);
+        var ai=context.HttpContext.GetEndpoint()?.Metadata.GetMetadata<EnableRateLimitingAttribute>()?.PolicyName=="ai";
+        if(ai) context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("AiRateLimit")
+            .LogInformation("AI category=rate_limit");
+        await response.WriteAsync(ai?"Bạn hỏi trợ lý quá nhanh. Vui lòng đợi một chút rồi thử lại.":"Bạn thao tác đăng nhập hoặc đăng ký quá nhanh. Vui lòng đợi một chút rồi thử lại.",ct);
     };
 });
 
@@ -96,7 +107,27 @@ builder.Services.AddAuthentication(GreenShop.Web.Services.PortalAuthentication.P
         options.EventsType = typeof(GreenShop.Web.Services.UserSession);
     });
 
+builder.Services.Configure<GreenShop.Web.Services.AiChatOptions>(builder.Configuration.GetSection("AiChat"));
+builder.Services.PostConfigure<GreenShop.Web.Services.AiChatOptions>(o=> {
+    if(o.Provider=="Gemini" && string.IsNullOrWhiteSpace(o.ApiKey)) o.ApiKey=builder.Configuration["GEMINI_API_KEY"]??"";
+});
+builder.Services.AddScoped<GreenShop.Web.Services.AiConversationState>();
+builder.Services.AddSingleton<GreenShop.Web.Services.AiUsageBudget>();
+builder.Services.AddHttpClient<GreenShop.Web.Services.IAiChatProvider,GreenShop.Web.Services.ConfiguredAiChatProvider>()
+    .RedactLoggedHeaders(new[]{"Authorization","x-goog-api-key"})
+    .ConfigurePrimaryHttpMessageHandler(()=>new HttpClientHandler{AllowAutoRedirect=false});
+builder.Services.AddSignalR(o=>{o.MaximumReceiveMessageSize=4096;o.EnableDetailedErrors=false;});
 var app = builder.Build();
+var observability=app.Services.GetRequiredService<Observability>();
+// Fail closed even if Nginx is bypassed. Scrapes never enter customer authentication.
+app.Use(async (context,next) => {
+    if(context.Request.Path.StartsWithSegments("/metrics")) {
+        if(!observability.CanScrape(context)) { context.Response.StatusCode=404; return; }
+    }
+    await next(context);
+});
+app.Use(Observability.Observe);
+app.MapMetrics("/metrics").AllowAnonymous();
 
 // Tra Docker DNS theo request để chỉ tin Nginx, kể cả khi proxy được recreate.
 var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
@@ -128,6 +159,10 @@ app.Use(async (context, next) =>
         app.Logger.LogWarning("Không thể phân giải Nginx; bỏ qua forwarded headers từ proxy chưa xác định.");
     }
 
+    if(options.KnownProxies.Count==0) {
+        await next(context);
+        return; // Empty trust lists would otherwise trust every forwarding peer.
+    }
     var forwardedHeaders = new ForwardedHeadersMiddleware(next, loggerFactory, Options.Create(options));
     await forwardedHeaders.Invoke(context);
 });
@@ -160,6 +195,16 @@ app.Use(async (context, next) =>
     }
     await next(context);
 });
+// WebSocket upgrades are not protected by CORS. Require an exact same-origin Origin.
+app.Use(async(context,next)=> {
+    if(context.Request.Path.StartsWithSegments("/supportHub") || context.Request.Path.StartsWithSegments("/Admin/supportHub")) {
+        var origin=context.Request.Headers.Origin.ToString();
+        if(!Uri.TryCreate(origin,UriKind.Absolute,out var uri) || uri.GetLeftPart(UriPartial.Authority)!=$"{context.Request.Scheme}://{context.Request.Host}") {
+            context.Response.StatusCode=403;context.Response.ContentType="text/plain";await context.Response.WriteAsync("Forbidden");return;
+        }
+    }
+    await next(context);
+});
 app.UseAuthorization();
 app.UseRateLimiter();
 
@@ -170,6 +215,8 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.Migrate();
 }
 
+app.MapHub<GreenShop.Web.Hubs.SupportHub>("/supportHub",o=>o.CloseOnAuthenticationExpiration=true).RequireAuthorization(new Microsoft.AspNetCore.Authorization.AuthorizeAttribute{Roles="Customer"});
+app.MapHub<GreenShop.Web.Hubs.SupportHub>("/Admin/supportHub",o=>o.CloseOnAuthenticationExpiration=true).RequireAuthorization(new Microsoft.AspNetCore.Authorization.AuthorizeAttribute{Roles="Admin"});
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}");

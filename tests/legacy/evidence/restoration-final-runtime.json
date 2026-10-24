@@ -1,0 +1,303 @@
+{
+  "status": "PASS",
+  "observed_epoch": 1792757966.3376696,
+  "targets": [
+    {
+      "labels": {
+        "instance": "cadvisor:8080",
+        "job": "cadvisor"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T12:19:21.033038117Z",
+      "scrapeUrl": "http://cadvisor:8080/metrics"
+    },
+    {
+      "labels": {
+        "instance": "web_app:8080",
+        "job": "greenshop"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T12:19:18.47175063Z",
+      "scrapeUrl": "http://web_app:8080/metrics"
+    },
+    {
+      "labels": {
+        "instance": "mysql-exporter:9104",
+        "job": "mysql"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T12:19:19.425237096Z",
+      "scrapeUrl": "http://mysql-exporter:9104/metrics"
+    },
+    {
+      "labels": {
+        "instance": "nginx-exporter:9113",
+        "job": "nginx"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T12:19:20.852618815Z",
+      "scrapeUrl": "http://nginx-exporter:9113/metrics"
+    },
+    {
+      "labels": {
+        "instance": "prometheus:9090",
+        "job": "prometheus"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-10-23T12:19:21.064788664Z",
+      "scrapeUrl": "http://prometheus:9090/metrics"
+    }
+  ],
+  "metrics": {
+    "up{job=\"greenshop\"}": [
+      {
+        "metric": {
+          "__name__": "up",
+          "instance": "web_app:8080",
+          "job": "greenshop"
+        },
+        "value": [
+          1792757964.459,
+          "1"
+        ]
+      }
+    ],
+    "mysql_up": [
+      {
+        "metric": {
+          "__name__": "mysql_up",
+          "instance": "mysql-exporter:9104",
+          "job": "mysql"
+        },
+        "value": [
+          1792757964.47,
+          "1"
+        ]
+      }
+    ],
+    "nginx_up": [
+      {
+        "metric": {
+          "__name__": "nginx_up",
+          "instance": "nginx-exporter:9113",
+          "job": "nginx"
+        },
+        "value": [
+          1792757964.475,
+          "1"
+        ]
+      }
+    ],
+    "min_over_time(up[5m])": [
+      {
+        "metric": {
+          "instance": "web_app:8080",
+          "job": "greenshop"
+        },
+        "value": [
+          1792757964.481,
+          "1"
+        ]
+      },
+      {
+        "metric": {
+          "instance": "mysql-exporter:9104",
+          "job": "mysql"
+        },
+        "value": [
+          1792757964.481,
+          "1"
+        ]
+      },
+      {
+        "metric": {
+          "instance": "prometheus:9090",
+          "job": "prometheus"
+        },
+        "value": [
+          1792757964.481,
+          "1"
+        ]
+      },
+      {
+        "metric": {
+          "instance": "nginx-exporter:9113",
+          "job": "nginx"
+        },
+        "value": [
+          1792757964.481,
+          "1"
+        ]
+      },
+      {
+        "metric": {
+          "instance": "cadvisor:8080",
+          "job": "cadvisor"
+        },
+        "value": [
+          1792757964.481,
+          "1"
+        ]
+      }
+    ],
+    "min_over_time(mysql_up[5m])": [
+      {
+        "metric": {
+          "instance": "mysql-exporter:9104",
+          "job": "mysql"
+        },
+        "value": [
+          1792757964.488,
+          "1"
+        ]
+      }
+    ],
+    "min_over_time(nginx_up[5m])": [
+      {
+        "metric": {
+          "instance": "nginx-exporter:9113",
+          "job": "nginx"
+        },
+        "value": [
+          1792757964.495,
+          "1"
+        ]
+      }
+    ]
+  },
+  "services": {
+    "db": {
+      "id": "420f22286f2b8550620c9f48625bb1b30ca0f37114b388246d2807a140261299",
+      "health": "healthy",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "nginx": {
+      "id": "118ba3b2f5208695838b59a21cdacceebf89e8bf7aa572e78d36b94fb0a50a40",
+      "health": "healthy",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "phpmyadmin": {
+      "id": "ecacca3997ce58b366ab9533314167af84940835f2055c264f06bab5f9bc27ac",
+      "health": "healthy",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "web_app": {
+      "id": "2294ac1d08dee2c7797ca61fa224b4cf9ba65426926cd54c1e648fb6606efd79",
+      "health": "healthy",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "prometheus": {
+      "id": "81dd44dbe95123af5694491901b5992e7f9bd2c4675bffc7c58f130409dd2861",
+      "health": "healthy",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "grafana": {
+      "id": "d711d5bff38de023ffcf40f5e31484afc772be433836cb1d01bfa99a4481eff3",
+      "health": "healthy",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "mysql-exporter": {
+      "id": "bfb2f9ebd2bb8947cef6bca48b55923ed0ece35f3fccb7786a5e37d21880717d",
+      "health": "running",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "nginx-exporter": {
+      "id": "9897bd70e552a5ab9fdc3f956b68d8d798a70478ec0c6c228feea61766046127",
+      "health": "running",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "cadvisor": {
+      "id": "60ff5c90182aeed75df9505cf1b0394ec6fcaeb9f22cebf794a43c26a2b8f139",
+      "health": "healthy",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "qa-alert-receiver": {
+      "id": "f452cbfab32d5e10f3c7ef57528b26db5b56b1a189bfaa386bba50b48d87a22a",
+      "health": "running",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "loki": {
+      "id": "6622d6f36abf4ced0f0ae1e9d69dd2d3386595a9945695ab153a5558430d5e15",
+      "health": "healthy",
+      "oom_killed": false,
+      "restart_count": 0
+    },
+    "promtail": {
+      "id": "9ff7c9d37eae18a98ed82a0e140196cc1b86b0d79849381d4b80f11ff387fce2",
+      "health": "healthy",
+      "oom_killed": false,
+      "restart_count": 0
+    }
+  },
+  "https_readiness": 200,
+  "datasources": "both OK",
+  "stability": "All target up series plus mysql_up/nginx_up have min_over_time[5m]=1 after final recreation",
+  "final_http_log_observed_epoch": 1792758371.3538418,
+  "post_recreate_grace_start": 1792757140.008166,
+  "post_recreate_5xx_app_errors": {
+    "nginx_5xx": 0,
+    "app_errors": 0
+  },
+  "local_static_assets": {
+    "/css/admin-fonts.css": {
+      "status": 200,
+      "bytes": 5348
+    },
+    "/css/customer-engagement.css": {
+      "status": 200,
+      "bytes": 32659
+    },
+    "/css/storefront-theme.css": {
+      "status": 200,
+      "bytes": 49846
+    },
+    "/css/storefront.css": {
+      "status": 200,
+      "bytes": 47112
+    },
+    "/js/customer-engagement.js": {
+      "status": 200,
+      "bytes": 34819
+    },
+    "/js/storefront-theme.js": {
+      "status": 200,
+      "bytes": 12545
+    },
+    "/js/storefront.js": {
+      "status": 200,
+      "bytes": 6054
+    },
+    "/lib/bootstrap/dist/css/bootstrap.min.css": {
+      "status": 200,
+      "bytes": 232869
+    },
+    "/lib/bootstrap/dist/js/bootstrap.bundle.min.js": {
+      "status": 200,
+      "bytes": 80373
+    },
+    "/lib/fontawesome/css/all.min.css": {
+      "status": 200,
+      "bytes": 102025
+    },
+    "/lib/signalr/signalr.min.js": {
+      "status": 200,
+      "bytes": 47608
+    }
+  },
+  "tls_trust_and_ip_san_verified": true
+}

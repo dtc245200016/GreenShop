@@ -25,7 +25,7 @@ public class SanPhamController(AppDbContext db) : Controller
         if(model==null) return NotFound();
         reviewPage=Math.Min(reviewPage,Math.Max(1,(int)Math.Ceiling(model.ReviewCount/20d)));
         ViewData["ReviewPage"]=reviewPage;
-        ViewData["Reviews"]=await db.ProductReviews.AsNoTracking().Include(r=>r.User).Where(r=>r.ProductId==id).OrderByDescending(r=>r.Id).Skip((reviewPage-1)*20).Take(20).ToListAsync(ct);
+        ViewData["Reviews"]=await db.ProductReviews.AsNoTracking().Include(r=>r.User).Where(r=>r.IsCurrent && !r.IsHidden && r.ProductId==id).OrderByDescending(r=>r.Id).Skip((reviewPage-1)*20).Take(20).ToListAsync(ct);
         return View(model);
     }
 }

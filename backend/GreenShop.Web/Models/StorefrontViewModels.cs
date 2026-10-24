@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
@@ -7,7 +6,7 @@ namespace GreenShop.Web.Models;
 
 public static class StoreDisplay
 {
-    public static string Money(decimal value) => value.ToString("N0", CultureInfo.GetCultureInfo("vi-VN")) + " đ";
+    public static string Money(decimal value) => GreenShop.Web.Services.OrderWorkflow.Money(value);
     public static string Image(string? value)
     {
         if (value?.StartsWith("/uploads/products/", StringComparison.Ordinal) == true && !value.Contains("..") && !value.Contains('\\')) return value;

@@ -253,7 +253,8 @@
     </script>
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/admin-theme.js" asp-append-version="true" defer></script>
-    <script src="~/js/customer-engagement.js" asp-append-version="true" defer></script>
+    <script src="~/lib/signalr/signalr.min.js" asp-append-version="true" defer></script>
+<script src="~/js/customer-engagement.js" asp-append-version="true" defer></script>
     @if(isSettings) { <script src="~/js/payment-shipping.js" asp-append-version="true" defer></script> }
     @if (isOrders || isProducts || isDashboard) { <script src="~/js/admin-excel.js" asp-append-version="true" defer></script> }
 </body>

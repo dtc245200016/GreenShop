@@ -61,6 +61,7 @@ public class ThanhToanController(AppDbContext db, ILogger<ThanhToanController> l
                 if(result.StatusCode==403) return Forbid();
                 if(result.OrderId>0)
                 {
+                    if(result.Created) Observability.BusinessCreated(logger, HttpContext, "order.created");
                     var method=await db.Orders.AsNoTracking().Where(o=>o.Id==result.OrderId && o.UserId==userId).Select(o=>o.PaymentMethod).SingleAsync(ct);
                     TempData["SuccessMessage"]=method==PaymentMethods.VietQr ? "Đã tạo đơn hàng. Quét mã để chuyển khoản; GreenShop sẽ xác nhận sau khi đối chiếu." : "Đã nhận đơn hàng COD. Đơn đang chờ xử lý, chưa thanh toán.";
                     return RedirectToAction(method==PaymentMethods.VietQr ? nameof(ThanhToanVietQR) : nameof(ChiTietDonHang),new {id=result.OrderId});
@@ -150,7 +151,7 @@ public class ThanhToanController(AppDbContext db, ILogger<ThanhToanController> l
         if (userId == 0) return Forbid();
         var order = await db.Orders.AsNoTracking().Include(o => o.Items).FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId, ct);
         if(order==null) return NotFound();
-        ViewData["ReviewedItems"]=await db.ProductReviews.Where(r=>r.OrderItem.OrderId==id && r.UserId==userId).Select(r=>r.OrderItemId).ToListAsync(ct);
+        ViewData["ReviewedItems"]=await db.OrderItems.Where(i=>i.OrderId==id && db.ProductReviews.Any(r=>r.UserId==userId && r.OrderItem.OrderId==id && (r.OrderItemId==i.Id || r.ProductId!=null && r.ProductId==i.ProductId))).Select(i=>i.Id).ToListAsync(ct);
         return View(order);
     }
 

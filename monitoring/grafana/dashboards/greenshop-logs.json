@@ -1,0 +1,216 @@
+{
+  "uid": "greenshop-logs",
+  "title": "GreenShop — Logs & Incident Investigation",
+  "schemaVersion": 39,
+  "version": 2,
+  "tags": [
+    "GreenShop",
+    "M3"
+  ],
+  "timezone": "utc",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "refresh": "10s",
+  "templating": {
+    "list": [
+      {
+        "name": "environment",
+        "type": "query",
+        "datasource": {
+          "type": "loki",
+          "uid": "greenshop-loki"
+        },
+        "query": "label_values(environment)",
+        "refresh": 1,
+        "includeAll": false,
+        "multi": false,
+        "current": {}
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Recent application events",
+      "type": "logs",
+      "datasource": {
+        "type": "loki",
+        "uid": "greenshop-loki"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{environment=\"$environment\",service=\"greenshop-web\"}",
+          "datasource": {
+            "type": "loki",
+            "uid": "greenshop-loki"
+          }
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      }
+    },
+    {
+      "id": 2,
+      "title": "Authentication failures",
+      "type": "timeseries",
+      "datasource": {
+        "type": "loki",
+        "uid": "greenshop-loki"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 24,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(count_over_time({environment=\"$environment\",service=\"greenshop-web\"} | json | event=\"auth.login.failed\" | __error__=\"\" [1m]))",
+          "datasource": {
+            "type": "loki",
+            "uid": "greenshop-loki"
+          }
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      }
+    },
+    {
+      "id": 3,
+      "title": "HTTP errors",
+      "type": "logs",
+      "datasource": {
+        "type": "loki",
+        "uid": "greenshop-loki"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 24,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{environment=\"$environment\",service=\"nginx\"} | json | status >= 400 | __error__=\"\"",
+          "datasource": {
+            "type": "loki",
+            "uid": "greenshop-loki"
+          }
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      }
+    },
+    {
+      "id": 4,
+      "title": "MySQL operational events",
+      "type": "logs",
+      "datasource": {
+        "type": "loki",
+        "uid": "greenshop-loki"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 24,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{environment=\"$environment\",service=\"mysql\"}",
+          "datasource": {
+            "type": "loki",
+            "uid": "greenshop-loki"
+          }
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      }
+    },
+    {
+      "id": 5,
+      "title": "GS-SEC-001 timeline",
+      "type": "logs",
+      "datasource": {
+        "type": "loki",
+        "uid": "greenshop-loki"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 24,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{environment=\"$environment\",service=\"greenshop-web\"} | json | incident=\"GS-SEC-001\" | __error__=\"\"",
+          "datasource": {
+            "type": "loki",
+            "uid": "greenshop-loki"
+          }
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      }
+    },
+    {
+      "id": 6,
+      "title": "Safe database and request diagnostics",
+      "type": "logs",
+      "datasource": {
+        "type": "loki",
+        "uid": "greenshop-loki"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 40,
+        "w": 24,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{environment=\"$environment\",service=\"greenshop-web\"} | json | schema_version=\"2\" | diagnostic_code=~\"db[.].*failed|http[.]request[.]exception\" | __error__=\"\"",
+          "datasource": {
+            "type": "loki",
+            "uid": "greenshop-loki"
+          }
+        }
+      ],
+      "options": {
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "description": "Schema v2: fixed diagnostic messages, route groups and validated request/trace IDs. Historical v1 logs remain in Recent application events. No raw exceptions or SQL."
+    }
+  ]
+}

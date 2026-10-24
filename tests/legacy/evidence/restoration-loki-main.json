@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "reason": "Previous running image ID absent from local image store; existing replacement reports same Loki3.6.18 revision c969f5cf and identical healthcheck. QA/frozen-range persistence verified; historical binary byte equality is not claimed.",
+  "old_id": "088389ae4fe852a593951455ba3cd613cf5fae55cb8f11136ce0d164016171bf",
+  "new_id": "6622d6f36abf4ced0f0ae1e9d69dd2d3386595a9945695ab153a5558430d5e15",
+  "old_image": "sha256:fcf3e0e6c4735cd6c668617b4a3e1fb777725cdd5659650adeba2b7fa3d45a7a",
+  "new_image": "sha256:a95db62e07568722e6143cf85b51b565a8225b775c17d475d9a776cbd4eb29ce",
+  "same_version": "3.6.18 revision c969f5cf",
+  "same_healthcheck": true,
+  "same_mounts": true,
+  "fixed_interval_entries_preserved": 8,
+  "frozen_start": 1792755534.1795537,
+  "frozen_end": 1792757334.1795537,
+  "query": "{environment=\"main\",service=\"greenshop-web\"} | json | event=~\"auth.login.failed|category.created|product.created|order.created\" | __error__=\"\"",
+  "datasource_health": "OK"
+}

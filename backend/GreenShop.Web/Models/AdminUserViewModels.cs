@@ -25,7 +25,8 @@ public class AdminUserRow
     public DateTime CreatedAt { get; set; }
     public int OrderCount { get; set; }
     public long Version { get; set; }
-    public string RoleLabel => Role == UserRole.Admin ? "Quản trị viên" : Role == UserRole.Customer ? "Khách hàng" : "Chưa có quyền hợp lệ";
+    public bool IsShopOwner => Role==UserRole.Admin && ShopOwnership.IsOwnerEmail(Email);
+    public string RoleLabel => IsShopOwner ? "Chủ shop" : Role == UserRole.Admin ? "Quản trị viên" : Role == UserRole.Customer ? "Khách hàng" : "Chưa có quyền hợp lệ";
     public string Initial => string.IsNullOrWhiteSpace(FullName) ? "?" : System.Globalization.StringInfo.GetNextTextElement(FullName.Trim()).ToUpperInvariant();
 }
 
@@ -47,6 +48,9 @@ public class AdminUserDetailViewModel
     public AdminUserRow Account { get; set; } = null!;
     public bool IsSelf { get; set; }
     public bool IsLastAdmin { get; set; }
+    public bool CanEditProfile { get; init; }
+    public bool CanChangeRole { get; init; }
+    public bool CanChangeStatus { get; init; }
     public AdminUserProfile? SubmittedProfile { get; set; }
 }
 
